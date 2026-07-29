@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verificar:
+    name: Lint · Tests · Build
+    runs-on: ubuntu-latest
+
+    env:
+      # El build tiene que pasar sin credenciales reales: las páginas públicas
+      # caen en sus fallbacks y no se conectan a nada. Si algún día el build
+      # empieza a fallar acá, es porque se colgó de una variable de producción.
+      NEXT_PUBLIC_SITE_URL: https://cisur.vercel.app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tests
+        run: npm test
+
+      - name: Build
+        run: npm run build

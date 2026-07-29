@@ -1,0 +1,49 @@
+# dependencias
+/node_modules
+/.pnp
+.pnp.*
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ---------------------------------------------------------------------------
+# Variables de entorno. NUNCA commitear: acá viven la secret key de Supabase
+# y el access token de Mercado Pago de Tati. El que sí se commitea es
+# .env.example, que tiene los nombres pero no los valores.
+# ---------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# ---------------------------------------------------------------------------
+# Material de trabajo de Tati: ~1 GB de videos crudos, fotos y borradores.
+# No va al repositorio (GitHub rechaza archivos de más de 100 MB y esto no
+# tiene nada que hacer en el código). Vive sólo en tu máquina y en el Drive.
+# ---------------------------------------------------------------------------
+/contexto/
+/HANDOFF-plataforma-cursos.md

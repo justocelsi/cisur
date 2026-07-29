@@ -1,0 +1,277 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   CISUR — design tokens
+
+   La estética es editorial: papel crema, tinta verde oscura, mucho aire.
+   Todo en Times New Roman, que además no cuesta ni un byte de descarga
+   (está en todos los sistemas), así que el sitio carga instantáneo.
+
+   Deliberadamente sin dark mode: es un sitio de venta con estética de libro
+   impreso, y el crema es parte de la identidad.
+   ========================================================================== */
+
+@theme {
+  /* Superficies */
+  --color-papel: #faf7f1;
+  --color-papel-2: #f3eee3;
+  --color-papel-3: #eae2d2;
+
+  /* Tinta */
+  --color-tinta: #1f2a1c;
+  --color-tinta-suave: #4a5647;
+  --color-tinta-tenue: #7b8578;
+
+  /* Verdes de marca */
+  /* Verde exacto del logo de CISUR (muestreado del isotipo). */
+  --color-verde: #41664a;
+  --color-verde-claro: #6f9179;
+  --color-salvia: #a8bfae;
+  --color-salvia-tenue: #d5e2d8;
+
+  /* Acentos cálidos */
+  --color-arena: #e4dac6;
+  --color-terracota: #b4623c;
+  --color-terracota-oscuro: #97502f;
+
+  /* Tipografía */
+  --font-serif: "Times New Roman", Times, "Liberation Serif", "Nimbus Roman",
+    serif;
+
+  /* Ritmo */
+  --radius-suave: 2px;
+  --radius-carta: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+  --ancho-texto: 34rem;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-papel);
+  color: var(--color-tinta);
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Times New Roman es angosto: los títulos grandes necesitan menos
+   interlineado y un pelín de tracking negativo para verse compuestos. */
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+
+/* Foco visible y coherente en todo el sitio (accesibilidad de teclado). */
+:focus-visible {
+  outline: 2px solid var(--color-verde);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--color-salvia-tenue);
+  color: var(--color-tinta);
+}
+
+/* Respeta a quien pidió menos movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Utilidades de composición
+   -------------------------------------------------------------------------- */
+
+@utility contenedor {
+  width: 100%;
+  max-width: 68rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@utility contenedor-angosto {
+  width: 100%;
+  max-width: 44rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* Versalitas: el recurso tipográfico que hace que Times se vea intencional
+   y no "por defecto". Se usa en kickers y etiquetas. */
+@utility versalitas {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+@utility filete {
+  border: 0;
+  border-top: 1px solid var(--color-papel-3);
+}
+
+/* Ornamento de separación, guiñando a los 🌿 de la guía. */
+@utility ornamento {
+  &::after {
+    content: "❧";
+    display: block;
+    text-align: center;
+    color: var(--color-salvia);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Listas sueltas
+
+   `prosa` estiliza las listas que están ADENTRO suyo (.prosa ul > li), así que
+   no sirve aplicada sobre un <ul> directamente. Estas son para ese caso: una
+   lista que vive sola, fuera de un bloque de prosa.
+   -------------------------------------------------------------------------- */
+
+@utility lista {
+  margin-block: 1.1em;
+  padding-inline-start: 1.4em;
+  list-style: none;
+
+  & > li {
+    position: relative;
+    margin-block: 0.45em;
+  }
+
+  & > li::before {
+    content: "—";
+    position: absolute;
+    left: -1.4em;
+    color: var(--color-salvia);
+  }
+}
+
+@utility lista-numerada {
+  margin-block: 1.1em;
+  padding-inline-start: 1.6em;
+  list-style: decimal;
+
+  & > li {
+    margin-block: 0.6em;
+    padding-inline-start: 0.3em;
+  }
+
+  & > li::marker {
+    color: var(--color-salvia);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Prosa (capítulos, legales, textos largos)
+   -------------------------------------------------------------------------- */
+
+@utility prosa {
+  max-width: var(--ancho-texto);
+
+  & p {
+    margin-block: 1.1em;
+  }
+
+  & h2 {
+    font-size: 1.5rem;
+    margin-block: 2.2em 0.6em;
+  }
+
+  & h3 {
+    font-size: 1.2rem;
+    margin-block: 1.8em 0.4em;
+  }
+
+  & ul,
+  & ol {
+    margin-block: 1.1em;
+    padding-inline-start: 1.4em;
+  }
+
+  & ul {
+    list-style: none;
+  }
+
+  & ul > li {
+    position: relative;
+  }
+
+  & ul > li::before {
+    content: "—";
+    position: absolute;
+    left: -1.4em;
+    color: var(--color-salvia);
+  }
+
+  & ol {
+    list-style: decimal;
+  }
+
+  & li {
+    margin-block: 0.4em;
+  }
+
+  & a {
+    color: var(--color-verde);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  & strong {
+    font-weight: 700;
+  }
+
+  & blockquote {
+    margin-block: 1.6em;
+    padding-inline-start: 1.2em;
+    border-inline-start: 2px solid var(--color-salvia);
+    color: var(--color-tinta-suave);
+    font-style: italic;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Impresión: que no se pueda imprimir el lector de un PDF pago.
+   No es una barrera fuerte (nada en el navegador lo es), pero evita el
+   "Ctrl+P" accidental o casual.
+   -------------------------------------------------------------------------- */
+
+@media print {
+  .no-imprimir,
+  .lector-pdf {
+    display: none !important;
+  }
+
+  .lector-pdf-aviso {
+    display: block !important;
+  }
+}
