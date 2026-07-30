@@ -108,7 +108,13 @@ TODO OK — 55 pruebas pasaron
 Si dice `¡ATENCIÓN! N de 55 pruebas FALLARON`, la columna `detalle` de cada fila
 te dice qué pasó. No sigas: avisame.
 
-El script hace `ROLLBACK` al final, así que no deja datos de prueba.
+El script **borra solo** todo lo que creó y lo confirma con un
+`LIMPIO — el script no dejó nada en la base`. Si alguna vez ese mensaje dice
+otra cosa, corré `supabase/tests/limpiar_datos_de_prueba.sql`.
+
+> No usa `ROLLBACK` a propósito. El SQL Editor de Supabase confirma cada
+> sentencia por separado, así que un `ROLLBACK` al final no deshace nada: el
+> script se limpia con `DELETE` explícitos, que funcionan en cualquier cliente.
 
 > **Estas 55 pruebas ya corrieron en verde en un Postgres local** antes de que
 > las leas, con `supabase/tests/harness_local.sql`, que emula sobre un Postgres

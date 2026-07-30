@@ -13,9 +13,13 @@ Los tres tienen que pasar. El build corre sin credenciales a propósito.
 
 ## Trampas de este proyecto
 
-- **Si tocás una policy de RLS o un trigger**, correr
-  `supabase/tests/rls_smoke_tests.sql` en el SQL Editor de Supabase. Todas las
-  filas tienen que decir `OK`.
+- **Si tocás una policy de RLS, un grant o un trigger**, correr
+  `supabase/tests/rls_smoke_tests.sql` en el SQL Editor de Supabase: el resumen
+  final tiene que decir `TODO OK` y después `LIMPIO`.
+- **Nada de `BEGIN`/`ROLLBACK` ni tablas `ON COMMIT DROP` en los scripts de
+  Supabase.** El SQL Editor confirma cada sentencia por separado: la tabla
+  temporal se destruye apenas se crea y el `ROLLBACK` no deshace nada. Los
+  scripts se limpian con `DELETE` explícitos.
 - **Las migraciones son idempotentes y se corren a mano**, en orden numérico.
   Nunca editar una migración ya aplicada en producción: agregar una nueva.
 - **El path de los PDF es `guias/<producto_id>/…`**. La policy de Storage
