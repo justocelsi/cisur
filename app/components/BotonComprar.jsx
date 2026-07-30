@@ -92,7 +92,7 @@ export default function BotonComprar({
         type="button"
         onClick={comprar}
         disabled={enCurso || cargandoAuth}
-        className="inline-flex w-full items-center justify-center gap-3 rounded-[2px] bg-terracota px-8 py-4 text-[1.05rem] text-papel shadow-[0_10px_24px_-14px_rgba(180,98,60,0.9)] transition-colors hover:bg-terracota-oscuro disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        className="inline-flex w-full items-center justify-center gap-3 rounded-[2px] bg-verde px-8 py-4 text-[1.12rem] text-papel shadow-[0_10px_24px_-14px_rgba(65,102,74,0.85)] transition-colors hover:bg-verde-oscuro disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {enCurso ? (
           "Abriendo Mercado Pago…"
@@ -110,12 +110,12 @@ export default function BotonComprar({
       </button>
 
       {error ? (
-        <p role="alert" className="mt-3 text-sm text-terracota">
+        <p role="alert" className="mt-3 text-[0.95rem] text-alerta">
           {error}
         </p>
       ) : null}
 
-      <p className="mt-3 text-xs text-tinta-tenue">
+      <p className="mt-3 text-[0.85rem] text-tinta-tenue">
         Pagás en Mercado Pago con tarjeta, débito o dinero en cuenta. Nosotros
         nunca vemos los datos de tu tarjeta.
       </p>

@@ -56,7 +56,7 @@ export default async function Arrepentimiento() {
             href={urlWhatsapp}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center justify-center rounded-[2px] bg-terracota px-8 py-4 text-papel no-underline transition-colors hover:bg-terracota-oscuro"
+            className="mt-4 inline-flex items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-papel no-underline transition-colors hover:bg-verde-oscuro"
           >
             Iniciar mi arrepentimiento por WhatsApp
           </a>

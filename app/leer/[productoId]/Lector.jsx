@@ -111,7 +111,7 @@ export default function Lector({ productoId }) {
           {sinAcceso ? (
             <Link
               href="/guias"
-              className="rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-tinta"
+              className="rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-verde-oscuro"
             >
               Ver los materiales
             </Link>
@@ -119,7 +119,7 @@ export default function Lector({ productoId }) {
             <button
               type="button"
               onClick={reintentar}
-              className="rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-tinta"
+              className="rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-verde-oscuro"
             >
               Probar de nuevo
             </button>

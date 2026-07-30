@@ -91,9 +91,9 @@ export default function NuevaClave() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-base text-tinta focus:border-verde"
+            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-[1.1rem] text-tinta focus:border-verde"
           />
-          <p className="mt-2 text-xs text-tinta-tenue">Mínimo 6 caracteres.</p>
+          <p className="mt-2 text-[0.85rem] text-tinta-tenue">Mínimo 6 caracteres.</p>
         </div>
 
         <div>
@@ -108,14 +108,14 @@ export default function NuevaClave() {
             value={repetida}
             onChange={(e) => setRepetida(e.target.value)}
             autoComplete="new-password"
-            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-base text-tinta focus:border-verde"
+            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-[1.1rem] text-tinta focus:border-verde"
           />
         </div>
 
         {error ? (
           <p
             role="alert"
-            className="rounded-[2px] border border-terracota/30 bg-terracota/5 px-4 py-3 text-sm text-terracota"
+            className="rounded-[2px] border border-alerta/30 bg-alerta/5 px-4 py-3 text-[0.95rem] text-alerta"
           >
             {error}
           </p>
@@ -124,7 +124,7 @@ export default function NuevaClave() {
         <button
           type="submit"
           disabled={enCurso}
-          className="w-full rounded-[2px] bg-verde px-6 py-3.5 text-papel transition-colors hover:bg-tinta disabled:opacity-60"
+          className="w-full rounded-[2px] bg-verde px-6 py-3.5 text-papel transition-colors hover:bg-verde-oscuro disabled:opacity-60"
         >
           {enCurso ? "Guardando…" : "Guardar la contraseña"}
         </button>

@@ -30,7 +30,7 @@ export default async function Guias() {
       </header>
 
       {productos.length === 0 ? (
-        <p className="mx-auto mt-16 max-w-md rounded-[3px] border border-arena bg-papel-2 px-6 py-8 text-center text-tinta-suave">
+        <p className="mx-auto mt-16 max-w-md rounded-[3px] border border-tostado-tenue bg-papel-2 px-6 py-8 text-center text-tinta-suave">
           Todavía no hay materiales publicados. Volvé pronto.
         </p>
       ) : (
@@ -45,29 +45,29 @@ export default async function Guias() {
                   <PortadaGuia producto={producto} />
                 </div>
 
-                <h2 className="mt-6 text-[1.25rem] leading-snug text-tinta group-hover:text-verde">
+                <h2 className="mt-6 text-[1.32rem] leading-snug text-tinta group-hover:text-verde">
                   {producto.titulo}
                 </h2>
 
                 {producto.subtitulo ? (
-                  <p className="mt-1 text-sm text-tinta-tenue">
+                  <p className="mt-1 text-[0.95rem] text-tinta-tenue">
                     {producto.subtitulo}
                   </p>
                 ) : null}
 
                 {producto.descripcion ? (
-                  <p className="mt-3 line-clamp-3 text-[0.95rem] leading-relaxed text-tinta-suave">
+                  <p className="mt-3 line-clamp-3 text-[1.02rem] leading-relaxed text-tinta-suave">
                     {producto.descripcion}
                   </p>
                 ) : null}
 
                 <p className="mt-4 flex items-baseline gap-2">
-                  <span className="text-[1.3rem] text-verde">
+                  <span className="text-[1.36rem] text-verde">
                     {formatearPrecio(producto.precio)}
                   </span>
                   {producto.precio_lista &&
                   Number(producto.precio_lista) > Number(producto.precio) ? (
-                    <span className="text-sm text-tinta-tenue line-through">
+                    <span className="text-[0.95rem] text-tinta-tenue line-through">
                       {formatearPrecio(producto.precio_lista)}
                     </span>
                   ) : null}

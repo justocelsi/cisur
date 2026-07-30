@@ -47,6 +47,23 @@ insert into site_settings (key, value) values
   ('guia_bullet_5',
    'Saber cuándo conviene consultar con un profesional y cuándo simplemente hay que dar tiempo.'),
 
+  -- El frasco de las invitaciones -------------------------------------------
+  ('frasco_kicker',
+   'Jugar también es alfabetizar'),
+  ('frasco_titulo',
+   'El frasco de las invitaciones'),
+  ('frasco_lead',
+   '¿Sabías que el juego es una de las mejores herramientas para la alfabetización? Uno de mis favoritos es el frasco de las invitaciones.'),
+  ('frasco_texto',
+   'Son propuestas para disfrutar en familia, compartir tiempo de calidad y descubrir que la alfabetización puede estar presente en los momentos más simples.'),
+  ('frasco_inv_1', 'Preparar una receta'),
+  ('frasco_inv_2', 'Salir a caminar'),
+  ('frasco_inv_3', 'Leer un cuento'),
+  ('frasco_inv_4', 'Escribir un mensaje'),
+  ('frasco_inv_5', 'Inventar una historia'),
+  ('frasco_cierre',
+   'Cada una de ellas fue pensada para que la lectura, la escritura, la conversación y el juego aparezcan de manera natural, respetando los tiempos, intereses y posibilidades de cada familia.'),
+
   -- Sobre mí (de TEXTO.docx, versión abreviada) -----------------------------
   ('sobre_titulo',
    'Hola, soy Tatiana'),

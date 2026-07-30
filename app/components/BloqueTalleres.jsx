@@ -64,18 +64,18 @@ export default function BloqueTalleres({ talleres = [], textos }) {
                   )}
 
                   <div className="p-6">
-                    <h3 className="text-[1.15rem] leading-snug text-tinta">
+                    <h3 className="text-[1.22rem] leading-snug text-tinta">
                       {taller.titulo}
                     </h3>
                     {taller.lugar || taller.fecha ? (
-                      <p className="mt-2 text-sm text-tinta-tenue">
+                      <p className="mt-2 text-[0.95rem] text-tinta-tenue">
                         {[taller.lugar, formatearFecha(taller.fecha)]
                           .filter(Boolean)
                           .join(" · ")}
                       </p>
                     ) : null}
                     {taller.descripcion ? (
-                      <p className="mt-3 text-[0.95rem] leading-relaxed text-tinta-suave">
+                      <p className="mt-3 text-[1.02rem] leading-relaxed text-tinta-suave">
                         {taller.descripcion}
                       </p>
                     ) : null}

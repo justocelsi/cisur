@@ -12,31 +12,44 @@
    ========================================================================== */
 
 @theme {
-  /* Superficies */
+  /* ------------------------------------------------------------------------
+     Paleta de marca: verde profundo + tostado + papel crema.
+     El verde está muestreado del isotipo (#41664a, promedio consistente en
+     cuatro zonas). El tostado y el crema salen de las piezas de Instagram.
+     ------------------------------------------------------------------------ */
+
+  /* Superficies claras */
   --color-papel: #faf7f1;
-  --color-papel-2: #f3eee3;
-  --color-papel-3: #eae2d2;
+  --color-papel-2: #f4efe3;
+  --color-papel-3: #e8dfcd;
 
   /* Tinta */
   --color-tinta: #1f2a1c;
-  --color-tinta-suave: #4a5647;
-  --color-tinta-tenue: #7b8578;
+  --color-tinta-suave: #46523f;
+  --color-tinta-tenue: #737e6d;
 
   /* Verdes de marca */
-  /* Verde exacto del logo de CISUR (muestreado del isotipo). */
   --color-verde: #41664a;
+  --color-verde-oscuro: #33513a;
   --color-verde-claro: #6f9179;
   --color-salvia: #a8bfae;
   --color-salvia-tenue: #d5e2d8;
 
-  /* Acentos cálidos */
-  --color-arena: #e4dac6;
-  --color-terracota: #b4623c;
-  --color-terracota-oscuro: #97502f;
+  /* Tostado de marca: el fondo camel de las piezas de Instagram. Es un color
+     de SUPERFICIE, no de acción — los botones son verdes. */
+  --color-tostado: #c9a77f;
+  --color-tostado-claro: #dcc4a4;
+  --color-tostado-tenue: #ece0cd;
+
+  /* Rojo funcional: sólo errores y acciones destructivas. No es de marca. */
+  --color-alerta: #a8503a;
+  --color-alerta-oscuro: #8c4130;
 
   /* Tipografía */
   --font-serif: "Times New Roman", Times, "Liberation Serif", "Nimbus Roman",
     serif;
+  /* Sans geométrica sólo para el logo: la marca conserva su tipografía. */
+  --font-marca: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   /* Ritmo */
   --radius-suave: 2px;
@@ -49,7 +62,9 @@
 
 :root {
   color-scheme: light;
-  --ancho-texto: 34rem;
+  /* Con el cuerpo en 19px, ~36rem deja la línea en 65-75 caracteres, que es la
+     medida cómoda para leer. */
+  --ancho-texto: 36rem;
 }
 
 html {
@@ -61,8 +76,11 @@ body {
   background-color: var(--color-papel);
   color: var(--color-tinta);
   font-family: var(--font-serif);
-  font-size: 1.0625rem;
-  line-height: 1.7;
+  /* 19px. Times New Roman tiene una altura de x chica, así que a 17px se lee
+     más chico de lo que el número sugiere. Acá el cuerpo pide más tamaño que
+     una sans equivalente. */
+  font-size: 1.1875rem;
+  line-height: 1.65;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -126,8 +144,8 @@ h4 {
    y no "por defecto". Se usa en kickers y etiquetas. */
 @utility versalitas {
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  font-size: 0.85rem;
   line-height: 1.4;
 }
 

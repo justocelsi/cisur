@@ -110,11 +110,11 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
           <div className="min-w-0">
             <Link
               href="/mis-materiales"
-              className="text-sm text-tinta-tenue hover:text-verde"
+              className="text-[0.95rem] text-tinta-tenue hover:text-verde"
             >
               ← Mis materiales
             </Link>
-            <h1 className="truncate text-[1.05rem] leading-tight text-tinta">
+            <h1 className="truncate text-[1.12rem] leading-tight text-tinta">
               {titulo}
             </h1>
           </div>
@@ -130,7 +130,7 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
               ‹
             </button>
 
-            <label className="flex items-center gap-2 text-sm text-tinta-tenue">
+            <label className="flex items-center gap-2 text-[0.95rem] text-tinta-tenue">
               <span className="sr-only">Número de página</span>
               <input
                 type="number"
@@ -156,8 +156,8 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
         </div>
 
         {soloVistaPrevia ? (
-          <div className="border-t border-arena bg-arena/40">
-            <p className="contenedor py-2 text-center text-xs text-tinta-suave">
+          <div className="border-t border-tostado-tenue bg-tostado-tenue/40">
+            <p className="contenedor py-2 text-center text-[0.85rem] text-tinta-suave">
               Vista previa de editora: estás viendo este material por tu rol, no
               por una compra.
             </p>
@@ -178,7 +178,7 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
         onContextMenu={(e) => e.preventDefault()}
       >
         {errorCarga ? (
-          <p className="py-24 text-center text-terracota">{errorCarga}</p>
+          <p className="py-24 text-center text-alerta">{errorCarga}</p>
         ) : (
           <Document
             file={url}
@@ -192,7 +192,7 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
               </p>
             }
             error={
-              <p className="py-24 text-center text-terracota">
+              <p className="py-24 text-center text-alerta">
                 No pudimos mostrar este archivo.
               </p>
             }
@@ -227,7 +227,7 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
             ‹ Anterior
           </button>
 
-          <span className="text-sm text-tinta-tenue">
+          <span className="text-[0.95rem] text-tinta-tenue">
             {pagina} / {paginas ?? "…"}
           </span>
 

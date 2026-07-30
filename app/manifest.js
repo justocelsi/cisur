@@ -11,9 +11,9 @@ export default function manifest() {
     lang: "es-AR",
     icons: [
       {
-        src: "/logo-cisur.jpg",
-        sizes: "564x564",
-        type: "image/jpeg",
+        src: "/icon.svg",
+        sizes: "any",
+        type: "image/svg+xml",
       },
     ],
   };

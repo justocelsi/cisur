@@ -2,6 +2,7 @@ import Link from "next/link";
 import TextoEditable from "./components/TextoEditable";
 import PortadaGuia from "./components/PortadaGuia";
 import BotonComprar from "./components/BotonComprar";
+import BloqueFrasco from "./components/BloqueFrasco";
 import BloqueTalleres from "./components/BloqueTalleres";
 import BloqueContacto from "./components/BloqueContacto";
 import Preguntas from "./components/Preguntas";
@@ -98,7 +99,7 @@ export default async function Inicio() {
               clave="hero_texto"
               como="p"
               multilinea
-              className="mt-6 max-w-xl text-[1.15rem] leading-relaxed text-tinta-suave"
+              className="mt-6 max-w-xl text-[1.22rem] leading-relaxed text-tinta-suave"
             >
               Una guía práctica para entender cómo aprenden a leer y escribir tus
               hijos, y cómo acompañarlos desde casa con confianza, sin presiones y
@@ -109,11 +110,11 @@ export default async function Inicio() {
               <div className="mt-9 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
                 <Link
                   href={`/guias/${producto.slug}#comprar`}
-                  className="inline-flex w-full items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-[1.05rem] text-papel transition-colors hover:bg-tinta sm:w-auto"
+                  className="inline-flex w-full items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-[1.12rem] text-papel transition-colors hover:bg-verde-oscuro sm:w-auto"
                 >
                   {t(textos, "hero_cta", "Quiero la guía")}
                 </Link>
-                <p className="text-sm text-tinta-tenue">
+                <p className="text-[0.95rem] text-tinta-tenue">
                   <span className="text-tinta">
                     {formatearPrecio(producto.precio)}
                   </span>{" "}
@@ -121,7 +122,7 @@ export default async function Inicio() {
                 </p>
               </div>
             ) : (
-              <p className="mt-9 rounded-[2px] border border-arena bg-papel-2 px-5 py-4 text-sm text-tinta-suave">
+              <p className="mt-9 rounded-[2px] border border-tostado-tenue bg-papel-2 px-5 py-4 text-[0.95rem] text-tinta-suave">
                 El catálogo se está cargando. Si sos la administradora del sitio,
                 creá el primer material desde el{" "}
                 <Link href="/panel" className="text-verde underline">
@@ -135,7 +136,7 @@ export default async function Inicio() {
             <TextoEditable
               clave="hero_firma"
               como="p"
-              className="mt-4 text-sm text-tinta-tenue"
+              className="mt-4 text-[0.95rem] text-tinta-tenue"
             >
               Lic. Tatiana Galera · Psicopedagoga · Mat. Prov. 205281
             </TextoEditable>
@@ -163,7 +164,7 @@ export default async function Inicio() {
           {dolores.map((pregunta, i) => (
             <li
               key={i}
-              className="rounded-[3px] border border-papel-3 bg-papel-2 px-6 py-5 text-[1.05rem] italic text-tinta-suave"
+              className="rounded-[3px] border border-papel-3 bg-papel-2 px-6 py-5 text-[1.12rem] italic text-tinta-suave"
             >
               «{pregunta}»
             </li>
@@ -174,7 +175,7 @@ export default async function Inicio() {
           clave="dolor_cierre"
           como="p"
           multilinea
-          className="mx-auto mt-12 max-w-xl text-center text-[1.1rem] leading-relaxed text-tinta-suave"
+          className="mx-auto mt-12 max-w-xl text-center text-[1.18rem] leading-relaxed text-tinta-suave"
         >
           Detrás de estas preguntas hay mucho amor y muchas ganas de acompañar.
           También, muchas veces, la sensación de no saber por dónde empezar. Esta
@@ -226,7 +227,7 @@ export default async function Inicio() {
               clave="guia_texto"
               como="p"
               multilinea
-              className="mt-5 text-[1.05rem] leading-relaxed text-tinta-suave"
+              className="mt-5 text-[1.12rem] leading-relaxed text-tinta-suave"
             >
               Siete capítulos que van de lo general a lo concreto: qué significa
               realmente alfabetizar, cómo piensan los chicos cuando escriben
@@ -252,7 +253,7 @@ export default async function Inicio() {
                   <li key={i} className="flex gap-4">
                     <span
                       aria-hidden="true"
-                      className="mt-0.5 shrink-0 text-sm text-salvia"
+                      className="mt-0.5 shrink-0 text-[0.95rem] text-salvia"
                     >
                       {String(i + 1).padStart(2, "0")}
                     </span>
@@ -266,6 +267,11 @@ export default async function Inicio() {
           ) : null}
         </div>
       </section>
+
+      {/* ================================================================
+          EL FRASCO DE LAS INVITACIONES
+          ================================================================ */}
+      <BloqueFrasco textos={textos} />
 
       {/* ================================================================
           SOBRE TATI
@@ -322,7 +328,7 @@ export default async function Inicio() {
           ================================================================ */}
       {producto ? (
         <section id="comprar" className="contenedor py-20 md:py-28">
-          <div className="mx-auto max-w-3xl rounded-[3px] border border-arena bg-papel-2 p-8 sm:p-12">
+          <div className="mx-auto max-w-3xl rounded-[3px] border border-tostado-claro bg-tostado-tenue p-8 sm:p-12">
             <div className="grid gap-10 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
               <div className="mx-auto w-full max-w-[200px]">
                 <PortadaGuia producto={producto} />
@@ -343,14 +349,14 @@ export default async function Inicio() {
                   </span>
                   {producto.precio_lista &&
                   Number(producto.precio_lista) > Number(producto.precio) ? (
-                    <span className="text-lg text-tinta-tenue line-through">
+                    <span className="text-[1.2rem] text-tinta-tenue line-through">
                       {formatearPrecio(producto.precio_lista)}
                     </span>
                   ) : null}
-                  <span className="text-sm text-tinta-tenue">pago único</span>
+                  <span className="text-[0.95rem] text-tinta-tenue">pago único</span>
                 </div>
 
-                <ul className="lista mt-6 text-[0.98rem] text-tinta-suave">
+                <ul className="lista mt-6 text-[1.05rem] text-tinta-suave">
                   <li>{t(textos, "compra_detalle_1", "Acceso inmediato después del pago")}</li>
                   <li>{t(textos, "compra_detalle_2", "Lectura online desde celular, tablet o computadora")}</li>
                   <li>{t(textos, "compra_detalle_3", "Sin vencimiento: la leés cuando quieras")}</li>

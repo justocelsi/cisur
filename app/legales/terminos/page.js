@@ -9,7 +9,7 @@ export default function Terminos() {
       <h1 className="text-[2rem] leading-tight text-tinta">
         Términos y condiciones
       </h1>
-      <p className="text-sm text-tinta-tenue">
+      <p className="text-[0.95rem] text-tinta-tenue">
         Última actualización: julio de 2026
       </p>
 

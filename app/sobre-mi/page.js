@@ -45,11 +45,11 @@ export default async function SobreMi() {
             <h1 className="mt-4 text-[2.2rem] leading-[1.1] text-tinta sm:text-[2.9rem]">
               Hola, soy Tatiana
             </h1>
-            <p className="mt-5 text-[1.15rem] leading-relaxed text-tinta-suave">
+            <p className="mt-5 text-[1.22rem] leading-relaxed text-tinta-suave">
               Y esta es un poquito de mi historia.
             </p>
             <hr className="filete mt-8 max-w-xs" />
-            <p className="mt-4 text-sm text-tinta-tenue">
+            <p className="mt-4 text-[0.95rem] text-tinta-tenue">
               Licenciada en Psicopedagogía · Profesora de Nivel Inicial y
               Maternal · Matrícula Provincial N.º 205281
             </p>
@@ -148,7 +148,7 @@ export default async function SobreMi() {
         <div className="mt-16 text-center">
           <Link
             href="/guias"
-            className="inline-block rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-tinta"
+            className="inline-block rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-verde-oscuro"
           >
             Ver los materiales
           </Link>

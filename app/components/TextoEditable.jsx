@@ -95,10 +95,10 @@ export default function TextoEditable({
           onChange={(e) => setBorrador(e.target.value)}
           onKeyDown={alTeclado}
           rows={multilinea ? 6 : undefined}
-          className="w-full rounded-[2px] border border-verde bg-white px-3 py-2 font-serif text-base leading-relaxed text-tinta shadow-sm"
+          className="w-full rounded-[2px] border border-verde bg-white px-3 py-2 font-serif text-[1.1rem] leading-relaxed text-tinta shadow-sm"
           aria-label={`Editar ${clave}`}
         />
-        <span className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+        <span className="mt-2 flex flex-wrap items-center gap-2 text-[0.95rem]">
           <button
             type="button"
             onClick={confirmar}
@@ -119,7 +119,7 @@ export default function TextoEditable({
           </span>
         </span>
         {error ? (
-          <span className="mt-1 block text-sm text-terracota">{error}</span>
+          <span className="mt-1 block text-[0.95rem] text-alerta">{error}</span>
         ) : null}
       </span>
     );
@@ -133,7 +133,7 @@ export default function TextoEditable({
       {...resto}
     >
       {valor}
-      <span aria-hidden="true" className="ml-1 align-super text-xs text-verde-claro">
+      <span aria-hidden="true" className="ml-1 align-super text-[0.85rem] text-verde-claro">
         ✎
       </span>
     </Como>

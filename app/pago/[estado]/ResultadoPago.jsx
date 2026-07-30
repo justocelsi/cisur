@@ -97,7 +97,7 @@ export default function ResultadoPago({ estado }) {
           icono="◌"
           texto="Esto suele tardar unos segundos. No cierres esta página."
         >
-          <p className="mt-6 text-sm text-tinta-tenue" role="status">
+          <p className="mt-6 text-[0.95rem] text-tinta-tenue" role="status">
             Verificando con Mercado Pago…
           </p>
         </Marco>
@@ -113,7 +113,7 @@ export default function ResultadoPago({ estado }) {
         >
           <Link
             href="/mis-materiales"
-            className="mt-8 inline-block rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-tinta"
+            className="mt-8 inline-block rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-verde-oscuro"
           >
             Ir a leerlo
           </Link>
@@ -135,7 +135,7 @@ export default function ResultadoPago({ estado }) {
                 setAgotado(false);
                 setReintento((n) => n + 1);
               }}
-              className="rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-tinta"
+              className="rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-verde-oscuro"
             >
               Volver a verificar
             </button>
@@ -146,7 +146,7 @@ export default function ResultadoPago({ estado }) {
               Ver mis materiales
             </Link>
           </div>
-          <p className="mt-8 text-sm text-tinta-tenue">
+          <p className="mt-8 text-[0.95rem] text-tinta-tenue">
             Si en una hora sigue sin aparecer, escribinos por WhatsApp con este
             número de operación:{" "}
             <span className="break-all text-tinta">{orderId ?? "—"}</span>
@@ -164,7 +164,7 @@ export default function ResultadoPago({ estado }) {
       >
         <Link
           href="/ingresar?next=%2Fmis-materiales"
-          className="mt-8 inline-block rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-tinta"
+          className="mt-8 inline-block rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-verde-oscuro"
         >
           Entrar a mi cuenta
         </Link>
@@ -182,12 +182,12 @@ export default function ResultadoPago({ estado }) {
       >
         <Link
           href="/mis-materiales"
-          className="mt-8 inline-block rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-tinta"
+          className="mt-8 inline-block rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-verde-oscuro"
         >
           Ver mis materiales
         </Link>
         {orderId ? (
-          <p className="mt-8 text-sm text-tinta-tenue">
+          <p className="mt-8 text-[0.95rem] text-tinta-tenue">
             Número de operación:{" "}
             <span className="break-all text-tinta">{orderId}</span>
           </p>
@@ -206,7 +206,7 @@ export default function ResultadoPago({ estado }) {
       <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
         <Link
           href="/guias"
-          className="rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-tinta"
+          className="rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-verde-oscuro"
         >
           Volver a intentar
         </Link>

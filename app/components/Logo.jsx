@@ -1,34 +1,27 @@
-import Image from "next/image";
-
 /**
- * Identidad de CISUR: el isotipo real (la marca) + la bajada en Times New Roman
- * (la voz del sitio).
+ * Lockup de CISUR: la marca sobre la bajada, tal como está en la identidad.
  *
- * El isotipo original es un cuadrado con el círculo verde inscripto y las
- * esquinas negras; `rounded-full` con `object-cover` recorta justo el círculo,
- * así que se usa el archivo tal como vino, sin editarlo.
+ * Está hecho con texto, no con una imagen. El único archivo de logo que había
+ * era un recorte del avatar de Instagram (564×564 con esquinas negras y el
+ * borde del círculo sucio): al escalarlo se notaba el recorte. Compuesto en
+ * código queda nítido a cualquier tamaño, pesa cero y se puede recolorear.
+ *
+ * El logo usa la sans geométrica de la marca (`font-marca`), no la Times New
+ * Roman del resto del sitio. Es lo correcto: un logo conserva su tipografía
+ * propia aunque la publicación use otra.
+ *
+ * Si algún día aparece el archivo vectorial original, se reemplaza esto por un
+ * <Image> y listo.
  */
-export default function Logo({ conBajada = true, tamano = 40, className = "" }) {
+export default function Logo({ conBajada = true, className = "" }) {
   return (
-    <span className={`inline-flex items-center gap-3 ${className}`}>
-      <Image
-        src="/logo-cisur.jpg"
-        alt="CISUR"
-        width={tamano}
-        height={tamano}
-        priority
-        className="shrink-0 rounded-full object-cover"
-        style={{ width: tamano, height: tamano }}
-      />
-
+    <span className={`inline-flex flex-col leading-none ${className}`}>
+      <span className="font-marca text-[1.22rem] font-bold tracking-[0.14em] text-verde">
+        CISUR
+      </span>
       {conBajada ? (
-        <span className="flex flex-col leading-none">
-          <span className="text-[0.95rem] tracking-[0.22em] text-verde">
-            CISUR
-          </span>
-          <span className="mt-1 text-[0.58rem] uppercase tracking-[0.16em] text-tinta-tenue">
-            Centro Integral Sur
-          </span>
+        <span className="font-marca mt-[0.3rem] text-[0.6rem] font-medium uppercase tracking-[0.2em] text-verde-claro">
+          Centro Integral Sur
         </span>
       ) : null}
     </span>

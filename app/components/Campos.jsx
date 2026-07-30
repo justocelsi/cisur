@@ -10,7 +10,7 @@
  */
 
 const CLASE_CAMPO =
-  "mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-2.5 font-serif text-base text-tinta focus:border-verde";
+  "mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-2.5 font-serif text-[1.1rem] text-tinta focus:border-verde";
 
 export function Campo({
   id,
@@ -26,7 +26,7 @@ export function Campo({
     <div>
       <label htmlFor={id} className="versalitas block text-tinta-tenue">
         {etiqueta}
-        {requerido ? <span className="text-terracota"> *</span> : null}
+        {requerido ? <span className="text-alerta"> *</span> : null}
       </label>
       <input
         id={id}
@@ -38,7 +38,7 @@ export function Campo({
         {...resto}
       />
       {ayuda ? (
-        <p className="mt-1.5 text-xs leading-relaxed text-tinta-tenue">{ayuda}</p>
+        <p className="mt-1.5 text-[0.85rem] leading-relaxed text-tinta-tenue">{ayuda}</p>
       ) : null}
     </div>
   );
@@ -58,7 +58,7 @@ export function CampoLargo({
     <div>
       <label htmlFor={id} className="versalitas block text-tinta-tenue">
         {etiqueta}
-        {requerido ? <span className="text-terracota"> *</span> : null}
+        {requerido ? <span className="text-alerta"> *</span> : null}
       </label>
       <textarea
         id={id}
@@ -70,7 +70,7 @@ export function CampoLargo({
         {...resto}
       />
       {ayuda ? (
-        <p className="mt-1.5 text-xs leading-relaxed text-tinta-tenue">{ayuda}</p>
+        <p className="mt-1.5 text-[0.85rem] leading-relaxed text-tinta-tenue">{ayuda}</p>
       ) : null}
     </div>
   );
@@ -90,7 +90,7 @@ export function CampoSiNo({ id, etiqueta, ayuda, valor, alCambiar }) {
         <span>
           <span className="text-tinta">{etiqueta}</span>
           {ayuda ? (
-            <span className="mt-0.5 block text-xs leading-relaxed text-tinta-tenue">
+            <span className="mt-0.5 block text-[0.85rem] leading-relaxed text-tinta-tenue">
               {ayuda}
             </span>
           ) : null}
@@ -118,15 +118,15 @@ export function CampoArchivo({
         type="file"
         accept={acepta}
         onChange={(e) => alElegir(e.target.files?.[0] ?? null)}
-        className="mt-2 w-full cursor-pointer rounded-[2px] border border-dashed border-salvia bg-papel-2 px-4 py-3 text-sm text-tinta-suave file:mr-4 file:cursor-pointer file:rounded-[2px] file:border-0 file:bg-verde file:px-4 file:py-2 file:font-serif file:text-papel"
+        className="mt-2 w-full cursor-pointer rounded-[2px] border border-dashed border-salvia bg-papel-2 px-4 py-3 text-[0.95rem] text-tinta-suave file:mr-4 file:cursor-pointer file:rounded-[2px] file:border-0 file:bg-verde file:px-4 file:py-2 file:font-serif file:text-papel"
       />
       {nombreActual ? (
-        <p className="mt-1.5 text-xs text-verde">
+        <p className="mt-1.5 text-[0.85rem] text-verde">
           Ya hay un archivo cargado: {nombreActual}
         </p>
       ) : null}
       {ayuda ? (
-        <p className="mt-1.5 text-xs leading-relaxed text-tinta-tenue">{ayuda}</p>
+        <p className="mt-1.5 text-[0.85rem] leading-relaxed text-tinta-tenue">{ayuda}</p>
       ) : null}
     </div>
   );
@@ -137,14 +137,14 @@ export function Aviso({ tipo = "info", children }) {
 
   const estilos = {
     info: "border-salvia bg-salvia-tenue/40 text-verde",
-    error: "border-terracota/30 bg-terracota/5 text-terracota",
+    error: "border-alerta/30 bg-alerta/5 text-alerta",
     ok: "border-verde/30 bg-verde/5 text-verde",
   };
 
   return (
     <p
       role={tipo === "error" ? "alert" : "status"}
-      className={`rounded-[2px] border px-4 py-3 text-sm ${estilos[tipo]}`}
+      className={`rounded-[2px] border px-4 py-3 text-[0.95rem] ${estilos[tipo]}`}
     >
       {children}
     </p>
@@ -154,11 +154,11 @@ export function Aviso({ tipo = "info", children }) {
 export function Boton({ children, variante = "primario", ...resto }) {
   const estilos = {
     primario:
-      "bg-verde text-papel hover:bg-tinta disabled:opacity-60",
+      "bg-verde text-papel hover:bg-verde-oscuro disabled:opacity-60",
     secundario:
       "border border-papel-3 text-tinta-suave hover:border-salvia disabled:opacity-60",
     peligro:
-      "border border-terracota/40 text-terracota hover:bg-terracota hover:text-papel disabled:opacity-60",
+      "border border-alerta/40 text-alerta hover:bg-alerta hover:text-papel disabled:opacity-60",
   };
 
   return (

@@ -374,7 +374,7 @@ export default function PanelProductos() {
         {cargando ? (
           <p className="mt-6 text-tinta-tenue">Cargando…</p>
         ) : productos.length === 0 ? (
-          <p className="mt-6 rounded-[2px] border border-arena bg-papel-2 px-5 py-4 text-tinta-suave">
+          <p className="mt-6 rounded-[2px] border border-tostado-tenue bg-papel-2 px-5 py-4 text-tinta-suave">
             Todavía no hay ninguno. Creá el primero con el formulario.
           </p>
         ) : (
@@ -386,16 +386,16 @@ export default function PanelProductos() {
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <h3 className="text-[1.1rem] leading-snug text-tinta">
+                    <h3 className="text-[1.18rem] leading-snug text-tinta">
                       {p.titulo}
                     </h3>
-                    <p className="mt-1 text-sm text-tinta-tenue">
+                    <p className="mt-1 text-[0.95rem] text-tinta-tenue">
                       {formatearPrecio(p.precio)}
                       {p.destacado ? " · destacado" : ""}
                       {" · /guias/"}
                       {p.slug}
                     </p>
-                    <p className="mt-2 flex flex-wrap gap-3 text-xs">
+                    <p className="mt-2 flex flex-wrap gap-3 text-[0.85rem]">
                       <span
                         className={
                           p.activo ? "text-verde" : "text-tinta-tenue"
@@ -405,7 +405,7 @@ export default function PanelProductos() {
                       </span>
                       <span
                         className={
-                          p.archivo_path ? "text-verde" : "text-terracota"
+                          p.archivo_path ? "text-verde" : "text-alerta"
                         }
                       >
                         {p.archivo_path ? "● PDF cargado" : "○ Falta el PDF"}
@@ -434,7 +434,7 @@ export default function PanelProductos() {
                 </div>
 
                 {p.activo && !p.archivo_path ? (
-                  <p className="mt-4 rounded-[2px] border border-terracota/30 bg-terracota/5 px-4 py-2.5 text-xs text-terracota">
+                  <p className="mt-4 rounded-[2px] border border-alerta/30 bg-alerta/5 px-4 py-2.5 text-[0.85rem] text-alerta">
                     Está publicado pero no tiene PDF: si alguien lo compra, no va
                     a poder leerlo. Subí el archivo o despublicalo.
                   </p>

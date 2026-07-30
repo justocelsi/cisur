@@ -104,7 +104,7 @@ export default function FormularioIngreso() {
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               autoComplete="name"
-              className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-base text-tinta focus:border-verde"
+              className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-[1.1rem] text-tinta focus:border-verde"
             />
           </div>
         ) : null}
@@ -120,7 +120,7 @@ export default function FormularioIngreso() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-base text-tinta focus:border-verde"
+            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-[1.1rem] text-tinta focus:border-verde"
           />
         </div>
 
@@ -142,10 +142,10 @@ export default function FormularioIngreso() {
               autoComplete={
                 modo === "registro" ? "new-password" : "current-password"
               }
-              className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-base text-tinta focus:border-verde"
+              className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-[1.1rem] text-tinta focus:border-verde"
             />
             {modo === "registro" ? (
-              <p className="mt-2 text-xs text-tinta-tenue">
+              <p className="mt-2 text-[0.85rem] text-tinta-tenue">
                 Mínimo 6 caracteres.
               </p>
             ) : null}
@@ -155,7 +155,7 @@ export default function FormularioIngreso() {
         {error ? (
           <p
             role="alert"
-            className="rounded-[2px] border border-terracota/30 bg-terracota/5 px-4 py-3 text-sm text-terracota"
+            className="rounded-[2px] border border-alerta/30 bg-alerta/5 px-4 py-3 text-[0.95rem] text-alerta"
           >
             {error}
           </p>
@@ -164,7 +164,7 @@ export default function FormularioIngreso() {
         {aviso ? (
           <p
             role="status"
-            className="rounded-[2px] border border-salvia bg-salvia-tenue/40 px-4 py-3 text-sm text-verde"
+            className="rounded-[2px] border border-salvia bg-salvia-tenue/40 px-4 py-3 text-[0.95rem] text-verde"
           >
             {aviso}
           </p>
@@ -173,7 +173,7 @@ export default function FormularioIngreso() {
         <button
           type="submit"
           disabled={enCurso}
-          className="w-full rounded-[2px] bg-verde px-6 py-3.5 text-papel transition-colors hover:bg-tinta disabled:opacity-60"
+          className="w-full rounded-[2px] bg-verde px-6 py-3.5 text-papel transition-colors hover:bg-verde-oscuro disabled:opacity-60"
         >
           {enCurso
             ? "Un momento…"
@@ -187,7 +187,7 @@ export default function FormularioIngreso() {
 
       <hr className="filete my-8" />
 
-      <div className="space-y-3 text-sm">
+      <div className="space-y-3 text-[0.95rem]">
         {modo !== "ingreso" ? (
           <p>
             <button
@@ -237,7 +237,7 @@ export default function FormularioIngreso() {
         ) : null}
       </div>
 
-      <p className="mt-10 text-xs leading-relaxed text-tinta-tenue">
+      <p className="mt-10 text-[0.85rem] leading-relaxed text-tinta-tenue">
         Al crear una cuenta aceptás los{" "}
         <Link href="/legales/terminos" className="underline">
           términos y condiciones

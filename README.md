@@ -29,7 +29,7 @@ frase.
 | Framework | Next.js 16 (App Router) | SSR/SSG y backend en un solo deploy |
 | UI | React 19 + Tailwind CSS 4 | — |
 | Tipografía | Times New Roman | pedido de diseño; y no descarga ni un byte de fuente |
-| Identidad | isotipo de Instagram + verde `#41664a` muestreado de él | la paleta sale de la marca, no al revés |
+| Identidad | logo compuesto en código; verde `#41664a` muestreado del isotipo | la paleta sale de la marca, no al revés |
 | Base, auth, storage | Supabase (Postgres + RLS) | seguridad en la base, no sólo en el código |
 | Pagos | Mercado Pago Checkout Pro | nunca tocamos datos de tarjeta |
 | Lector | react-pdf + pdfjs | render embebido, sin descarga |
@@ -171,6 +171,17 @@ al instante, porque el guardado es optimista).
 
 **Sin dark mode.** La estética es de libro impreso y el crema es parte de la
 identidad. `color-scheme: light` a propósito.
+
+**El logo es texto, no una imagen.** El único asset que había era un recorte del
+avatar de Instagram (esquinas negras, borde del círculo sucio) que se notaba al
+escalar. `Logo.jsx` lo compone con la sans de marca (`font-marca`) y el favicon
+es un SVG de 1 KB. Si aparece el vectorial original, se reemplaza por un
+`<Image>`.
+
+**El tostado es superficie, no acción.** La paleta de marca es verde + tostado +
+crema. Los botones son siempre verdes; el tostado va en fondos (el bloque del
+frasco, la tarjeta de compra). El rojo (`alerta`) existe sólo para errores y
+acciones destructivas: no es un color de marca.
 
 **Sin CSP estricta.** El lector de PDF necesita `blob:` y `worker-src`, y una CSP
 mal calibrada lo rompe en silencio — el peor error posible en un sitio que nadie

@@ -178,7 +178,7 @@ export default function PanelTalleres() {
         <h2 className="text-[1.4rem] text-tinta">
           {editandoId ? "Editar taller" : "Nuevo taller"}
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-tinta-suave">
+        <p className="mt-2 text-[0.95rem] leading-relaxed text-tinta-suave">
           Los talleres no se venden por la web: se muestran para dar prueba de tu
           trabajo, y quien se interesa te escribe por WhatsApp.
         </p>
@@ -260,7 +260,7 @@ export default function PanelTalleres() {
         {cargando ? (
           <p className="mt-6 text-tinta-tenue">Cargando…</p>
         ) : talleres.length === 0 ? (
-          <p className="mt-6 rounded-[2px] border border-arena bg-papel-2 px-5 py-4 text-tinta-suave">
+          <p className="mt-6 rounded-[2px] border border-tostado-tenue bg-papel-2 px-5 py-4 text-tinta-suave">
             Todavía no cargaste ninguno.
           </p>
         ) : (
@@ -271,15 +271,15 @@ export default function PanelTalleres() {
                 className="flex flex-wrap items-start justify-between gap-4 rounded-[3px] border border-papel-3 bg-papel-2 p-5"
               >
                 <div className="min-w-0">
-                  <h3 className="text-[1.1rem] leading-snug text-tinta">
+                  <h3 className="text-[1.18rem] leading-snug text-tinta">
                     {t.titulo}
                   </h3>
-                  <p className="mt-1 text-sm text-tinta-tenue">
+                  <p className="mt-1 text-[0.95rem] text-tinta-tenue">
                     {[t.lugar, formatearFecha(t.fecha)].filter(Boolean).join(" · ") ||
                       "Sin lugar ni fecha"}
                   </p>
                   <p
-                    className={`mt-2 text-xs ${
+                    className={`mt-2 text-[0.85rem] ${
                       t.visible ? "text-verde" : "text-tinta-tenue"
                     }`}
                   >

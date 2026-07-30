@@ -309,10 +309,16 @@ Necesitás de Tati:
 4. **El precio final.** Está en $19.900 como referencia; ella lo cambia desde el
    panel cuando quiera.
 
-El **logo ya está puesto**: usé el isotipo de su Instagram
-(`public/logo-cisur.jpg`), y muestreé de ahí el verde de marca (`#41664a`) para
-toda la paleta del sitio. Si más adelante aparece una versión vectorial, se
-reemplaza ese archivo y listo.
+El **logo ya está puesto**, pero compuesto en código: el único archivo que había
+era un recorte del avatar de Instagram y se notaba el mal recorte al escalarlo.
+De ese archivo saqué el verde de marca (`#41664a`), que ahora manda en toda la
+paleta. **Si le podés pedir el logo vectorial** (`.svg` o `.ai`, se lo puede dar
+quien le diseñó la identidad), se reemplaza `Logo.jsx` por un `<Image>` y queda
+el original. No es urgente: hoy se ve bien.
+
+Del tostado de las piezas de Instagram no tengo el archivo, así que **el camel
+(`#c9a77f`) lo estimé a ojo de la captura**. Si te pasa el código exacto, se
+cambia una línea en `app/globals.css`.
 
 Ella misma puede subir el PDF y la portada desde **Panel → Materiales →
 Editar**. El instructivo `PARA-TATI-editar-la-web.md` lo explica.

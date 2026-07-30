@@ -70,14 +70,14 @@ export default function MisMateriales() {
       {error ? (
         <p
           role="alert"
-          className="mt-10 rounded-[2px] border border-terracota/30 bg-terracota/5 px-5 py-4 text-terracota"
+          className="mt-10 rounded-[2px] border border-alerta/30 bg-alerta/5 px-5 py-4 text-alerta"
         >
           {error}
         </p>
       ) : null}
 
       {!error && compras.length === 0 ? (
-        <div className="mx-auto mt-16 max-w-md rounded-[3px] border border-arena bg-papel-2 px-8 py-10 text-center">
+        <div className="mx-auto mt-16 max-w-md rounded-[3px] border border-tostado-tenue bg-papel-2 px-8 py-10 text-center">
           <p aria-hidden="true" className="text-2xl text-salvia">
             ❧
           </p>
@@ -87,7 +87,7 @@ export default function MisMateriales() {
           </p>
           <Link
             href="/guias"
-            className="mt-7 inline-block rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-tinta"
+            className="mt-7 inline-block rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-verde-oscuro"
           >
             Ver los materiales
           </Link>
@@ -107,11 +107,11 @@ export default function MisMateriales() {
                     }}
                   />
                 </div>
-                <h2 className="mt-6 text-[1.2rem] leading-snug text-tinta group-hover:text-verde">
+                <h2 className="mt-6 text-[1.28rem] leading-snug text-tinta group-hover:text-verde">
                   {compra.titulo}
                 </h2>
                 {compra.pagado_en ? (
-                  <p className="mt-2 text-sm text-tinta-tenue">
+                  <p className="mt-2 text-[0.95rem] text-tinta-tenue">
                     Comprado el {formatearFecha(compra.pagado_en)}
                   </p>
                 ) : null}

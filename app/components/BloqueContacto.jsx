@@ -49,7 +49,7 @@ export default function BloqueContacto({ textos }) {
           ) : null}
         </div>
 
-        <p className="mt-10 text-sm text-salvia/70">
+        <p className="mt-10 text-[0.95rem] text-salvia/70">
           {t(textos, "contacto_ciudad", "Mar del Plata, Buenos Aires")}
         </p>
       </div>

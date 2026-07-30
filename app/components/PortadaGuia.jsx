@@ -55,13 +55,13 @@ export default function PortadaGuia({
         </p>
 
         <div>
-          <div className="mb-5 text-center text-lg text-salvia/70" aria-hidden="true">
+          <div className="mb-5 text-center text-[1.2rem] text-salvia/70" aria-hidden="true">
             ❧
           </div>
-          <p className="text-sm text-salvia">
+          <p className="text-[0.95rem] text-salvia">
             {producto?.autor ?? "Lic. Tatiana Galera"}
           </p>
-          <p className="mt-1 text-xs text-salvia/70">Psicopedagoga</p>
+          <p className="mt-1 text-[0.85rem] text-salvia/70">Psicopedagoga</p>
         </div>
       </div>
     </div>

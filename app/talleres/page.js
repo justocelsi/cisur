@@ -54,7 +54,7 @@ export default async function Talleres() {
           <h1 className="mt-4 text-[2.2rem] leading-tight text-tinta sm:text-[2.9rem]">
             {t(textos, "talleres_titulo", "Talleres para colegios e instituciones")}
           </h1>
-          <p className="mt-5 text-[1.1rem] leading-relaxed text-tinta-suave">
+          <p className="mt-5 text-[1.18rem] leading-relaxed text-tinta-suave">
             {t(
               textos,
               "talleres_texto",
@@ -74,7 +74,7 @@ export default async function Talleres() {
                 key={eje.titulo}
                 className="rounded-[3px] border border-papel-3 bg-papel-2 p-7"
               >
-                <h3 className="text-[1.15rem] text-tinta">{eje.titulo}</h3>
+                <h3 className="text-[1.22rem] text-tinta">{eje.titulo}</h3>
                 <p className="mt-3 leading-relaxed text-tinta-suave">
                   {eje.texto}
                 </p>
@@ -84,7 +84,7 @@ export default async function Talleres() {
         </section>
 
         {/* Cómo funciona */}
-        <section className="mt-24 rounded-[3px] border border-arena bg-papel-2 p-8 sm:p-12">
+        <section className="mt-24 rounded-[3px] border border-tostado-tenue bg-papel-2 p-8 sm:p-12">
           <h2 className="text-[1.7rem] leading-tight text-tinta sm:text-[2rem]">
             Cómo lo organizamos
           </h2>
@@ -137,18 +137,18 @@ export default async function Talleres() {
                       </div>
                     )}
                     <div className="p-6">
-                      <h3 className="text-[1.15rem] leading-snug text-tinta">
+                      <h3 className="text-[1.22rem] leading-snug text-tinta">
                         {taller.titulo}
                       </h3>
                       {taller.lugar || taller.fecha ? (
-                        <p className="mt-2 text-sm text-tinta-tenue">
+                        <p className="mt-2 text-[0.95rem] text-tinta-tenue">
                           {[taller.lugar, formatearFecha(taller.fecha)]
                             .filter(Boolean)
                             .join(" · ")}
                         </p>
                       ) : null}
                       {taller.descripcion ? (
-                        <p className="mt-3 text-[0.95rem] leading-relaxed text-tinta-suave">
+                        <p className="mt-3 text-[1.02rem] leading-relaxed text-tinta-suave">
                           {taller.descripcion}
                         </p>
                       ) : null}
@@ -166,7 +166,7 @@ export default async function Talleres() {
               href={urlWhatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-tinta"
+              className="inline-flex items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-papel transition-colors hover:bg-verde-oscuro"
             >
               {t(textos, "talleres_cta", "Consultar por un taller")}
             </a>

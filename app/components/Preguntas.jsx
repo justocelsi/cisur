@@ -49,7 +49,7 @@ export default function Preguntas({ textos, className = "" }) {
           key={clave}
           className="group border-b border-papel-3 [&_summary::-webkit-details-marker]:hidden"
         >
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 text-[1.05rem] text-tinta">
+          <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 text-[1.12rem] text-tinta">
             <span>{t(textos, `${clave}_p`, p)}</span>
             <span
               aria-hidden="true"
