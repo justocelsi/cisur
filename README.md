@@ -111,14 +111,16 @@ notificación varias veces.
 supabase/tests/rls_smoke_tests.sql
 ```
 
-Se pega en el SQL Editor de Supabase: 55 pruebas, el resumen tiene que decir
+Se pega en el SQL Editor de Supabase: 58 pruebas, el resumen tiene que decir
 `TODO OK` y después `LIMPIO`. Se limpia con `DELETE` explícitos, no con
 `ROLLBACK` — el SQL Editor confirma cada sentencia y un rollback no deshace
 nada. **Correlo cada vez que toques una policy, un grant o un trigger.**
 
 Para correrlo localmente antes de tocar producción está
-`supabase/tests/harness_local.sql`, que emula los roles y los esquemas `auth` y
-`storage` de Supabase sobre un Postgres pelado.
+`supabase/tests/harness_local.sql`, que emula sobre un Postgres pelado los roles
+de Supabase, los esquemas `auth` y `storage`, sus default privileges permisivos
+y el trigger `protect_delete` que bloquea el borrado directo de objetos. Cuanto
+más fiel es el harness, menos sorpresas quedan para el SQL Editor.
 
 ---
 

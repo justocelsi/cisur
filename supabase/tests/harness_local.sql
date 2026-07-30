@@ -119,6 +119,26 @@ alter table storage.objects enable row level security;
 grant select on storage.buckets to anon, authenticated;
 grant all    on storage.objects to anon, authenticated, service_role;
 
+-- Supabase protege storage.objects contra borrados directos por SQL: obliga a
+-- usar la Storage API para no dejar archivos huérfanos en el bucket. Se replica
+-- acá para que los scripts se prueben contra la misma restricción que van a
+-- encontrar en producción.
+create or replace function storage.protect_delete()
+returns trigger
+language plpgsql
+as $$
+begin
+  raise exception 'Direct deletion from storage tables is not allowed. Use the Storage API instead.'
+    using errcode = '42501',
+          hint = 'This prevents accidental data loss from orphaned objects.';
+end;
+$$;
+
+drop trigger if exists protect_delete on storage.objects;
+create trigger protect_delete
+  before delete on storage.objects
+  for each row execute function storage.protect_delete();
+
 -- Parte el path en carpetas: 'abc/def/x.pdf' -> {abc,def}
 -- (Supabase descarta el último segmento, que es el nombre del archivo.)
 create or replace function storage.foldername(name text)

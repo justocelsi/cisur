@@ -99,13 +99,13 @@ roba el material".
 Abrí `supabase/tests/rls_smoke_tests.sql`, pegalo completo en el SQL Editor y
 **Run**.
 
-Vas a ver una tabla con 55 pruebas y, al final, un resumen. Tiene que decir:
+Vas a ver una tabla con 58 pruebas y, al final, un resumen. Tiene que decir:
 
 ```
-TODO OK — 55 pruebas pasaron
+TODO OK — 58 pruebas pasaron
 ```
 
-Si dice `¡ATENCIÓN! N de 55 pruebas FALLARON`, la columna `detalle` de cada fila
+Si dice `¡ATENCIÓN! N de 58 pruebas FALLARON`, la columna `detalle` de cada fila
 te dice qué pasó. No sigas: avisame.
 
 El script **borra solo** todo lo que creó y lo confirma con un
@@ -116,7 +116,7 @@ otra cosa, corré `supabase/tests/limpiar_datos_de_prueba.sql`.
 > sentencia por separado, así que un `ROLLBACK` al final no deshace nada: el
 > script se limpia con `DELETE` explícitos, que funcionan en cualquier cliente.
 
-> **Estas 55 pruebas ya corrieron en verde en un Postgres local** antes de que
+> **Estas 58 pruebas ya corrieron en verde en un Postgres local** antes de que
 > las leas, con `supabase/tests/harness_local.sql`, que emula sobre un Postgres
 > pelado los roles de Supabase y los esquemas `auth` y `storage`. Si algo falla
 > en Supabase, entonces, es que una migración no se aplicó — no que la prueba

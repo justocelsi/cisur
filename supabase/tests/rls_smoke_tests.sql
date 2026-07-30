@@ -32,13 +32,9 @@
 
 -- ---------------------------------------------------------------------------
 -- Limpieza previa: deja la base lista aunque una corrida anterior se haya
--- cortado por la mitad.
+-- cortado por la mitad. No toca storage.objects porque este script ya no
+-- escribe ahí (ver sección 7).
 -- ---------------------------------------------------------------------------
-delete from storage.objects
- where bucket_id in ('guias', 'publico')
-   and (name like 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/%'
-     or name like 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb/%'
-     or name = 'portadas/tapa.jpg');
 delete from compras where producto_id in (
   'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
   'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb');
@@ -186,11 +182,15 @@ declare
   v_alumno uuid := '11111111-1111-1111-1111-111111111111';
   v_ajeno  uuid := '22222222-2222-2222-2222-222222222222';
   v_editor uuid := '33333333-3333-3333-3333-333333333333';
+  -- Nunca compra nada en todo el script. El "ajeno" sí termina comprando en la
+  -- sección 5, así que no sirve para las pruebas de más abajo.
+  v_curioso uuid := '99999999-9999-9999-9999-999999999999';
 begin
   insert into auth.users (id, email, raw_user_meta_data)
-  values (v_alumno, 'alumno@test.cisur', '{"nombre":"Alumno"}'::jsonb),
-         (v_ajeno,  'ajeno@test.cisur',  '{"nombre":"Ajeno"}'::jsonb),
-         (v_editor, 'editor@test.cisur', '{"nombre":"Editora"}'::jsonb)
+  values (v_alumno,  'alumno@test.cisur',  '{"nombre":"Alumno"}'::jsonb),
+         (v_ajeno,   'ajeno@test.cisur',   '{"nombre":"Ajeno"}'::jsonb),
+         (v_editor,  'editor@test.cisur',  '{"nombre":"Editora"}'::jsonb),
+         (v_curioso, 'curioso@test.cisur', '{"nombre":"Curioso"}'::jsonb)
   on conflict (id) do nothing;
 
   -- El trigger handle_new_user ya creó los profiles. Promovemos al editor desde
@@ -470,36 +470,67 @@ select public.smoke_afirmar('webhook', 'no se duplica el acceso al mismo materia
 
 -- ===========================================================================
 -- 7. Storage: el PDF sólo lo alcanza quien compró
+--
+-- Acá NO se insertan filas en storage.objects. Supabase bloquea el DELETE
+-- directo sobre esa tabla (trigger protect_delete, obliga a usar la Storage
+-- API), así que una fila insertada por un test no se puede limpiar por SQL y
+-- queda como un archivo fantasma en el bucket.
+--
+-- Se verifica en cambio la misma lógica que evalúa la policy, pieza por pieza:
+--   · que los buckets existan con la visibilidad correcta
+--   · que las policies estén instaladas
+--   · que storage.foldername() extraiga el id del producto del path
+--   · que el permiso derivado de ese id sea el correcto para cada usuario
+--
+-- La comprobación de punta a punta —abrir un PDF que no compraste— es parte de
+-- la prueba de compra manual (DEPLOY.md, paso 9).
 -- ===========================================================================
-insert into storage.objects (bucket_id, name)
-values ('guias', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/material.pdf'),
-       ('guias', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb/material.pdf'),
-       ('publico', 'portadas/tapa.jpg');
 
--- El alumno compró el producto 'aaaa...': alcanza ese PDF y sólo ese.
+select public.smoke_afirmar('storage', 'el bucket de los PDF es privado',
+  (select not public from storage.buckets where id = 'guias'),
+  'el bucket guias quedó público: cualquiera podría bajar los PDF');
+
+select public.smoke_afirmar('storage', 'el bucket de imágenes es público',
+  (select public from storage.buckets where id = 'publico'));
+
+select public.smoke_afirmar('storage', 'las policies de Storage están instaladas',
+  (select count(*) from pg_policies
+    where schemaname = 'storage' and tablename = 'objects'
+      and policyname in ('publico_select', 'publico_write',
+                         'guias_select', 'guias_write')) = 4,
+  'faltan policies: revisá que 0005_storage.sql se haya aplicado');
+
+-- La convención de path es de donde la policy deriva el permiso: el primer
+-- folder tiene que ser el id del producto.
+select public.smoke_afirmar('storage', 'el path del PDF lleva el id del producto',
+  (storage.foldername('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/material.pdf'))[1]
+    = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+  'cambió la convención de path y la policy de Storage ya no encuentra el producto');
+
+-- Y el permiso que sale de ese id: exactamente lo que consulta la policy.
 select public.smoke_probar('storage', 'el comprador alcanza el PDF que compró',
   'authenticated', '11111111-1111-1111-1111-111111111111',
-  $$select count(*)::text from storage.objects
-     where bucket_id = 'guias'
-       and name like 'aaaaaaaa%'$$, '1');
+  $$select public.tiene_acceso(
+      ((storage.foldername('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/material.pdf'))[1])::uuid
+    )::text$$, 'true');
 
-select public.smoke_probar('storage', 'el comprador NO alcanza otros PDF',
+select public.smoke_probar('storage', 'el comprador NO alcanza otro PDF',
   'authenticated', '11111111-1111-1111-1111-111111111111',
-  $$select count(*)::text from storage.objects
-     where bucket_id = 'guias'
-       and name like 'bbbbbbbb%'$$, '0');
+  $$select public.tiene_acceso(
+      ((storage.foldername('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb/material.pdf'))[1])::uuid
+    )::text$$, 'false');
 
-select public.smoke_probar('storage', 'quien no compró NO alcanza ningún PDF',
-  'authenticated', '33333333-3333-3333-3333-333333333333',
-  $$select count(*)::text from storage.objects where bucket_id = 'guias'$$, '2');
+select public.smoke_probar('storage', 'quien no compró NO alcanza el PDF',
+  'authenticated', '99999999-9999-9999-9999-999999999999',
+  $$select public.tiene_acceso(
+      ((storage.foldername('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/material.pdf'))[1])::uuid
+    )::text$$, 'false');
 
-select public.smoke_probar('storage', 'las imágenes públicas se ven sin cuenta',
+select public.smoke_probar('storage', 'anon NO alcanza el PDF',
   'anon', null,
-  $$select count(*)::text from storage.objects where bucket_id = 'publico'$$, '1');
-
-select public.smoke_probar('storage', 'anon NO alcanza los PDF',
-  'anon', null,
-  $$select count(*)::text from storage.objects where bucket_id = 'guias'$$, '0');
+  $$select coalesce(public.tiene_acceso(
+      ((storage.foldername('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/material.pdf'))[1])::uuid
+    ), false)::text$$, 'false');
 
 -- ===========================================================================
 -- 8. Invitaciones de editor
@@ -606,11 +637,6 @@ from public.smoke_resultado;
 -- Se borra todo lo que creó el script. No depende de un ROLLBACK: así queda
 -- limpio incluso en clientes que confirman cada sentencia.
 -- ===========================================================================
-delete from storage.objects
- where bucket_id in ('guias', 'publico')
-   and (name like 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/%'
-     or name like 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb/%'
-     or name = 'portadas/tapa.jpg');
 delete from compras where producto_id in (
   'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
   'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb');

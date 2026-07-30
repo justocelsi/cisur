@@ -20,6 +20,10 @@ Los tres tienen que pasar. El build corre sin credenciales a propósito.
   Supabase.** El SQL Editor confirma cada sentencia por separado: la tabla
   temporal se destruye apenas se crea y el `ROLLBACK` no deshace nada. Los
   scripts se limpian con `DELETE` explícitos.
+- **No insertar filas en `storage.objects` desde SQL.** Un trigger de Supabase
+  (`protect_delete`) prohíbe borrarlas después, así que quedan como archivos
+  fantasma en el bucket. Las policies de Storage se prueban por sus piezas
+  (`storage.foldername` + `tiene_acceso`), no creando objetos.
 - **Las migraciones son idempotentes y se corren a mano**, en orden numérico.
   Nunca editar una migración ya aplicada en producción: agregar una nueva.
 - **El path de los PDF es `guias/<producto_id>/…`**. La policy de Storage
