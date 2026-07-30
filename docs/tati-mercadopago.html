@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<title>CISUR — Poner en marcha los cobros</title>
+<style>
+/* ==========================================================================
+   Documento para imprimir / PDF. Misma paleta que la web de CISUR.
+   La tipografía es la de sistema: no depende de internet para verse bien.
+   ========================================================================== */
+
+:root {
+  --verde: #41664a;
+  --verde-oscuro: #33513a;
+  --verde-claro: #6f9179;
+  --tostado: #c9a77f;
+  --tostado-tenue: #ece0cd;
+  --papel: #faf7f1;
+  --papel-2: #f4efe3;
+  --linea: #e0d5c0;
+  --tinta: #1f2a1c;
+  --tinta-suave: #46523f;
+  --tinta-tenue: #737e6d;
+  --serif: "Times New Roman", Times, "Liberation Serif", serif;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@page {
+  size: A4;
+  margin: 16mm 15mm 18mm 15mm;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 11.5pt;
+  line-height: 1.55;
+  color: var(--tinta);
+  background: #fff;
+}
+
+/* --- Portada ----------------------------------------------------------- */
+/* Chrome no deja sangrar hasta el borde del papel al imprimir (recorta contra
+   el área de @page), así que el panel llena todo el alto útil y el margen
+   blanco queda como marco. A4 son 297mm menos 16 y 18 de márgenes: 263mm. */
+.portada {
+  background: var(--verde);
+  color: var(--papel);
+  padding: 26mm 18mm;
+  min-height: 262mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  page-break-after: always;
+}
+.portada .marca {
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: .22em;
+  font-size: 13pt;
+}
+.portada .bajada-marca {
+  font-family: var(--sans);
+  font-size: 7.5pt;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--tostado);
+  margin-top: 3mm;
+}
+.portada h1 {
+  font-size: 30pt;
+  line-height: 1.1;
+  font-weight: normal;
+  margin: 20mm 0 0;
+  letter-spacing: -.01em;
+}
+.portada .sub {
+  font-size: 13pt;
+  color: var(--tostado);
+  margin-top: 6mm;
+  max-width: 120mm;
+  line-height: 1.5;
+}
+.portada .meta {
+  margin-top: 22mm;
+  padding-top: 6mm;
+  border-top: 1px solid rgba(250,247,241,.25);
+  font-size: 10pt;
+  color: var(--tostado);
+}
+
+/* --- Estructura -------------------------------------------------------- */
+h2 {
+  font-size: 19pt;
+  font-weight: normal;
+  color: var(--verde);
+  margin: 11mm 0 4mm;
+  padding-bottom: 2.5mm;
+  border-bottom: 2px solid var(--tostado);
+  page-break-after: avoid;
+}
+h2 .num {
+  font-family: var(--sans);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--tostado);
+  display: block;
+  margin-bottom: 1.5mm;
+}
+h3 {
+  font-size: 12.5pt;
+  font-weight: normal;
+  color: var(--verde-oscuro);
+  margin: 7mm 0 2mm;
+  padding-left: 3.5mm;
+  border-left: 2.5px solid var(--tostado);
+  page-break-after: avoid;
+}
+p { margin: 0 0 3.5mm; }
+strong { font-weight: bold; }
+.pagina-nueva { page-break-before: always; }
+
+/* --- Pasos numerados --------------------------------------------------- */
+ol.pasos { list-style: none; counter-reset: paso; padding: 0; margin: 4mm 0; }
+ol.pasos > li {
+  counter-increment: paso;
+  position: relative;
+  padding: 0 0 4mm 13mm;
+  page-break-inside: avoid;
+}
+ol.pasos > li::before {
+  content: counter(paso);
+  position: absolute;
+  left: 0; top: -0.5mm;
+  width: 8.5mm; height: 8.5mm;
+  background: var(--verde);
+  color: var(--papel);
+  border-radius: 50%;
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+ul.simple { margin: 3mm 0; padding-left: 6mm; }
+ul.simple li { margin-bottom: 2mm; }
+
+/* --- Recuadros --------------------------------------------------------- */
+.caja {
+  background: var(--papel-2);
+  border-left: 3px solid var(--verde-claro);
+  padding: 4mm 5mm;
+  margin: 5mm 0;
+  page-break-inside: avoid;
+}
+.caja.ojo { background: var(--tostado-tenue); border-left-color: var(--tostado); }
+.caja.calma { background: #eef3ef; border-left-color: var(--verde); }
+.caja .titulo {
+  font-family: var(--sans);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--verde);
+  margin-bottom: 2mm;
+}
+.caja.ojo .titulo { color: #8a5a2b; }
+.caja p:last-child { margin-bottom: 0; }
+
+/* --- Checklist --------------------------------------------------------- */
+.checklist { margin: 5mm 0; }
+.checklist .item {
+  display: flex;
+  gap: 4mm;
+  padding: 3.5mm 0;
+  border-bottom: 1px solid var(--linea);
+  page-break-inside: avoid;
+}
+.checklist .item:last-child { border-bottom: none; }
+.cuadro {
+  flex: 0 0 auto;
+  width: 5mm; height: 5mm;
+  border: 1.5px solid var(--verde);
+  margin-top: 1.2mm;
+}
+.checklist .que { font-weight: bold; }
+.checklist .como { color: var(--tinta-suave); font-size: 10.5pt; }
+
+/* --- Datos a copiar ---------------------------------------------------- */
+.dato {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  background: #fff;
+  border: 1px dashed var(--tostado);
+  padding: 2.5mm 3mm;
+  margin: 2mm 0;
+  word-break: break-all;
+}
+.etiqueta {
+  font-family: var(--sans);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tinta-tenue);
+}
+code {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  background: var(--papel-2);
+  padding: .5mm 1.5mm;
+  border-radius: 2px;
+}
+
+/* --- Camino de clics --------------------------------------------------- */
+.ruta {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  color: var(--verde-oscuro);
+  background: var(--papel-2);
+  border: 1px solid var(--linea);
+  padding: 2.5mm 3.5mm;
+  margin: 2.5mm 0;
+  display: inline-block;
+}
+
+/* --- Preguntas --------------------------------------------------------- */
+.faq { margin-top: 3mm; }
+.faq .p {
+  font-weight: bold;
+  color: var(--verde);
+  margin: 5mm 0 1mm;
+  page-break-after: avoid;
+}
+.faq .r { margin: 0 0 3mm; }
+
+.cierre {
+  margin-top: 10mm;
+  padding-top: 5mm;
+  border-top: 2px solid var(--tostado);
+  color: var(--tinta-suave);
+  font-size: 10.5pt;
+}
+</style>
+</head>
+<body>
+
+<!-- ====================== PORTADA ====================== -->
+<div class="portada">
+  <div class="marca">CISUR</div>
+  <div class="bajada-marca">Centro Integral Sur</div>
+
+  <h1>Poner en marcha<br>los cobros de la web</h1>
+  <p class="sub">
+    Todo lo que hay que hacer para que tu página pueda vender, y que la plata
+    entre directo a tu cuenta de Mercado Pago.
+  </p>
+
+  <div class="meta">
+    Para Tatiana Galera &nbsp;·&nbsp; Unos 30 minutos en total &nbsp;·&nbsp; Julio de 2026
+  </div>
+</div>
+
+<!-- ====================== RESUMEN ====================== -->
+<h2><span class="num">Para arrancar</span>Lo que necesito de vos</h2>
+
+<p>
+  Esta es la lista completa. Abajo está el paso a paso de cada cosa. No hace
+  falta que lo hagas todo de una sentada: mandame lo que vayas teniendo.
+</p>
+
+<div class="checklist">
+  <div class="item">
+    <div class="cuadro"></div>
+    <div>
+      <div class="que">Tu mail</div>
+      <div class="como">El que uses para crear tu cuenta en la web. Con ese te doy permisos de administradora.</div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="cuadro"></div>
+    <div>
+      <div class="que">Las credenciales de prueba de Mercado Pago</div>
+      <div class="como">Dos códigos que empiezan con <code>TEST-</code>. Sirven para que yo pruebe todo sin mover plata real.</div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="cuadro"></div>
+    <div>
+      <div class="que">Las credenciales de producción</div>
+      <div class="como">Dos códigos que empiezan con <code>APP_USR-</code>. Son las de verdad. Esperá a que te avise.</div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="cuadro"></div>
+    <div>
+      <div class="que">La firma secreta del webhook</div>
+      <div class="como">Un código más, de la misma pantalla de Mercado Pago. También cuando te avise.</div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="cuadro"></div>
+    <div>
+      <div class="que">Los dos materiales en PDF</div>
+      <div class="como">La guía de alfabetización y el frasco de las invitaciones, exportados del Canva.</div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="cuadro"></div>
+    <div>
+      <div class="que">Las portadas</div>
+      <div class="como">Una imagen de la tapa de cada material.</div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="cuadro"></div>
+    <div>
+      <div class="que">Confirmar los precios</div>
+      <div class="como">La guía está en $25.000 y el frasco en $18.000. Ese último lo puse yo de referencia: decime si va otro.</div>
+    </div>
+  </div>
+</div>
+
+<div class="caja calma">
+  <div class="titulo">Dos cosas que quiero que sepas antes de empezar</div>
+  <p>
+    <strong>La plata es tuya y va directo a tu cuenta.</strong> Yo no la toco en
+    ningún momento. Cuando alguien compra, Mercado Pago le cobra y te acredita a
+    vos, igual que cuando cobrás con un link de pago o con el QR.
+  </p>
+  <p>
+    <strong>Los códigos que me vas a pasar sirven para cobrar en tu nombre, no
+    para sacar plata de tu cuenta.</strong> Aun así conviene tratarlos como una
+    contraseña. Si en algún momento querés, se anulan y se generan de nuevo en
+    dos clics.
+  </p>
+</div>
+
+<!-- ====================== PARTE 1 ====================== -->
+<div class="pagina-nueva"></div>
+<h2><span class="num">Parte 1 · 3 minutos</span>Tu cuenta en la web</h2>
+
+<p>
+  Antes que nada, creá tu cuenta. Es la que te va a permitir editar los textos,
+  cargar materiales y ver tus ventas. La creás vos, y después yo le doy los
+  permisos de administradora.
+</p>
+
+<ol class="pasos">
+  <li>
+    Entrá a <strong>cisur.vercel.app/ingresar</strong> desde el celular o la
+    computadora.
+  </li>
+  <li>
+    Hacé clic en <strong>«No tengo cuenta, quiero crear una»</strong>.
+  </li>
+  <li>
+    Poné tu nombre, tu mail y una contraseña de al menos 6 caracteres.
+    <div class="caja ojo" style="margin-top:3mm">
+      <div class="titulo">Importante</div>
+      <p>
+        Usá el mail que vayas a usar <strong>siempre</strong> para administrar la
+        página. Es el que identifica tu cuenta, y cambiarlo después da más
+        trabajo.
+      </p>
+    </div>
+  </li>
+  <li>
+    <strong>Mandame ese mail por WhatsApp.</strong> Con eso te habilito los
+    permisos. Te lleva un minuto de mi lado.
+  </li>
+  <li>
+    Cuando te avise, cerrá sesión y volvé a entrar. Van a aparecerte dos botones
+    nuevos arriba a la derecha: <strong>«Editar la página»</strong> y
+    <strong>«Panel»</strong>.
+  </li>
+</ol>
+
+<p>
+  Si esos dos botones no te aparecen, avisame: es que me faltó darte el permiso.
+</p>
+
+<!-- ====================== PARTE 2 ====================== -->
+<div class="pagina-nueva"></div>
+<h2><span class="num">Parte 2 · 10 minutos</span>Preparar tu Mercado Pago</h2>
+
+<p>
+  Esta parte se hace <strong>desde la app del celular</strong>. Si ya cobrás con
+  Mercado Pago, seguramente lo tengas hecho y podés saltear al paso siguiente.
+</p>
+
+<h3>Verificá tu identidad</h3>
+<ol class="pasos">
+  <li>Abrí la app de Mercado Pago.</li>
+  <li>Andá a <strong>Tu perfil</strong> (el ícono de la persona, abajo a la derecha).</li>
+  <li>Buscá <strong>«Validá tu identidad»</strong> o <strong>«Completá tus datos»</strong>.</li>
+  <li>Te va a pedir una foto del DNI (frente y dorso) y una selfie.</li>
+</ol>
+
+<div class="caja">
+  <div class="titulo">Por qué hace falta</div>
+  <p>
+    Sin la identidad verificada, Mercado Pago retiene el dinero de las ventas y
+    no te lo libera. Es un requisito de ellos, no de la web. Además la
+    verificación puede tardar un día o dos, así que conviene arrancar por acá.
+  </p>
+</div>
+
+<h3>Confirmá dónde recibís la plata</h3>
+<p>
+  En <strong>Tu perfil → Tu dinero</strong> revisá que esté cargado tu CBU o
+  alias. Las ventas se acreditan primero en tu cuenta de Mercado Pago; desde ahí
+  las transferís a tu banco cuando quieras.
+</p>
+
+<h3>Elegí en cuántos días querés cobrar</h3>
+<p>
+  En la app: <strong>Tu perfil → Costos</strong>. Ahí ves dos cosas que te
+  conviene mirar con calma:
+</p>
+<ul class="simple">
+  <li><strong>Cuánto te cobra Mercado Pago de comisión</strong> por cada venta.</li>
+  <li><strong>En cuántos días te acreditan.</strong> Podés elegir: al instante con más comisión, o a los 10, 18 o 30 días con menos.</li>
+</ul>
+
+<div class="caja calma">
+  <div class="titulo">Esto no afecta a la web</div>
+  <p>
+    Elegí el plazo que más te convenga. La persona que compra recibe el material
+    al instante en todos los casos. Lo único que cambia es cuándo te entra la
+    plata a vos y cuánto te descuentan.
+  </p>
+</div>
+
+<!-- ====================== PARTE 3 ====================== -->
+<div class="pagina-nueva"></div>
+<h2><span class="num">Parte 3 · 5 minutos</span>Crear la aplicación</h2>
+
+<p>
+  Esta parte se hace <strong>desde la computadora</strong>, no desde el celular.
+  «Crear una aplicación» suena técnico, pero es simplemente generar los códigos
+  que le permiten a la web cobrar en tu nombre.
+</p>
+
+<ol class="pasos">
+  <li>
+    Entrá a esta dirección con tu cuenta de Mercado Pago (la misma de la app):
+    <div class="dato">mercadopago.com.ar/developers/panel</div>
+  </li>
+  <li>
+    Vas a ver una pantalla que dice <strong>«Tus integraciones»</strong>. Es
+    normal que esté vacía.
+    <p style="margin-top:2mm">
+      Si te aparece algo sobre términos y condiciones para desarrolladores,
+      aceptalo: es sólo para poder crear la aplicación.
+    </p>
+  </li>
+  <li>
+    Botón <strong>«Crear aplicación»</strong>.
+  </li>
+  <li>
+    Completá así:
+    <ul class="simple" style="margin-top:2mm">
+      <li>Nombre: <strong>CISUR web</strong> <span style="color:var(--tinta-tenue)">(es sólo para que vos la reconozcas)</span></li>
+      <li>¿Qué producto estás integrando?: <strong>Pagos online</strong></li>
+      <li>¿Usás una plataforma de e-commerce?: <strong>No</strong></li>
+      <li>Tipo de integración: <strong>Checkout Pro</strong></li>
+    </ul>
+  </li>
+  <li>
+    <strong>Crear aplicación.</strong> Listo.
+  </li>
+</ol>
+
+<!-- ====================== PARTE 4 ====================== -->
+<div class="pagina-nueva"></div>
+<h2><span class="num">Parte 4 · 5 minutos</span>Los códigos que necesito</h2>
+
+<p>
+  Ya dentro de la aplicación <strong>CISUR web</strong>, en el menú de la
+  izquierda vas a ver dos opciones: <strong>Credenciales de prueba</strong> y
+  <strong>Credenciales de producción</strong>. Necesito las dos, pero en momentos
+  distintos.
+</p>
+
+<h3>Primero: las de prueba</h3>
+<p>
+  Hacé clic en <strong>«Credenciales de prueba»</strong>. Vas a ver dos campos.
+  Al lado de cada uno hay un botoncito para copiar.
+</p>
+
+<div class="etiqueta">Public Key de prueba</div>
+<div class="dato">TEST-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</div>
+<div class="etiqueta" style="margin-top:3mm">Access Token de prueba</div>
+<div class="dato">TEST-0000000000000000-000000-xxxxxxxxxxxxxxxxxxxx-000000000</div>
+
+<p>
+  Copiámelos los dos. Con eso pruebo todo el circuito de compra usando tarjetas
+  falsas que da Mercado Pago: <strong>no se cobra nada real</strong>.
+</p>
+
+<h3>Después: las de producción</h3>
+<p>
+  Cuando te avise que las pruebas salieron bien, volvés a esta misma pantalla y
+  hacés clic en <strong>«Credenciales de producción»</strong>.
+</p>
+
+<div class="etiqueta">Public Key de producción</div>
+<div class="dato">APP_USR-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</div>
+<div class="etiqueta" style="margin-top:3mm">Access Token de producción</div>
+<div class="dato">APP_USR-0000000000000000-000000-xxxxxxxxxxxxxxxxxxxx-000000000</div>
+
+<div class="caja ojo">
+  <div class="titulo">El Access Token puede estar tapado</div>
+  <p>
+    Suele aparecer con puntitos y un ojito o un botón que dice
+    <strong>«Mostrar»</strong>. Hacé clic ahí para revelarlo y recién después
+    copialo.
+  </p>
+</div>
+
+<!-- ====================== PARTE 5 ====================== -->
+<div class="pagina-nueva"></div>
+<h2><span class="num">Parte 5 · 5 minutos</span>El aviso de pago (webhook)</h2>
+
+<div class="caja ojo">
+  <div class="titulo">Esperá a que te avise para hacer esta parte</div>
+  <p>
+    Necesito que la web esté publicada antes. Si lo hacés ahora, no va a
+    funcionar.
+  </p>
+</div>
+
+<p>
+  Este paso es el que hace que la web <strong>se entere de que alguien
+  pagó</strong>. Sin esto, la persona paga y no recibe el material.
+</p>
+
+<ol class="pasos">
+  <li>
+    En la aplicación <strong>CISUR web</strong>, buscá en el menú de la izquierda
+    <strong>«Webhooks»</strong> (puede decir «Notificaciones webhooks»).
+  </li>
+  <li>
+    Botón <strong>«Configurar notificaciones»</strong>.
+  </li>
+  <li>
+    Te pide una dirección para el modo productivo. Pegá exactamente esto:
+    <div class="dato">https://cisur.vercel.app/api/webhook/mp</div>
+  </li>
+  <li>
+    Más abajo hay una lista de eventos. Tildá <strong>solamente «Pagos»</strong>
+    (puede figurar como <code>payment</code>). Dejá todo lo demás sin tildar.
+  </li>
+  <li>
+    <strong>Guardar.</strong>
+  </li>
+  <li>
+    Después de guardar aparece un campo nuevo que dice <strong>«Firma
+    secreta»</strong> o «Clave secreta». Hacé clic en el ojito para revelarla y
+    copiámela.
+  </li>
+</ol>
+
+<div class="caja">
+  <div class="titulo">Para qué sirve esa firma</div>
+  <p>
+    Es como un sello. Mercado Pago le avisa a la web cada vez que alguien paga, y
+    esa clave le permite a la web comprobar que el aviso vino de verdad de
+    Mercado Pago, y no de alguien haciéndose pasar por ellos para llevarse el
+    material gratis.
+  </p>
+</div>
+
+<!-- ====================== PARTE 6 ====================== -->
+<div class="pagina-nueva"></div>
+<h2><span class="num">Parte 6</span>Los materiales</h2>
+
+<p>
+  La web ya tiene las dos secciones armadas, con sus textos y sus precios. Falta
+  el archivo de cada uno: sin eso, alguien podría pagar y quedarse sin nada para
+  leer.
+</p>
+
+<h3>El PDF de cada material</h3>
+<p>Necesito los dos: <strong>la guía de alfabetización</strong> y <strong>el frasco de las invitaciones</strong>.</p>
+<p>Para sacarlos del Canva:</p>
+<div class="ruta">Abrir el diseño → Compartir → Descargar → Tipo de archivo: <strong>PDF estándar</strong> → Descargar</div>
+
+<h3>La portada de cada uno</h3>
+<p>
+  Una imagen de la tapa, aparte del PDF. Del mismo Canva:
+</p>
+<div class="ruta">Compartir → Descargar → <strong>PNG</strong> → en «Seleccionar páginas» elegí sólo la página 1</div>
+
+<div class="caja calma">
+  <div class="titulo">Los podés subir vos</div>
+  <p>
+    Una vez que tengas los permisos de administradora, entrás a
+    <strong>Panel → Materiales → Editar</strong> y los subís desde ahí. Si
+    preferís, mandámelos y los subo yo la primera vez.
+  </p>
+</div>
+
+<h3>Los precios</h3>
+<p>
+  Ahora mismo están así. Decime si van otros y los cambio (o los cambiás vos
+  desde el panel cuando quieras):
+</p>
+<ul class="simple">
+  <li>La guía: <strong>$25.000</strong></li>
+  <li>El frasco de las invitaciones: <strong>$18.000</strong> — este lo puse yo de referencia, confirmámelo.</li>
+</ul>
+
+<!-- ====================== SEGURIDAD ====================== -->
+<div class="pagina-nueva"></div>
+<h2><span class="num">Importante</span>Cómo mandarme los códigos</h2>
+
+<p><strong>No me los mandes por mail.</strong> Los mails quedan guardados para siempre en varios servidores.</p>
+
+<h3>Opción A — la más simple</h3>
+<p>
+  Mandámelos por WhatsApp y, cuando yo te confirme que los copié,
+  <strong>borrá el mensaje para todos</strong>: mantené el dedo apretado sobre el
+  mensaje → Eliminar → Eliminar para todos.
+</p>
+
+<h3>Opción B — la más segura</h3>
+<p>
+  Entrá a <strong>pwpush.com</strong>, pegá los códigos en el cuadro grande,
+  elegí que expire en <strong>1 día</strong>, dale a «Push it» y mandame el link
+  que te genera. Ese link se autodestruye después de que yo lo abra.
+</p>
+
+<!-- ====================== FAQ ====================== -->
+<h2><span class="num">Por las dudas</span>Preguntas que capaz tenés</h2>
+
+<div class="faq">
+  <p class="p">¿Esto me cuesta algo?</p>
+  <p class="r">
+    No. Crear la aplicación es gratis. Lo único que pagás es la comisión de
+    Mercado Pago por cada venta, que ya se descuenta sola. La web, el alojamiento
+    y la base de datos van en planes gratuitos: no hay abono mensual.
+  </p>
+
+  <p class="p">¿Le estoy dando acceso a mi cuenta a alguien?</p>
+  <p class="r">
+    No. Los códigos permiten generar cobros a tu favor. No permiten entrar a tu
+    cuenta, ni ver tu saldo, ni transferir tu dinero.
+  </p>
+
+  <p class="p">¿Y si me arrepiento o quiero cortar esto?</p>
+  <p class="r">
+    Entrás al panel de desarrolladores, a la aplicación CISUR web, y le das
+    Eliminar. La web deja de poder cobrar en ese mismo momento. Nada más.
+  </p>
+
+  <p class="p">¿Cómo veo mis ventas?</p>
+  <p class="r">
+    De dos formas. En la web tenés <strong>Panel → Ventas</strong>, con quién
+    compró, cuándo y cuánto. Y en la app de Mercado Pago las ves como cualquier
+    otro cobro, con la comisión ya descontada.
+  </p>
+
+  <p class="p">¿Qué pasa si alguien paga en efectivo por Rapipago?</p>
+  <p class="r">
+    Mercado Pago tarda uno o dos días en confirmarlo. La web lo maneja sola: le
+    muestra a la persona que el pago está pendiente, y cuando Mercado Pago
+    confirma, el material aparece automáticamente en su cuenta. No tenés que
+    hacer nada.
+  </p>
+
+  <p class="p">¿Qué pasa si alguien pide que le devuelva la plata?</p>
+  <p class="r">
+    Por ley tiene 10 días para arrepentirse sin dar explicaciones. La devolución
+    la hacés desde la app de Mercado Pago, en el detalle de ese cobro, con la
+    opción «Devolver dinero». Avisame y yo le doy de baja el acceso al material.
+  </p>
+
+  <p class="p">No encuentro alguna de las pantallas que describís acá.</p>
+  <p class="r">
+    Mercado Pago cambia el diseño cada tanto. Mandame una captura de lo que ves y
+    te digo dónde hacer clic.
+  </p>
+</div>
+
+<p class="cierre">
+  Cualquier cosa que no te cierre, preguntame antes de tocar algo. No hay apuro y
+  no se puede romper nada de tu cuenta desde acá.
+</p>
+
+</body>
+</html>
