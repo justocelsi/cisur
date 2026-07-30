@@ -40,6 +40,9 @@ insert into site_settings (key, value) values
    'Ese sueño me llevó a estudiar el Profesorado de Nivel Inicial y, con el tiempo, la Licenciatura en Psicopedagogía. En 2020, mientras esperaba a mi primera hija, me recibí en plena pandemia. Después llegaron nuevos desafíos: los equipos de orientación escolar y acompañar el crecimiento de una institución maternal desde un rol directivo.'),
   ('sobre_p3',
    'Durante años recibí familias con la misma preocupación: "¿cómo puedo ayudar a mi hijo en casa?". Ahí entendí que hacía falta un espacio para acompañar también a las familias, no sólo a los chicos. Por eso nació CISUR.'),
+  -- Arranca con la foto que viene en el repo. Si Tati sube otra desde el panel,
+  -- esta clave pasa a apuntar a Supabase Storage y la reemplaza.
+  ('sobre_foto_path', '/tati/tatiana.webp'),
 
   -- Talleres ----------------------------------------------------------------
   ('talleres_titulo',

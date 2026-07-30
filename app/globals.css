@@ -268,7 +268,14 @@ h4 {
     margin-block: 0.4em;
   }
 
-  & a {
+  /* Los enlaces de un texto van subrayados y en verde... salvo los que estén
+     dentro de un `.no-prosa`.
+
+     Sin esa excepción, un botón adentro de un bloque de prosa se rompe: la
+     regla `.prosa a` tiene más especificidad que la clase de color del botón,
+     así que le pisa el color y queda texto verde sobre fondo verde. Pasó con
+     el botón de arrepentimiento. */
+  & a:not(.no-prosa, .no-prosa *) {
     color: var(--color-verde);
     text-decoration: underline;
     text-decoration-thickness: 1px;

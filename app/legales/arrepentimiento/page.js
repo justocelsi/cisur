@@ -50,18 +50,18 @@ export default async function Arrepentimiento() {
         necesitás explicar nada más.
       </p>
 
-      <p className="not-prose">
-        {urlWhatsapp ? (
+      {urlWhatsapp ? (
+        <p className="no-prosa my-8">
           <a
             href={urlWhatsapp}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-papel no-underline transition-colors hover:bg-verde-oscuro"
+            className="inline-flex items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-papel no-underline shadow-[0_10px_24px_-14px_rgba(65,102,74,0.85)] transition-colors hover:bg-verde-oscuro"
           >
             Iniciar mi arrepentimiento por WhatsApp
           </a>
-        ) : null}
-      </p>
+        </p>
+      ) : null}
 
       <h2>Qué pasa después</h2>
       <ul>
