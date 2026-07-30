@@ -110,7 +110,7 @@ export default function Lector({ productoId }) {
         <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           {sinAcceso ? (
             <Link
-              href="/guias"
+              href="/"
               className="rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-verde-oscuro"
             >
               Ver los materiales

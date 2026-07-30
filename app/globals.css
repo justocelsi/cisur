@@ -149,6 +149,12 @@ h4 {
   line-height: 1.4;
 }
 
+/* Compensa el alto del encabezado pegajoso (logo + nav de secciones) para que
+   al saltar a un ancla el título no quede tapado. */
+@utility ancla {
+  scroll-margin-top: 9rem;
+}
+
 @utility filete {
   border: 0;
   border-top: 1px solid var(--color-papel-3);

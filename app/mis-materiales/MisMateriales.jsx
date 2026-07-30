@@ -86,7 +86,7 @@ export default function MisMateriales() {
             acá para leer cuando quieras.
           </p>
           <Link
-            href="/guias"
+            href="/"
             className="mt-7 inline-block rounded-[2px] bg-verde px-6 py-3 text-papel transition-colors hover:bg-verde-oscuro"
           >
             Ver los materiales

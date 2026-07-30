@@ -138,8 +138,7 @@ MP → redirige a /pago/exito, que sondea con espera creciente
 
 ```
 app/
-├── page.js                     landing de venta
-├── guias/                      catálogo y detalle
+├── page.js                     TODO el sitio público: una sola página
 ├── leer/[productoId]/          lector protegido (dynamic, ssr:false)
 ├── mis-materiales/             lo que compró el usuario
 ├── panel/                      admin: materiales, talleres, ventas
@@ -154,8 +153,9 @@ app/
 ├── components/
 └── context/                    AuthProvider, TextosProvider, ModoEdicionProvider
 lib/                            supabase, mercadopago, utils, errores (+ tests)
+public/                         assets versionados (portadas, fotos)
 supabase/migrations/            0001…0006, idempotentes, en orden
-supabase/tests/                 RLS smoke tests
+supabase/tests/                 harness local + 55 pruebas de seguridad
 ```
 
 ---
@@ -165,6 +165,18 @@ supabase/tests/                 RLS smoke tests
 **Sin carrito.** Los materiales son compra individual: el botón va directo a
 Mercado Pago. Eso eliminó `cart_items` y la mitad de la complejidad
 transaccional. Si algún día se venden combos, hay que reintroducirlo.
+
+**Es un one-pager, y las secciones salen de los datos.** Todo el sitio público
+vive en `app/page.js`; el nav del encabezado se arma con un ítem por producto
+publicado (`nombre_corto`) más Talleres y Sobre mí. Un material nuevo aparece
+como sección Y en el nav sin tocar código. No hay páginas de catálogo ni de
+detalle: eran el mismo contenido dos veces. Las URLs viejas (`/guias`,
+`/talleres`, `/sobre-mi`) redirigen al ancla correspondiente.
+
+**Las imágenes tienen dos orígenes.** `urlPublica()` devuelve la ruta tal cual si
+empieza con `/` (un archivo de `public/`, versionado) y si no la resuelve contra
+Supabase Storage. Así una portada puede venir con el repo y ser reemplazada
+después desde el panel, sin tocar código.
 
 **Las páginas públicas son estáticas** (`revalidate = 300`). La landing carga sin
 esperar a la base y no gasta egress de Supabase en cada visita. Consecuencia: un

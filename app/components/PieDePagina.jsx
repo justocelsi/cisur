@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Logo from "./Logo";
-import { getTextos, t } from "@/lib/datos";
+import { getProductos, getTextos, t } from "@/lib/datos";
 import { linkWhatsApp, safeHref } from "@/lib/utils";
 
 export default async function PieDePagina() {
-  const textos = await getTextos();
+  const [textos, productos] = await Promise.all([getTextos(), getProductos()]);
 
   const whatsapp = t(textos, "contacto_whatsapp", "542234474674");
   const instagram = t(textos, "contacto_instagram", "cisur.mdp");
@@ -32,18 +32,23 @@ export default async function PieDePagina() {
         <nav aria-label="Secciones del sitio">
           <h2 className="versalitas text-tinta-tenue">El sitio</h2>
           <ul className="mt-4 space-y-2 text-[1.05rem]">
+            {productos.map((p) => (
+              <li key={p.id}>
+                <Link
+                  href={`/#${p.slug}`}
+                  className="text-tinta-suave hover:text-verde"
+                >
+                  {p.nombre_corto || p.titulo}
+                </Link>
+              </li>
+            ))}
             <li>
-              <Link href="/guias" className="text-tinta-suave hover:text-verde">
-                Materiales
-              </Link>
-            </li>
-            <li>
-              <Link href="/talleres" className="text-tinta-suave hover:text-verde">
+              <Link href="/#talleres" className="text-tinta-suave hover:text-verde">
                 Talleres
               </Link>
             </li>
             <li>
-              <Link href="/sobre-mi" className="text-tinta-suave hover:text-verde">
+              <Link href="/#sobre-mi" className="text-tinta-suave hover:text-verde">
                 Sobre mí
               </Link>
             </li>

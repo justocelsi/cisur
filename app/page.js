@@ -1,26 +1,29 @@
-import Link from "next/link";
 import TextoEditable from "./components/TextoEditable";
 import PortadaGuia from "./components/PortadaGuia";
-import BotonComprar from "./components/BotonComprar";
-import BloqueFrasco from "./components/BloqueFrasco";
+import SeccionProducto from "./components/SeccionProducto";
+import SeccionSobreMi from "./components/SeccionSobreMi";
 import BloqueTalleres from "./components/BloqueTalleres";
 import BloqueContacto from "./components/BloqueContacto";
 import Preguntas from "./components/Preguntas";
-import { getProductoDestacado, getTalleres, getTextos, t } from "@/lib/datos";
-import { formatearPrecio, urlPublica, urlSitio } from "@/lib/utils";
+import { getProductos, getTalleres, getTextos, t } from "@/lib/datos";
+import { formatearPrecio, urlPublicaAbsoluta, urlSitio } from "@/lib/utils";
 
-// Estático, revalidado cada 5 minutos: la landing carga al instante y no
-// consume egress de Supabase en cada visita. Cuando Tati edita un texto lo ve
-// al toque en su navegador (optimista) y para el resto entra en el próximo
+// Estático, revalidado cada 5 minutos: la página carga al instante y no consume
+// egress de Supabase en cada visita. Cuando Tati edita un texto lo ve al toque
+// en su navegador (guardado optimista) y para el resto entra en el próximo
 // revalidado.
 export const revalidate = 300;
 
 export default async function Inicio() {
-  const [producto, textos, talleres] = await Promise.all([
-    getProductoDestacado(),
+  const [productos, textos, talleres] = await Promise.all([
+    getProductos(),
     getTextos(),
     getTalleres(),
   ]);
+
+  // El producto destacado protagoniza el hero; el resto sigue teniendo su
+  // propia sección más abajo.
+  const destacado = productos.find((p) => p.destacado) ?? productos[0] ?? null;
 
   const dolores = [
     t(textos, "dolor_1", "¿Lo estaré ayudando bien?"),
@@ -29,39 +32,45 @@ export default async function Inicio() {
     t(textos, "dolor_4", "¿Tengo que corregirle los errores?"),
   ];
 
-  const bullets = [
-    t(textos, "guia_bullet_1", "Entender por qué la alfabetización empieza mucho antes de primer grado."),
-    t(textos, "guia_bullet_2", "Reconocer las cuatro etapas de la escritura y qué está pensando tu hijo en cada una."),
-    t(textos, "guia_bullet_3", "Dejar de corregir por reflejo y aprender a preguntar antes."),
-    t(textos, "guia_bullet_4", "Ideas concretas para la vida cotidiana: la lista del super, una receta, un cuento antes de dormir."),
-    t(textos, "guia_bullet_5", "Saber cuándo conviene consultar con un profesional y cuándo simplemente hay que dar tiempo."),
+  const comoFunciona = [
+    t(textos, "compra_detalle_1", "Acceso inmediato después del pago"),
+    t(textos, "compra_detalle_2", "Lectura online desde celular, tablet o computadora"),
+    t(textos, "compra_detalle_3", "Sin vencimiento: lo leés cuando quieras"),
+    t(textos, "compra_detalle_4", "Escrito por una psicopedagoga matriculada"),
   ];
 
-  const indice = Array.isArray(producto?.indice) ? producto.indice : [];
-
-  // Datos estructurados: ayudan a que Google muestre el precio y el autor.
-  const jsonLd = producto
-    ? {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        name: producto.titulo,
-        description: producto.descripcion ?? undefined,
-        image: urlPublica(producto.portada_path) ?? undefined,
-        brand: { "@type": "Brand", name: "CISUR — Centro Integral Sur" },
-        author: {
-          "@type": "Person",
-          name: producto.autor ?? "Tatiana Galera",
-          jobTitle: "Licenciada en Psicopedagogía",
-        },
-        offers: {
-          "@type": "Offer",
-          price: Number(producto.precio),
-          priceCurrency: "ARS",
-          availability: "https://schema.org/InStock",
-          url: `${urlSitio()}/guias/${producto.slug}`,
-        },
-      }
-    : null;
+  // Un ItemList con los productos: le da a Google el catálogo completo de una
+  // página sola, que es justamente el punto de un one-pager.
+  const jsonLd =
+    productos.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: productos.map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "Product",
+              name: p.titulo,
+              description: p.descripcion ?? undefined,
+              image: urlPublicaAbsoluta(p.portada_path) ?? undefined,
+              brand: { "@type": "Brand", name: "CISUR — Centro Integral Sur" },
+              author: {
+                "@type": "Person",
+                name: p.autor ?? "Tatiana Galera",
+                jobTitle: "Licenciada en Psicopedagogía",
+              },
+              offers: {
+                "@type": "Offer",
+                price: Number(p.precio),
+                priceCurrency: "ARS",
+                availability: "https://schema.org/InStock",
+                url: `${urlSitio()}/#${p.slug}`,
+              },
+            },
+          })),
+        }
+      : null;
 
   return (
     <>
@@ -106,17 +115,17 @@ export default async function Inicio() {
               sin convertirte en su maestra.
             </TextoEditable>
 
-            {producto ? (
+            {destacado ? (
               <div className="mt-9 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-                <Link
-                  href={`/guias/${producto.slug}#comprar`}
+                <a
+                  href={`#${destacado.slug}`}
                   className="inline-flex w-full items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-[1.21rem] text-papel transition-colors hover:bg-verde-oscuro sm:w-auto"
                 >
                   {t(textos, "hero_cta", "Quiero la guía")}
-                </Link>
+                </a>
                 <p className="text-[1.05rem] text-tinta-tenue">
                   <span className="text-tinta">
-                    {formatearPrecio(producto.precio)}
+                    {formatearPrecio(destacado.precio)}
                   </span>{" "}
                   · pago único · acceso inmediato
                 </p>
@@ -134,13 +143,13 @@ export default async function Inicio() {
           </div>
 
           <div className="mx-auto w-full max-w-[300px] md:max-w-[340px]">
-            <PortadaGuia producto={producto} prioridad />
+            <PortadaGuia producto={destacado} prioridad />
           </div>
         </div>
       </section>
 
       {/* ================================================================
-          ¿TE SUENA?
+          EL PROBLEMA — por qué existe todo lo de abajo
           ================================================================ */}
       <section className="contenedor py-20 md:py-28">
         <TextoEditable
@@ -175,7 +184,7 @@ export default async function Inicio() {
       </section>
 
       {/* ================================================================
-          CITA
+          LA CITA
           ================================================================ */}
       <section className="border-y border-papel-3 bg-verde py-20 text-papel md:py-24">
         <div className="contenedor-angosto text-center">
@@ -188,175 +197,39 @@ export default async function Inicio() {
             cuento compartido y en cada oportunidad de descubrir que las palabras
             tienen un significado.»
           </blockquote>
-          <p className="mt-7 versalitas text-salvia">
-            Capítulo 1 de la guía
-          </p>
+          <p className="mt-7 versalitas text-salvia">Capítulo 1 de la guía</p>
         </div>
       </section>
 
       {/* ================================================================
-          QUÉ VAS A ENCONTRAR
+          LOS MATERIALES — una sección por producto
           ================================================================ */}
-      <section className="contenedor py-20 md:py-28">
-        {/* Sin índice cargado, la segunda columna quedaría vacía y el texto
-            comprimido en media pantalla: colapsamos a una sola columna. */}
-        <div
-          className={`grid gap-14 md:gap-20 ${
-            indice.length > 0 ? "md:grid-cols-2" : "mx-auto max-w-2xl"
-          }`}
-        >
-          <div>
-            <TextoEditable
-              clave="guia_titulo"
-              como="h2"
-              className="text-[2rem] leading-tight text-tinta sm:text-[2.4rem]"
-            >
-              Qué vas a encontrar adentro
-            </TextoEditable>
+      {productos.map((producto, i) => (
+        <SeccionProducto
+          key={producto.id}
+          producto={producto}
+          invertido={i % 2 === 1}
+          fondo={i % 2 === 1 ? "bg-papel-2" : "bg-papel"}
+        />
+      ))}
 
-            <TextoEditable
-              clave="guia_texto"
-              como="p"
-              multilinea
-              className="mt-5 text-[1.21rem] leading-relaxed text-tinta-suave"
-            >
-              Siete capítulos que van de lo general a lo concreto: qué significa
-              realmente alfabetizar, cómo piensan los chicos cuando escriben
-              «mal», cuáles son las etapas de la escritura y qué podés hacer en
-              casa cada día. Con propuestas de reflexión al final de cada
-              capítulo.
-            </TextoEditable>
-
-            <ul className="lista mt-8">
-              {bullets.map((b, i) => (
-                <li key={i} className="text-tinta-suave">
-                  {b}
+      {/* Cómo funciona la compra: una sola vez, vale para todo el catálogo. */}
+      {productos.length > 0 ? (
+        <section className="bg-tostado-tenue py-12">
+          <div className="contenedor">
+            <ul className="grid gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
+              {comoFunciona.map((detalle, i) => (
+                <li
+                  key={i}
+                  className="flex gap-3 text-[1.05rem] leading-snug text-tinta-suave"
+                >
+                  <span aria-hidden="true" className="text-verde-claro">
+                    ❧
+                  </span>
+                  {detalle}
                 </li>
               ))}
             </ul>
-          </div>
-
-          {indice.length > 0 ? (
-            <div className="rounded-[3px] border border-papel-3 bg-papel-2 p-8 md:p-10">
-              <h3 className="versalitas text-verde-claro">Índice</h3>
-              <ol className="mt-6 space-y-4">
-                {indice.map((capitulo, i) => (
-                  <li key={i} className="flex gap-4">
-                    <span
-                      aria-hidden="true"
-                      className="mt-0.5 shrink-0 text-[1.05rem] text-salvia"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="leading-snug text-tinta-suave">
-                      {capitulo}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          ) : null}
-        </div>
-      </section>
-
-      {/* ================================================================
-          EL FRASCO DE LAS INVITACIONES
-          ================================================================ */}
-      <BloqueFrasco textos={textos} />
-
-      {/* ================================================================
-          SOBRE TATI
-          ================================================================ */}
-      <section
-        id="sobre-mi"
-        className="border-y border-papel-3 bg-papel-2 py-20 md:py-28"
-      >
-        <div className="contenedor-angosto">
-          <TextoEditable
-            clave="sobre_titulo"
-            como="h2"
-            className="text-[2rem] leading-tight text-tinta sm:text-[2.4rem]"
-          >
-            Hola, soy Tatiana
-          </TextoEditable>
-
-          <div className="prosa mt-7 text-tinta-suave">
-            <TextoEditable clave="sobre_p1" como="p" multilinea>
-              Desde muy chica supe que quería dedicarme a la educación. Crecí
-              entre jardines, juegos y canciones gracias a mi mamá, que es
-              docente. Admiraba a mis maestras y soñaba con algún día ocupar ese
-              lugar.
-            </TextoEditable>
-
-            <TextoEditable clave="sobre_p2" como="p" multilinea>
-              Ese sueño me llevó a estudiar el Profesorado de Nivel Inicial y, con
-              el tiempo, la Licenciatura en Psicopedagogía. En 2020, mientras
-              esperaba a mi primera hija, me recibí en plena pandemia. Después
-              llegaron nuevos desafíos: los equipos de orientación escolar y
-              acompañar el crecimiento de una institución maternal desde un rol
-              directivo.
-            </TextoEditable>
-
-            <TextoEditable clave="sobre_p3" como="p" multilinea>
-              Durante años recibí familias con la misma preocupación: «¿cómo puedo
-              ayudar a mi hijo en casa?». Ahí entendí que hacía falta un espacio
-              para acompañar también a las familias, no sólo a los chicos. Por eso
-              nació CISUR.
-            </TextoEditable>
-          </div>
-
-          <Link
-            href="/sobre-mi"
-            className="mt-8 inline-block text-verde underline decoration-salvia decoration-1 underline-offset-4 hover:decoration-verde"
-          >
-            Leer mi historia completa
-          </Link>
-        </div>
-      </section>
-
-      {/* ================================================================
-          COMPRA
-          ================================================================ */}
-      {producto ? (
-        <section id="comprar" className="contenedor py-20 md:py-28">
-          <div className="mx-auto max-w-3xl rounded-[3px] border border-tostado-claro bg-tostado-tenue p-8 sm:p-12">
-            <div className="grid gap-10 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
-              <div className="mx-auto w-full max-w-[200px]">
-                <PortadaGuia producto={producto} />
-              </div>
-
-              <div>
-                <TextoEditable
-                  clave="compra_titulo"
-                  como="h2"
-                  className="text-[1.8rem] leading-tight text-tinta sm:text-[2.1rem]"
-                >
-                  Llevate la guía
-                </TextoEditable>
-
-                <div className="mt-5 flex flex-wrap items-baseline gap-3">
-                  <span className="text-[2.3rem] leading-none text-verde">
-                    {formatearPrecio(producto.precio)}
-                  </span>
-                  {producto.precio_lista &&
-                  Number(producto.precio_lista) > Number(producto.precio) ? (
-                    <span className="text-[1.3rem] text-tinta-tenue line-through">
-                      {formatearPrecio(producto.precio_lista)}
-                    </span>
-                  ) : null}
-                  <span className="text-[1.05rem] text-tinta-tenue">pago único</span>
-                </div>
-
-                <ul className="lista mt-6 text-[1.13rem] text-tinta-suave">
-                  <li>{t(textos, "compra_detalle_1", "Acceso inmediato después del pago")}</li>
-                  <li>{t(textos, "compra_detalle_2", "Lectura online desde celular, tablet o computadora")}</li>
-                  <li>{t(textos, "compra_detalle_3", "Sin vencimiento: la leés cuando quieras")}</li>
-                  <li>{t(textos, "compra_detalle_4", "Escrita por una psicopedagoga matriculada")}</li>
-                </ul>
-
-                <BotonComprar producto={producto} className="mt-8" />
-              </div>
-            </div>
           </div>
         </section>
       ) : null}
@@ -365,6 +238,11 @@ export default async function Inicio() {
           TALLERES
           ================================================================ */}
       <BloqueTalleres talleres={talleres} textos={textos} />
+
+      {/* ================================================================
+          SOBRE MÍ
+          ================================================================ */}
+      <SeccionSobreMi textos={textos} />
 
       {/* ================================================================
           PREGUNTAS

@@ -25,7 +25,7 @@ export default function NoEncontrada() {
           Ir al inicio
         </Link>
         <Link
-          href="/guias"
+          href="/"
           className="rounded-[2px] border border-papel-3 px-6 py-3 text-tinta-suave transition-colors hover:border-salvia"
         >
           Ver los materiales

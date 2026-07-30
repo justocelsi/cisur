@@ -25,6 +25,10 @@ Los tres tienen que pasar. El build corre sin credenciales a propósito.
   Si agregás un camino de compra nuevo, tiene que pasar por `crear_compra()`.
 - **El webhook falla cerrado.** Si algo devuelve 401 en `/api/webhook/mp`, revisar
   `MP_WEBHOOK_SECRET` antes de tocar la validación de firma.
+- **El sitio público es UNA página** (`app/page.js`). No agregar rutas nuevas
+  para contenido: va como sección con su `id`, y el nav del encabezado se arma
+  solo desde los productos. Si agregás una sección fija, sumala a `secciones`
+  en `app/layout.js` y ponele la utilidad `ancla`.
 - **`prosa` sobre un `<ul>` no funciona** (estiliza `.prosa ul > li`, o sea
   descendientes). Para listas sueltas: `lista` o `lista-numerada`.
 - **ESLint corre las reglas del compilador de React.** No se permite `setState`

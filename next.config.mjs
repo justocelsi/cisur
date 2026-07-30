@@ -49,6 +49,24 @@ const nextConfig = {
       : [],
   },
 
+  /**
+   * El sitio pasó a ser una sola página con secciones. Estas URLs existieron
+   * y pueden estar en un mensaje de WhatsApp, en un posteo o indexadas: en vez
+   * de un 404, llevan al ancla correspondiente.
+   */
+  async redirects() {
+    return [
+      { source: "/guias", destination: "/", permanent: true },
+      {
+        source: "/guias/:slug",
+        destination: "/#:slug",
+        permanent: true,
+      },
+      { source: "/talleres", destination: "/#talleres", permanent: true },
+      { source: "/sobre-mi", destination: "/#sobre-mi", permanent: true },
+    ];
+  },
+
   async headers() {
     return [
       { source: "/(.*)", headers: cabeceras },

@@ -2,7 +2,7 @@ import "./globals.css";
 import Encabezado from "./components/Encabezado";
 import PieDePagina from "./components/PieDePagina";
 import Proveedores from "./components/Proveedores";
-import { getTextos } from "@/lib/datos";
+import { getProductos, getTextos } from "@/lib/datos";
 import { urlSitio } from "@/lib/utils";
 
 const SITIO = urlSitio();
@@ -61,7 +61,21 @@ export const viewport = {
 
 export default async function RootLayout({ children }) {
   // Los textos se cargan una sola vez acá y bajan al cliente ya renderizados.
-  const textosIniciales = await getTextos();
+  const [textosIniciales, productos] = await Promise.all([
+    getTextos(),
+    getProductos(),
+  ]);
+
+  // El nav del one-pager: un ítem por material publicado, más las secciones
+  // fijas. Si Tati publica un material nuevo, aparece acá solo.
+  const secciones = [
+    ...productos.map((p) => ({
+      id: p.slug,
+      texto: p.nombre_corto || p.titulo,
+    })),
+    { id: "talleres", texto: "Talleres" },
+    { id: "sobre-mi", texto: "Sobre mí" },
+  ];
 
   return (
     <html lang="es-AR">
@@ -73,7 +87,7 @@ export default async function RootLayout({ children }) {
           >
             Saltar al contenido
           </a>
-          <Encabezado />
+          <Encabezado secciones={secciones} />
           <main id="contenido" className="flex-1">
             {children}
           </main>

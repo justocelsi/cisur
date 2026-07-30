@@ -33,7 +33,7 @@ export default function BotonComprar({
       // Volvemos al bloque de compra del producto, pero NO disparamos el pago
       // solo: que después de registrarse aparezca de golpe Mercado Pago es
       // desconcertante. El usuario vuelve a apretar, ahora con sesión.
-      const destino = `/guias/${producto.slug}#comprar`;
+      const destino = `/#${producto.slug}`;
       router.push(`/ingresar?next=${encodeURIComponent(destino)}`);
       return;
     }

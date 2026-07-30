@@ -1,6 +1,6 @@
 -- ============================================================================
 -- CISUR — 0006_seed.sql
--- Textos iniciales del sitio y el primer producto.
+-- Textos iniciales del sitio y los dos productos.
 --
 -- Todo lo de acá es editable después por Tati desde el modo edición, así que
 -- estos valores son sólo el punto de partida. El copy sale de sus propios
@@ -31,39 +31,6 @@ insert into site_settings (key, value) values
   ('dolor_cierre',
    'Detrás de estas preguntas hay mucho amor y muchas ganas de acompañar. También, muchas veces, la sensación de no saber por dónde empezar. Esta guía es para eso.'),
 
-  -- Qué es ------------------------------------------------------------------
-  ('guia_titulo',
-   'Qué vas a encontrar adentro'),
-  ('guia_texto',
-   'Siete capítulos que van de lo general a lo concreto: qué significa realmente alfabetizar, cómo piensan los chicos cuando escriben "mal", cuáles son las etapas de la escritura y qué podés hacer en casa cada día. Con propuestas de reflexión al final de cada capítulo.'),
-  ('guia_bullet_1',
-   'Entender por qué la alfabetización empieza mucho antes de primer grado.'),
-  ('guia_bullet_2',
-   'Reconocer las cuatro etapas de la escritura y qué está pensando tu hijo en cada una.'),
-  ('guia_bullet_3',
-   'Dejar de corregir por reflejo y aprender a preguntar antes.'),
-  ('guia_bullet_4',
-   'Ideas concretas para la vida cotidiana: la lista del super, una receta, un cuento antes de dormir.'),
-  ('guia_bullet_5',
-   'Saber cuándo conviene consultar con un profesional y cuándo simplemente hay que dar tiempo.'),
-
-  -- El frasco de las invitaciones -------------------------------------------
-  ('frasco_kicker',
-   'Jugar también es alfabetizar'),
-  ('frasco_titulo',
-   'El frasco de las invitaciones'),
-  ('frasco_lead',
-   '¿Sabías que el juego es una de las mejores herramientas para la alfabetización? Uno de mis favoritos es el frasco de las invitaciones.'),
-  ('frasco_texto',
-   'Son propuestas para disfrutar en familia, compartir tiempo de calidad y descubrir que la alfabetización puede estar presente en los momentos más simples.'),
-  ('frasco_inv_1', 'Preparar una receta'),
-  ('frasco_inv_2', 'Salir a caminar'),
-  ('frasco_inv_3', 'Leer un cuento'),
-  ('frasco_inv_4', 'Escribir un mensaje'),
-  ('frasco_inv_5', 'Inventar una historia'),
-  ('frasco_cierre',
-   'Cada una de ellas fue pensada para que la lectura, la escritura, la conversación y el juego aparezcan de manera natural, respetando los tiempos, intereses y posibilidades de cada familia.'),
-
   -- Sobre mí (de TEXTO.docx, versión abreviada) -----------------------------
   ('sobre_titulo',
    'Hola, soy Tatiana'),
@@ -82,11 +49,7 @@ insert into site_settings (key, value) values
   ('talleres_cta',
    'Consultar por un taller'),
 
-  -- Compra ------------------------------------------------------------------
-  ('compra_titulo',
-   'Llevate la guía'),
-  ('compra_texto',
-   'Pago único con Mercado Pago. Acceso inmediato y para siempre desde tu cuenta, en cualquier dispositivo.'),
+  -- Cómo funciona la compra (se muestra una vez, vale para todo el catálogo) --
   ('compra_detalle_1', 'Acceso inmediato después del pago'),
   ('compra_detalle_2', 'Lectura online desde celular, tablet o computadora'),
   ('compra_detalle_3', 'Sin vencimiento: la leés cuando quieras'),
@@ -120,23 +83,53 @@ on conflict (key) do nothing;
 -- arranca en un valor de referencia y Tati lo ajusta cuando quiera.
 -- ---------------------------------------------------------------------------
 insert into productos (
-  slug, titulo, subtitulo, descripcion, autor,
-  precio, precio_lista, paginas, destacado, activo, orden, indice
-) values (
-  'rol-de-la-familia-alfabetizacion',
-  'El rol de la familia en el proceso de alfabetización',
-  'Una guía para familias',
-  'Siete capítulos para entender cómo aprenden a leer y escribir los chicos, reconocer las etapas de la escritura y acompañar el proceso desde casa con confianza, respeto y disfrute. Incluye propuestas de reflexión al final de cada capítulo.',
-  'Lic. Tatiana Galera',
-  25000, 34900, null, true, true, 0,
-  '[
-    "¿Qué significa alfabetizar?",
-    "El rol de la familia: acompañar sin reemplazar",
-    "¿Cómo aprenden a escribir los niños y las niñas?",
-    "Las etapas de la escritura: comprender para acompañar",
-    "Observar para comprender: reconocer el momento de aprendizaje",
-    "Cómo acompañar la alfabetización en casa",
-    "¿Cuándo consultar con un profesional?"
-  ]'::jsonb
-)
+  slug, titulo, nombre_corto, subtitulo, descripcion, autor,
+  precio, precio_lista, paginas, destacado, activo, orden,
+  portada_path, indice_titulo, indice
+) values
+
+  -- 1. La guía ---------------------------------------------------------------
+  (
+    'rol-de-la-familia-alfabetizacion',
+    'El rol de la familia en el proceso de alfabetización',
+    'La guía',
+    'Una guía para familias',
+    'Siete capítulos para entender cómo aprenden a leer y escribir los chicos, reconocer las etapas de la escritura y acompañar el proceso desde casa con confianza, respeto y disfrute. Incluye propuestas de reflexión al final de cada capítulo.',
+    'Lic. Tatiana Galera',
+    25000, 34900, null, true, true, 0,
+    null,
+    'Índice',
+    '[
+      "¿Qué significa alfabetizar?",
+      "El rol de la familia: acompañar sin reemplazar",
+      "¿Cómo aprenden a escribir los niños y las niñas?",
+      "Las etapas de la escritura: comprender para acompañar",
+      "Observar para comprender: reconocer el momento de aprendizaje",
+      "Cómo acompañar la alfabetización en casa",
+      "¿Cuándo consultar con un profesional?"
+    ]'::jsonb
+  ),
+
+  -- 2. El frasco de las invitaciones ------------------------------------------
+  -- La portada empieza apuntando a un archivo del repo (public/productos/…).
+  -- Si Tati sube otra desde el panel, pasa a apuntar a Supabase Storage.
+  (
+    'frasco-de-invitaciones',
+    'El frasco de las invitaciones',
+    'El frasco',
+    'Juego educativo para toda la familia',
+    '¿Sabías que el juego es una de las mejores herramientas para la alfabetización? El frasco de las invitaciones son 50 propuestas para disfrutar en familia, compartir tiempo de calidad y descubrir que la alfabetización puede estar presente en los momentos más simples. Cada una fue pensada para que la lectura, la escritura, la conversación y el juego aparezcan de manera natural, respetando los tiempos, intereses y posibilidades de cada familia.',
+    'Lic. Tatiana Galera',
+    18000, null, null, false, true, 1,
+    '/productos/frasco-de-invitaciones.webp',
+    'Algunas invitaciones',
+    '[
+      "Preparar una receta",
+      "Salir a caminar",
+      "Leer un cuento",
+      "Escribir un mensaje",
+      "Inventar una historia"
+    ]'::jsonb
+  )
+
 on conflict (slug) do nothing;

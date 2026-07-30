@@ -15,6 +15,7 @@ import { formatearPrecio, slugify } from "@/lib/utils";
 
 const VACIO = {
   titulo: "",
+  nombre_corto: "",
   subtitulo: "",
   descripcion: "",
   autor: "Lic. Tatiana Galera",
@@ -22,6 +23,7 @@ const VACIO = {
   precio_lista: "",
   paginas: "",
   indiceTexto: "",
+  indice_titulo: "",
   activo: false,
   destacado: false,
 };
@@ -83,6 +85,7 @@ export default function PanelProductos() {
     setEditandoId(producto.id);
     setForm({
       titulo: producto.titulo ?? "",
+      nombre_corto: producto.nombre_corto ?? "",
       subtitulo: producto.subtitulo ?? "",
       descripcion: producto.descripcion ?? "",
       autor: producto.autor ?? "",
@@ -92,6 +95,7 @@ export default function PanelProductos() {
       indiceTexto: Array.isArray(producto.indice)
         ? producto.indice.join("\n")
         : "",
+      indice_titulo: producto.indice_titulo ?? "",
       activo: producto.activo,
       destacado: producto.destacado,
     });
@@ -122,6 +126,7 @@ export default function PanelProductos() {
 
     const fila = {
       titulo: form.titulo.trim(),
+      nombre_corto: form.nombre_corto.trim() || null,
       subtitulo: form.subtitulo.trim() || null,
       descripcion: form.descripcion.trim() || null,
       autor: form.autor.trim() || null,
@@ -133,6 +138,7 @@ export default function PanelProductos() {
         .split("\n")
         .map((l) => l.trim())
         .filter(Boolean),
+      indice_titulo: form.indice_titulo.trim() || null,
       activo: form.activo,
       destacado: form.destacado,
     };
@@ -248,6 +254,14 @@ export default function PanelProductos() {
           />
 
           <Campo
+            id="nombre_corto"
+            etiqueta="Nombre corto"
+            valor={form.nombre_corto}
+            alCambiar={(v) => setForm({ ...form, nombre_corto: v })}
+            ayuda="Cómo aparece en el menú de arriba de la página. Dos o tres palabras: «La guía», «El frasco». Si lo dejás vacío usa el título completo, que suele ser muy largo."
+          />
+
+          <Campo
             id="subtitulo"
             etiqueta="Bajada"
             valor={form.subtitulo}
@@ -305,13 +319,21 @@ export default function PanelProductos() {
             ayuda="Opcional."
           />
 
+          <Campo
+            id="indice_titulo"
+            etiqueta="Título de la lista"
+            valor={form.indice_titulo}
+            alCambiar={(v) => setForm({ ...form, indice_titulo: v })}
+            ayuda="El encabezado que va arriba de la lista de abajo. En la guía dice «Índice»; en el frasco, «Algunas invitaciones»."
+          />
+
           <CampoLargo
             id="indice"
-            etiqueta="Índice"
+            etiqueta="La lista"
             filas={7}
             valor={form.indiceTexto}
             alCambiar={(v) => setForm({ ...form, indiceTexto: v })}
-            ayuda="Un capítulo por línea. Se muestra numerado en la página del material."
+            ayuda="Un renglón por línea. Se muestra numerada en la sección del material: los capítulos de la guía, o algunos ejemplos de invitaciones."
           />
 
           <CampoArchivo

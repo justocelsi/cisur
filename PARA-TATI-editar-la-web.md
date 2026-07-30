@@ -43,13 +43,14 @@ párrafos), `Enter` hace un salto de línea y para guardar es `Ctrl + Enter`.
 
 ### Qué podés cambiar así
 
-En la **página de inicio**: el título grande, el texto de abajo, las cuatro
-preguntas del bloque "¿Alguna de estas preguntas te resulta familiar?", la
-descripción de la guía, los cinco puntos de "Qué vas a encontrar adentro", los
-tres párrafos de "Hola, soy Tatiana", el título del bloque de compra y los cuatro
-puntos que lo acompañan.
+La web es **una sola página**: todo está ahí abajo, y el menú de arriba te lleva
+a cada parte. Con el modo edición podés cambiar el título grande, el texto de
+abajo, las cuatro preguntas del bloque "¿Alguna de estas preguntas te resulta
+familiar?", los tres párrafos de "Hola, soy Tatiana", el título y la descripción
+de los talleres, y los cuatro puntos de "cómo funciona la compra".
 
-En **Talleres**: el título y la descripción.
+**El texto de cada material** (su descripción y su lista) no se cambia desde acá
+sino desde **Panel → Materiales**, porque va junto con su precio y su archivo.
 
 ### Un detalle importante sobre los tiempos
 
@@ -123,8 +124,12 @@ sitio. Tildá **sólo una**.
 Usá el formulario de la izquierda (dice **"Nuevo material"**), llenalo y dale
 **"Crear material"**. Dejá "Publicado" destildado hasta que hayas subido el PDF.
 
-El campo **Índice** es un capítulo por línea: escribís el primero, `Enter`, el
-segundo, `Enter`, y así. En la web aparecen numerados.
+**Nombre corto:** es como aparece el material en el menú de arriba. Dos o tres
+palabras («La guía», «El frasco»), porque el título completo no entra.
+
+**Título de la lista** y **La lista:** la lista es un renglón por línea. En la
+guía son los capítulos y el título es «Índice»; en el frasco son ejemplos de
+invitaciones y el título es «Algunas invitaciones». En la web salen numerados.
 
 ---
 

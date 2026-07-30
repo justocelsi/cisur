@@ -38,6 +38,9 @@ create table if not exists productos (
   slug          text unique not null,
   titulo        text not null,
   subtitulo     text,
+  -- Etiqueta corta para el nav del one-pager: "El rol de la familia en el
+  -- proceso de alfabetización" no entra en una barra de secciones.
+  nombre_corto  text,
   descripcion   text,
   autor         text,
   portada_path  text,
@@ -46,6 +49,9 @@ create table if not exists productos (
   precio_lista  numeric(10, 2) check (precio_lista is null or precio_lista >= 0),
   paginas       integer check (paginas is null or paginas > 0),
   indice        jsonb not null default '[]'::jsonb,
+  -- Encabezado de la lista de arriba. En la guía es "Índice"; en el frasco,
+  -- "Algunas invitaciones". Nullable: si no está, no se muestra el encabezado.
+  indice_titulo text,
   destacado     boolean not null default false,
   activo        boolean not null default true,
   orden         integer not null default 0,
