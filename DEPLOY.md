@@ -96,33 +96,31 @@ uno, corrélo de nuevo, no rompe nada.
 Este paso **no lo saltees**. Es lo que separa "funciona" de "funciona y nadie te
 roba el material".
 
-Abrí `supabase/tests/rls_smoke_tests.sql`, pegalo completo en el SQL Editor y
-**Run**.
+Son dos pasos, y el primero se hace una sola vez en la vida del proyecto:
 
-Vas a ver una tabla con 58 pruebas y, al final, un resumen. Tiene que decir:
+**a)** Pegá `supabase/tests/instalar_smoke_tests.sql` y **Run**. Tiene que
+responder `Instalado.`
+
+**b)** Pegá `supabase/tests/rls_smoke_tests.sql` (es una sola línea) y **Run**.
+La última fila del resultado tiene que decir:
 
 ```
 TODO OK — 58 pruebas pasaron
 ```
 
 Si dice `¡ATENCIÓN! N de 58 pruebas FALLARON`, la columna `detalle` de cada fila
-te dice qué pasó. No sigas: avisame.
+explica qué pasó. No sigas: avisame.
 
-El script **borra solo** todo lo que creó y lo confirma con un
-`LIMPIO — el script no dejó nada en la base`. Si alguna vez ese mensaje dice
-otra cosa, corré `supabase/tests/limpiar_datos_de_prueba.sql`.
+La suite prepara sus datos, prueba y limpia **dentro de la misma llamada**, así
+que no deja nada en la base y la podés correr las veces que quieras.
 
-> No usa `ROLLBACK` a propósito. El SQL Editor de Supabase confirma cada
-> sentencia por separado, así que un `ROLLBACK` al final no deshace nada: el
-> script se limpia con `DELETE` explícitos, que funcionan en cualquier cliente.
-
-> **Estas 58 pruebas ya corrieron en verde en un Postgres local** antes de que
-> las leas, con `supabase/tests/harness_local.sql`, que emula sobre un Postgres
-> pelado los roles de Supabase y los esquemas `auth` y `storage`. Si algo falla
-> en Supabase, entonces, es que una migración no se aplicó — no que la prueba
-> esté mal escrita.
+> **Por qué está partido en dos.** La primera versión era un script de muchas
+> sentencias y falló tres veces seguidas en el SQL Editor, siempre por lo mismo:
+> ahí no se puede dar por sentado que una sentencia vea lo que creó la anterior,
+> ni que un `ROLLBACK` al final deshaga algo. Metida en una función, correrla es
+> una sola sentencia y deja de depender de eso.
 >
-> Para correr todo localmente de nuevo:
+> Para correr todo localmente antes de tocar producción:
 >
 > ```bash
 > export PATH=/usr/lib/postgresql/18/bin:$PATH
@@ -132,7 +130,8 @@ otra cosa, corré `supabase/tests/limpiar_datos_de_prueba.sql`.
 > P="psql -p 55432 -U postgres -d cisur_test -q"
 > $P -f supabase/tests/harness_local.sql
 > for f in supabase/migrations/0*.sql; do $P -f "$f"; done
-> $P -f supabase/tests/rls_smoke_tests.sql | grep -E "FALLA|resumen|TODO OK"
+> $P -f supabase/tests/instalar_smoke_tests.sql
+> $P -c "select * from public.cisur_smoke_tests();"
 > ```
 
 ### 2.2 Desactivar la confirmación por mail

@@ -14,12 +14,14 @@ Los tres tienen que pasar. El build corre sin credenciales a propósito.
 ## Trampas de este proyecto
 
 - **Si tocás una policy de RLS, un grant o un trigger**, correr
-  `supabase/tests/rls_smoke_tests.sql` en el SQL Editor de Supabase: el resumen
-  final tiene que decir `TODO OK` y después `LIMPIO`.
-- **Nada de `BEGIN`/`ROLLBACK` ni tablas `ON COMMIT DROP` en los scripts de
-  Supabase.** El SQL Editor confirma cada sentencia por separado: la tabla
-  temporal se destruye apenas se crea y el `ROLLBACK` no deshace nada. Los
-  scripts se limpian con `DELETE` explícitos.
+  `select * from public.cisur_smoke_tests();` en el SQL Editor: la última fila
+  tiene que decir `TODO OK`. Si la función no existe todavía, instalarla con
+  `supabase/tests/instalar_smoke_tests.sql`.
+- **Un script de mantenimiento para Supabase no puede depender de que una
+  sentencia vea lo que creó la anterior**, ni de `BEGIN`/`ROLLBACK`, ni de
+  tablas `ON COMMIT DROP`. Si necesita estado compartido, va adentro de una
+  función y se invoca con una sola sentencia. Tres versiones de los smoke tests
+  fallaron por ignorar esto.
 - **No insertar filas en `storage.objects` desde SQL.** Un trigger de Supabase
   (`protect_delete`) prohíbe borrarlas después, así que quedan como archivos
   fantasma en el bucket. Las policies de Storage se prueban por sus piezas
