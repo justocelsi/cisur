@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
 import NavSecciones from "./NavSecciones";
 import { useAuth } from "@/app/context/AuthProvider";
@@ -30,8 +30,37 @@ export default function Encabezado({ secciones = [] }) {
   const cerrar = () => setAbierto(false);
   const enPortada = ruta === "/";
 
+  /**
+   * Publica el alto real del encabezado en --alto-encabezado.
+   *
+   * De ahí sale la compensación de scroll de las anclas (utilidad `ancla`) y
+   * la línea de detección del nav. Se mide en vez de hardcodearse porque el
+   * alto cambia entre mobile y escritorio, y cambiaría de nuevo si el logo o
+   * el nav crecen. Un número mágico acá es un título tapado más adelante.
+   */
+  const refEncabezado = useRef(null);
+  useEffect(() => {
+    const nodo = refEncabezado.current;
+    if (!nodo) return;
+
+    function medir() {
+      document.documentElement.style.setProperty(
+        "--alto-encabezado",
+        `${nodo.offsetHeight}px`,
+      );
+    }
+
+    medir();
+    const observador = new ResizeObserver(medir);
+    observador.observe(nodo);
+    return () => observador.disconnect();
+  }, []);
+
   return (
-    <header className="no-imprimir sticky top-0 z-40 bg-papel/95 backdrop-blur-sm">
+    <header
+      ref={refEncabezado}
+      className="no-imprimir sticky top-0 z-40 bg-papel/95 backdrop-blur-sm"
+    >
       <div className="border-b border-papel-3">
         <div className="contenedor flex items-center justify-between gap-4 py-3">
           <Link href="/" className="shrink-0" aria-label="CISUR — inicio">

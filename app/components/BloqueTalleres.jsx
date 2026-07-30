@@ -18,7 +18,7 @@ export default function BloqueTalleres({ talleres = [], textos }) {
   return (
     <section
       id="talleres"
-      className="border-y border-papel-3 bg-papel-2 py-20 md:py-28"
+      className="ancla border-y border-papel-3 bg-papel-2 py-20 md:py-28"
     >
       <div className="contenedor">
         <div className="mx-auto max-w-2xl text-center">

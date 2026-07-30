@@ -149,10 +149,15 @@ h4 {
   line-height: 1.4;
 }
 
-/* Compensa el alto del encabezado pegajoso (logo + nav de secciones) para que
-   al saltar a un ancla el título no quede tapado. */
+/* Compensa el alto del encabezado pegajoso para que al saltar a un ancla el
+   título no quede tapado.
+
+   El alto lo mide el propio encabezado y lo publica en --alto-encabezado (ver
+   Encabezado.jsx): cambia entre mobile y escritorio, y cambiaría de nuevo si
+   algún día se suma una fila. El respaldo de 8rem cubre el instante previo a
+   la primera medición y el caso sin JavaScript. */
 @utility ancla {
-  scroll-margin-top: 9rem;
+  scroll-margin-top: calc(var(--alto-encabezado, 8rem) + 1.25rem);
 }
 
 @utility filete {

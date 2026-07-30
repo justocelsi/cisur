@@ -13,7 +13,10 @@ export default function BloqueContacto({ textos }) {
   const urlInstagram = safeHref(`https://www.instagram.com/${instagram}`);
 
   return (
-    <section id="contacto" className="border-t border-papel-3 bg-verde py-20 text-papel md:py-24">
+    <section
+      id="contacto"
+      className="ancla border-t border-papel-3 bg-verde py-20 text-papel md:py-24"
+    >
       <div className="contenedor-angosto text-center">
         <h2 className="text-[2rem] leading-tight sm:text-[2.4rem]">
           {t(textos, "contacto_titulo", "Hablemos")}
