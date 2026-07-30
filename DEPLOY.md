@@ -99,10 +99,35 @@ roba el material".
 Abrí `supabase/tests/rls_smoke_tests.sql`, pegalo completo en el SQL Editor y
 **Run**.
 
-Todas las filas del resultado tienen que empezar con `OK`. Si alguna dice
-`FALLA`, algo de las migraciones no se aplicó: no sigas, avisame.
+Vas a ver una tabla con 55 pruebas y, al final, un resumen. Tiene que decir:
+
+```
+TODO OK — 55 pruebas pasaron
+```
+
+Si dice `¡ATENCIÓN! N de 55 pruebas FALLARON`, la columna `detalle` de cada fila
+te dice qué pasó. No sigas: avisame.
 
 El script hace `ROLLBACK` al final, así que no deja datos de prueba.
+
+> **Estas 55 pruebas ya corrieron en verde en un Postgres local** antes de que
+> las leas, con `supabase/tests/harness_local.sql`, que emula sobre un Postgres
+> pelado los roles de Supabase y los esquemas `auth` y `storage`. Si algo falla
+> en Supabase, entonces, es que una migración no se aplicó — no que la prueba
+> esté mal escrita.
+>
+> Para correr todo localmente de nuevo:
+>
+> ```bash
+> export PATH=/usr/lib/postgresql/18/bin:$PATH
+> rm -rf /tmp/pgcisur && initdb -D /tmp/pgcisur -U postgres --auth=trust
+> pg_ctl -D /tmp/pgcisur -o "-p 55432" -l /tmp/pgcisur/log start
+> createdb -p 55432 -U postgres cisur_test
+> P="psql -p 55432 -U postgres -d cisur_test -q"
+> $P -f supabase/tests/harness_local.sql
+> for f in supabase/migrations/0*.sql; do $P -f "$f"; done
+> $P -f supabase/tests/rls_smoke_tests.sql | grep -E "FALLA|resumen|TODO OK"
+> ```
 
 ### 2.2 Desactivar la confirmación por mail
 
