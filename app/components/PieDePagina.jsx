@@ -22,16 +22,16 @@ export default async function PieDePagina() {
       <div className="contenedor grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2 lg:col-span-1">
           <Logo />
-          <p className="mt-4 max-w-xs text-[0.95rem] leading-relaxed text-tinta-suave">
+          <p className="mt-4 max-w-xs text-[1.05rem] leading-relaxed text-tinta-suave">
             Un espacio para acompañar procesos de aprendizaje y desarrollo, con
             las familias y con los chicos.
           </p>
-          <p className="mt-4 text-[0.95rem] text-tinta-tenue">{ciudad}</p>
+          <p className="mt-4 text-[1.05rem] text-tinta-tenue">{ciudad}</p>
         </div>
 
         <nav aria-label="Secciones del sitio">
           <h2 className="versalitas text-tinta-tenue">El sitio</h2>
-          <ul className="mt-4 space-y-2 text-[0.95rem]">
+          <ul className="mt-4 space-y-2 text-[1.05rem]">
             <li>
               <Link href="/guias" className="text-tinta-suave hover:text-verde">
                 Materiales
@@ -60,7 +60,7 @@ export default async function PieDePagina() {
 
         <nav aria-label="Contacto">
           <h2 className="versalitas text-tinta-tenue">Contacto</h2>
-          <ul className="mt-4 space-y-2 text-[0.95rem]">
+          <ul className="mt-4 space-y-2 text-[1.05rem]">
             {urlWhatsapp ? (
               <li>
                 <a
@@ -90,7 +90,7 @@ export default async function PieDePagina() {
 
         <nav aria-label="Información legal">
           <h2 className="versalitas text-tinta-tenue">Legales</h2>
-          <ul className="mt-4 space-y-2 text-[0.95rem]">
+          <ul className="mt-4 space-y-2 text-[1.05rem]">
             <li>
               <Link
                 href="/legales/terminos"
@@ -129,7 +129,7 @@ export default async function PieDePagina() {
       </div>
 
       <div className="border-t border-papel-3">
-        <div className="contenedor flex flex-col gap-2 py-6 text-[0.85rem] text-tinta-tenue sm:flex-row sm:items-center sm:justify-between">
+        <div className="contenedor flex flex-col gap-2 py-6 text-[0.95rem] text-tinta-tenue sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} Tatiana Galera. Todos los derechos
             reservados.

@@ -62,9 +62,9 @@
 
 :root {
   color-scheme: light;
-  /* Con el cuerpo en 19px, ~36rem deja la línea en 65-75 caracteres, que es la
+  /* Con el cuerpo en 21px, ~39rem deja la línea en 65-75 caracteres, que es la
      medida cómoda para leer. */
-  --ancho-texto: 36rem;
+  --ancho-texto: 39rem;
 }
 
 html {
@@ -76,11 +76,11 @@ body {
   background-color: var(--color-papel);
   color: var(--color-tinta);
   font-family: var(--font-serif);
-  /* 19px. Times New Roman tiene una altura de x chica, así que a 17px se lee
-     más chico de lo que el número sugiere. Acá el cuerpo pide más tamaño que
-     una sans equivalente. */
-  font-size: 1.1875rem;
-  line-height: 1.65;
+  /* 21px. Times New Roman tiene una altura de x muy chica: a 17px se leía
+     apretado y a 19px seguía quedando corto. El cuerpo de una serif de este
+     tipo pide bastante más tamaño que el de una sans equivalente. */
+  font-size: 1.3125rem;
+  line-height: 1.62;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -144,8 +144,8 @@ h4 {
    y no "por defecto". Se usa en kickers y etiquetas. */
 @utility versalitas {
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  font-size: 0.92rem;
   line-height: 1.4;
 }
 
@@ -219,12 +219,12 @@ h4 {
   }
 
   & h2 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     margin-block: 2.2em 0.6em;
   }
 
   & h3 {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     margin-block: 1.8em 0.4em;
   }
 

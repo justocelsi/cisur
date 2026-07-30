@@ -42,14 +42,14 @@ export default async function SobreMi() {
         <header className="grid items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
           <div>
             <p className="versalitas text-verde-claro">Sobre mí</p>
-            <h1 className="mt-4 text-[2.2rem] leading-[1.1] text-tinta sm:text-[2.9rem]">
+            <h1 className="mt-4 text-[2.3rem] leading-[1.1] text-tinta sm:text-[3rem]">
               Hola, soy Tatiana
             </h1>
-            <p className="mt-5 text-[1.22rem] leading-relaxed text-tinta-suave">
+            <p className="mt-5 text-[1.32rem] leading-relaxed text-tinta-suave">
               Y esta es un poquito de mi historia.
             </p>
             <hr className="filete mt-8 max-w-xs" />
-            <p className="mt-4 text-[0.95rem] text-tinta-tenue">
+            <p className="mt-4 text-[1.05rem] text-tinta-tenue">
               Licenciada en Psicopedagogía · Profesora de Nivel Inicial y
               Maternal · Matrícula Provincial N.º 205281
             </p>

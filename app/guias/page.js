@@ -19,7 +19,7 @@ export default async function Guias() {
     <div className="contenedor py-16 md:py-24">
       <header className="mx-auto max-w-2xl text-center">
         <p className="versalitas text-verde-claro">Materiales</p>
-        <h1 className="mt-4 text-[2.2rem] leading-tight text-tinta sm:text-[2.7rem]">
+        <h1 className="mt-4 text-[2.3rem] leading-tight text-tinta sm:text-[2.8rem]">
           Guías para acompañar el aprendizaje
         </h1>
         <p className="mt-5 leading-relaxed text-tinta-suave">
@@ -45,29 +45,29 @@ export default async function Guias() {
                   <PortadaGuia producto={producto} />
                 </div>
 
-                <h2 className="mt-6 text-[1.32rem] leading-snug text-tinta group-hover:text-verde">
+                <h2 className="mt-6 text-[1.42rem] leading-snug text-tinta group-hover:text-verde">
                   {producto.titulo}
                 </h2>
 
                 {producto.subtitulo ? (
-                  <p className="mt-1 text-[0.95rem] text-tinta-tenue">
+                  <p className="mt-1 text-[1.05rem] text-tinta-tenue">
                     {producto.subtitulo}
                   </p>
                 ) : null}
 
                 {producto.descripcion ? (
-                  <p className="mt-3 line-clamp-3 text-[1.02rem] leading-relaxed text-tinta-suave">
+                  <p className="mt-3 line-clamp-3 text-[1.1rem] leading-relaxed text-tinta-suave">
                     {producto.descripcion}
                   </p>
                 ) : null}
 
                 <p className="mt-4 flex items-baseline gap-2">
-                  <span className="text-[1.36rem] text-verde">
+                  <span className="text-[1.46rem] text-verde">
                     {formatearPrecio(producto.precio)}
                   </span>
                   {producto.precio_lista &&
                   Number(producto.precio_lista) > Number(producto.precio) ? (
-                    <span className="text-[0.95rem] text-tinta-tenue line-through">
+                    <span className="text-[1.05rem] text-tinta-tenue line-through">
                       {formatearPrecio(producto.precio_lista)}
                     </span>
                   ) : null}

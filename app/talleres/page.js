@@ -51,10 +51,10 @@ export default async function Talleres() {
       <div className="contenedor py-16 md:py-24">
         <header className="mx-auto max-w-2xl text-center">
           <p className="versalitas text-verde-claro">Presencial</p>
-          <h1 className="mt-4 text-[2.2rem] leading-tight text-tinta sm:text-[2.9rem]">
+          <h1 className="mt-4 text-[2.3rem] leading-tight text-tinta sm:text-[3rem]">
             {t(textos, "talleres_titulo", "Talleres para colegios e instituciones")}
           </h1>
-          <p className="mt-5 text-[1.18rem] leading-relaxed text-tinta-suave">
+          <p className="mt-5 text-[1.27rem] leading-relaxed text-tinta-suave">
             {t(
               textos,
               "talleres_texto",
@@ -65,7 +65,7 @@ export default async function Talleres() {
 
         {/* Ejes de trabajo */}
         <section className="mt-20">
-          <h2 className="text-center text-[1.7rem] leading-tight text-tinta sm:text-[2rem]">
+          <h2 className="text-center text-[1.8rem] leading-tight text-tinta sm:text-[2.1rem]">
             Qué trabajamos
           </h2>
           <ul className="mt-12 grid gap-8 sm:grid-cols-2">
@@ -74,7 +74,7 @@ export default async function Talleres() {
                 key={eje.titulo}
                 className="rounded-[3px] border border-papel-3 bg-papel-2 p-7"
               >
-                <h3 className="text-[1.22rem] text-tinta">{eje.titulo}</h3>
+                <h3 className="text-[1.32rem] text-tinta">{eje.titulo}</h3>
                 <p className="mt-3 leading-relaxed text-tinta-suave">
                   {eje.texto}
                 </p>
@@ -85,7 +85,7 @@ export default async function Talleres() {
 
         {/* Cómo funciona */}
         <section className="mt-24 rounded-[3px] border border-tostado-tenue bg-papel-2 p-8 sm:p-12">
-          <h2 className="text-[1.7rem] leading-tight text-tinta sm:text-[2rem]">
+          <h2 className="text-[1.8rem] leading-tight text-tinta sm:text-[2.1rem]">
             Cómo lo organizamos
           </h2>
           <ol className="lista-numerada mt-7">
@@ -107,7 +107,7 @@ export default async function Talleres() {
         {/* Talleres realizados */}
         {talleres.length > 0 ? (
           <section className="mt-24">
-            <h2 className="text-center text-[1.7rem] leading-tight text-tinta sm:text-[2rem]">
+            <h2 className="text-center text-[1.8rem] leading-tight text-tinta sm:text-[2.1rem]">
               Talleres realizados
             </h2>
             <ul className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -137,18 +137,18 @@ export default async function Talleres() {
                       </div>
                     )}
                     <div className="p-6">
-                      <h3 className="text-[1.22rem] leading-snug text-tinta">
+                      <h3 className="text-[1.32rem] leading-snug text-tinta">
                         {taller.titulo}
                       </h3>
                       {taller.lugar || taller.fecha ? (
-                        <p className="mt-2 text-[0.95rem] text-tinta-tenue">
+                        <p className="mt-2 text-[1.05rem] text-tinta-tenue">
                           {[taller.lugar, formatearFecha(taller.fecha)]
                             .filter(Boolean)
                             .join(" · ")}
                         </p>
                       ) : null}
                       {taller.descripcion ? (
-                        <p className="mt-3 text-[1.02rem] leading-relaxed text-tinta-suave">
+                        <p className="mt-3 text-[1.1rem] leading-relaxed text-tinta-suave">
                           {taller.descripcion}
                         </p>
                       ) : null}

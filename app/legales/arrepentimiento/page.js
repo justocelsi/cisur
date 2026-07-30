@@ -31,7 +31,7 @@ export default async function Arrepentimiento() {
 
   return (
     <>
-      <h1 className="text-[2rem] leading-tight text-tinta">
+      <h1 className="text-[2.1rem] leading-tight text-tinta">
         Botón de arrepentimiento
       </h1>
 

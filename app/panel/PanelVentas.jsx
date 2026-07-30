@@ -78,7 +78,7 @@ export default function PanelVentas() {
   return (
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h2 className="text-[1.4rem] text-tinta">Ventas</h2>
+        <h2 className="text-[1.5rem] text-tinta">Ventas</h2>
         <div className="flex flex-wrap gap-3">
           <Boton
             variante="secundario"
@@ -122,7 +122,7 @@ export default function PanelVentas() {
         />
       </dl>
 
-      <p className="mt-6 text-[0.85rem] leading-relaxed text-tinta-tenue">
+      <p className="mt-6 text-[0.95rem] leading-relaxed text-tinta-tenue">
         Los importes son los que se cobraron en el sitio, antes de la comisión de
         Mercado Pago. Lo que efectivamente entra a tu cuenta lo ves en Mercado
         Pago. Las «pendientes» son personas que empezaron a pagar y no
@@ -140,7 +140,7 @@ export default function PanelVentas() {
         <>
           {/* Escritorio: tabla */}
           <div className="mt-10 hidden overflow-x-auto md:block">
-            <table className="w-full min-w-[720px] border-collapse text-left text-[0.95rem]">
+            <table className="w-full min-w-[720px] border-collapse text-left text-[1.05rem]">
               <thead>
                 <tr className="border-b border-papel-3">
                   <th scope="col" className="py-3 pr-4 versalitas text-tinta-tenue">
@@ -175,7 +175,7 @@ export default function PanelVentas() {
                         <span className="block text-tinta">
                           {v.comprador || "—"}
                         </span>
-                        <span className="block text-[0.85rem] text-tinta-tenue">
+                        <span className="block text-[0.95rem] text-tinta-tenue">
                           {v.email}
                         </span>
                       </td>
@@ -207,17 +207,17 @@ export default function PanelVentas() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <span className="text-tinta">{v.comprador || v.email}</span>
-                    <span className={`shrink-0 text-[0.95rem] ${etiqueta.clase}`}>
+                    <span className={`shrink-0 text-[1.05rem] ${etiqueta.clase}`}>
                       {etiqueta.texto}
                     </span>
                   </div>
-                  <p className="mt-1 text-[0.85rem] text-tinta-tenue">{v.email}</p>
-                  <p className="mt-2 text-[0.95rem] text-tinta-suave">{v.producto}</p>
+                  <p className="mt-1 text-[0.95rem] text-tinta-tenue">{v.email}</p>
+                  <p className="mt-2 text-[1.05rem] text-tinta-suave">{v.producto}</p>
                   <p className="mt-2 flex items-baseline justify-between gap-3">
                     <span className="text-tinta">
                       {formatearPrecio(v.precio_pagado)}
                     </span>
-                    <span className="text-[0.85rem] text-tinta-tenue">
+                    <span className="text-[0.95rem] text-tinta-tenue">
                       {formatearFechaHora(v.pagado_en ?? v.created_at)}
                     </span>
                   </p>
@@ -235,8 +235,8 @@ function Tarjeta({ titulo, valor, nota }) {
   return (
     <div className="rounded-[3px] border border-papel-3 bg-papel-2 p-5">
       <dt className="versalitas text-tinta-tenue">{titulo}</dt>
-      <dd className="mt-2 text-[1.6rem] leading-none text-verde">{valor}</dd>
-      <dd className="mt-2 text-[0.85rem] text-tinta-tenue">{nota}</dd>
+      <dd className="mt-2 text-[1.7rem] leading-none text-verde">{valor}</dd>
+      <dd className="mt-2 text-[0.95rem] text-tinta-tenue">{nota}</dd>
     </div>
   );
 }

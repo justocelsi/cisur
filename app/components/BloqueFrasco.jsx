@@ -33,7 +33,7 @@ export default function BloqueFrasco({ textos }) {
           <TextoEditable
             clave="frasco_titulo"
             como="h2"
-            className="mt-5 text-[1.9rem] leading-tight text-tinta sm:text-[2.3rem]"
+            className="mt-5 text-[2rem] leading-tight text-tinta sm:text-[2.4rem]"
           >
             El frasco de las invitaciones
           </TextoEditable>
@@ -42,7 +42,7 @@ export default function BloqueFrasco({ textos }) {
             clave="frasco_lead"
             como="p"
             multilinea
-            className="mt-6 text-[1.22rem] leading-relaxed text-tinta-suave"
+            className="mt-6 text-[1.32rem] leading-relaxed text-tinta-suave"
           >
             ¿Sabías que el juego es una de las mejores herramientas para la
             alfabetización? Uno de mis favoritos es el frasco de las
@@ -67,7 +67,7 @@ export default function BloqueFrasco({ textos }) {
             {invitaciones.map((invitacion, i) => (
               <li
                 key={i}
-                className="rounded-full border border-tostado-claro bg-tostado-tenue px-5 py-2 text-[1.02rem] text-tinta-suave"
+                className="rounded-full border border-tostado-claro bg-tostado-tenue px-5 py-2 text-[1.1rem] text-tinta-suave"
               >
                 {invitacion}
               </li>

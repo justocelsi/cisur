@@ -15,7 +15,7 @@ export default function BloqueContacto({ textos }) {
   return (
     <section id="contacto" className="border-t border-papel-3 bg-verde py-20 text-papel md:py-24">
       <div className="contenedor-angosto text-center">
-        <h2 className="text-[1.9rem] leading-tight sm:text-[2.3rem]">
+        <h2 className="text-[2rem] leading-tight sm:text-[2.4rem]">
           {t(textos, "contacto_titulo", "Hablemos")}
         </h2>
         <p className="mx-auto mt-5 max-w-lg leading-relaxed text-salvia">
@@ -49,7 +49,7 @@ export default function BloqueContacto({ textos }) {
           ) : null}
         </div>
 
-        <p className="mt-10 text-[0.95rem] text-salvia/70">
+        <p className="mt-10 text-[1.05rem] text-salvia/70">
           {t(textos, "contacto_ciudad", "Mar del Plata, Buenos Aires")}
         </p>
       </div>

@@ -5,12 +5,14 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/app/context/AuthProvider";
 import { useModoEdicion } from "@/app/context/ModoEdicionProvider";
 import PanelProductos from "./PanelProductos";
+import PanelSitio from "./PanelSitio";
 import PanelTalleres from "./PanelTalleres";
 import PanelVentas from "./PanelVentas";
 
 const SOLAPAS = [
   { id: "materiales", texto: "Materiales" },
   { id: "talleres", texto: "Talleres" },
+  { id: "sitio", texto: "Tu foto y las preguntas" },
   { id: "ventas", texto: "Ventas" },
 ];
 
@@ -41,7 +43,7 @@ export default function Panel() {
     <div className="contenedor py-12 md:py-16">
       <header className="border-b border-papel-3 pb-8">
         <p className="versalitas text-verde-claro">Administración</p>
-        <h1 className="mt-4 text-[2.2rem] leading-tight text-tinta sm:text-[2.6rem]">
+        <h1 className="mt-4 text-[2.3rem] leading-tight text-tinta sm:text-[2.7rem]">
           Panel
         </h1>
         <p className="mt-3 max-w-2xl leading-relaxed text-tinta-suave">
@@ -90,6 +92,7 @@ export default function Panel() {
       <div className="mt-10">
         {solapa === "materiales" ? <PanelProductos /> : null}
         {solapa === "talleres" ? <PanelTalleres /> : null}
+        {solapa === "sitio" ? <PanelSitio /> : null}
         {solapa === "ventas" ? <PanelVentas /> : null}
       </div>
     </div>

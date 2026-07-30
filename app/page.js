@@ -90,7 +90,7 @@ export default async function Inicio() {
             <TextoEditable
               clave="hero_titulo"
               como="h1"
-              className="mt-5 text-[2.4rem] leading-[1.08] text-tinta sm:text-[3.1rem] md:text-[3.5rem]"
+              className="mt-5 text-[2.5rem] leading-[1.08] text-tinta sm:text-[3.2rem] md:text-[3.6rem]"
             >
               El rol de la familia en el proceso de alfabetización
             </TextoEditable>
@@ -99,7 +99,7 @@ export default async function Inicio() {
               clave="hero_texto"
               como="p"
               multilinea
-              className="mt-6 max-w-xl text-[1.22rem] leading-relaxed text-tinta-suave"
+              className="mt-6 max-w-xl text-[1.32rem] leading-relaxed text-tinta-suave"
             >
               Una guía práctica para entender cómo aprenden a leer y escribir tus
               hijos, y cómo acompañarlos desde casa con confianza, sin presiones y
@@ -110,33 +110,24 @@ export default async function Inicio() {
               <div className="mt-9 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
                 <Link
                   href={`/guias/${producto.slug}#comprar`}
-                  className="inline-flex w-full items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-[1.12rem] text-papel transition-colors hover:bg-verde-oscuro sm:w-auto"
+                  className="inline-flex w-full items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-[1.21rem] text-papel transition-colors hover:bg-verde-oscuro sm:w-auto"
                 >
                   {t(textos, "hero_cta", "Quiero la guía")}
                 </Link>
-                <p className="text-[0.95rem] text-tinta-tenue">
+                <p className="text-[1.05rem] text-tinta-tenue">
                   <span className="text-tinta">
                     {formatearPrecio(producto.precio)}
                   </span>{" "}
                   · pago único · acceso inmediato
                 </p>
               </div>
-            ) : (
-              <p className="mt-9 rounded-[2px] border border-tostado-tenue bg-papel-2 px-5 py-4 text-[0.95rem] text-tinta-suave">
-                El catálogo se está cargando. Si sos la administradora del sitio,
-                creá el primer material desde el{" "}
-                <Link href="/panel" className="text-verde underline">
-                  panel
-                </Link>
-                .
-              </p>
-            )}
+            ) : null}
 
             <hr className="filete mt-10 max-w-xs" />
             <TextoEditable
               clave="hero_firma"
               como="p"
-              className="mt-4 text-[0.95rem] text-tinta-tenue"
+              className="mt-4 text-[1.05rem] text-tinta-tenue"
             >
               Lic. Tatiana Galera · Psicopedagoga · Mat. Prov. 205281
             </TextoEditable>
@@ -155,7 +146,7 @@ export default async function Inicio() {
         <TextoEditable
           clave="dolor_titulo"
           como="h2"
-          className="mx-auto max-w-2xl text-center text-[1.9rem] leading-tight text-tinta sm:text-[2.3rem]"
+          className="mx-auto max-w-2xl text-center text-[2rem] leading-tight text-tinta sm:text-[2.4rem]"
         >
           ¿Alguna de estas preguntas te resulta familiar?
         </TextoEditable>
@@ -164,7 +155,7 @@ export default async function Inicio() {
           {dolores.map((pregunta, i) => (
             <li
               key={i}
-              className="rounded-[3px] border border-papel-3 bg-papel-2 px-6 py-5 text-[1.12rem] italic text-tinta-suave"
+              className="rounded-[3px] border border-papel-3 bg-papel-2 px-6 py-5 text-[1.21rem] italic text-tinta-suave"
             >
               «{pregunta}»
             </li>
@@ -175,7 +166,7 @@ export default async function Inicio() {
           clave="dolor_cierre"
           como="p"
           multilinea
-          className="mx-auto mt-12 max-w-xl text-center text-[1.18rem] leading-relaxed text-tinta-suave"
+          className="mx-auto mt-12 max-w-xl text-center text-[1.27rem] leading-relaxed text-tinta-suave"
         >
           Detrás de estas preguntas hay mucho amor y muchas ganas de acompañar.
           También, muchas veces, la sensación de no saber por dónde empezar. Esta
@@ -191,7 +182,7 @@ export default async function Inicio() {
           <p aria-hidden="true" className="text-2xl text-salvia/60">
             ❧
           </p>
-          <blockquote className="mt-6 text-[1.5rem] leading-[1.45] text-papel sm:text-[1.85rem]">
+          <blockquote className="mt-6 text-[1.6rem] leading-[1.45] text-papel sm:text-[1.95rem]">
             «La alfabetización no comienza cuando el niño o la niña ingresan a la
             escuela primaria. Comienza mucho antes, en cada conversación, en cada
             cuento compartido y en cada oportunidad de descubrir que las palabras
@@ -218,7 +209,7 @@ export default async function Inicio() {
             <TextoEditable
               clave="guia_titulo"
               como="h2"
-              className="text-[1.9rem] leading-tight text-tinta sm:text-[2.3rem]"
+              className="text-[2rem] leading-tight text-tinta sm:text-[2.4rem]"
             >
               Qué vas a encontrar adentro
             </TextoEditable>
@@ -227,7 +218,7 @@ export default async function Inicio() {
               clave="guia_texto"
               como="p"
               multilinea
-              className="mt-5 text-[1.12rem] leading-relaxed text-tinta-suave"
+              className="mt-5 text-[1.21rem] leading-relaxed text-tinta-suave"
             >
               Siete capítulos que van de lo general a lo concreto: qué significa
               realmente alfabetizar, cómo piensan los chicos cuando escriben
@@ -253,7 +244,7 @@ export default async function Inicio() {
                   <li key={i} className="flex gap-4">
                     <span
                       aria-hidden="true"
-                      className="mt-0.5 shrink-0 text-[0.95rem] text-salvia"
+                      className="mt-0.5 shrink-0 text-[1.05rem] text-salvia"
                     >
                       {String(i + 1).padStart(2, "0")}
                     </span>
@@ -284,7 +275,7 @@ export default async function Inicio() {
           <TextoEditable
             clave="sobre_titulo"
             como="h2"
-            className="text-[1.9rem] leading-tight text-tinta sm:text-[2.3rem]"
+            className="text-[2rem] leading-tight text-tinta sm:text-[2.4rem]"
           >
             Hola, soy Tatiana
           </TextoEditable>
@@ -338,25 +329,25 @@ export default async function Inicio() {
                 <TextoEditable
                   clave="compra_titulo"
                   como="h2"
-                  className="text-[1.7rem] leading-tight text-tinta sm:text-[2rem]"
+                  className="text-[1.8rem] leading-tight text-tinta sm:text-[2.1rem]"
                 >
                   Llevate la guía
                 </TextoEditable>
 
                 <div className="mt-5 flex flex-wrap items-baseline gap-3">
-                  <span className="text-[2.2rem] leading-none text-verde">
+                  <span className="text-[2.3rem] leading-none text-verde">
                     {formatearPrecio(producto.precio)}
                   </span>
                   {producto.precio_lista &&
                   Number(producto.precio_lista) > Number(producto.precio) ? (
-                    <span className="text-[1.2rem] text-tinta-tenue line-through">
+                    <span className="text-[1.3rem] text-tinta-tenue line-through">
                       {formatearPrecio(producto.precio_lista)}
                     </span>
                   ) : null}
-                  <span className="text-[0.95rem] text-tinta-tenue">pago único</span>
+                  <span className="text-[1.05rem] text-tinta-tenue">pago único</span>
                 </div>
 
-                <ul className="lista mt-6 text-[1.05rem] text-tinta-suave">
+                <ul className="lista mt-6 text-[1.13rem] text-tinta-suave">
                   <li>{t(textos, "compra_detalle_1", "Acceso inmediato después del pago")}</li>
                   <li>{t(textos, "compra_detalle_2", "Lectura online desde celular, tablet o computadora")}</li>
                   <li>{t(textos, "compra_detalle_3", "Sin vencimiento: la leés cuando quieras")}</li>
@@ -379,7 +370,7 @@ export default async function Inicio() {
           PREGUNTAS
           ================================================================ */}
       <section className="contenedor py-20 md:py-28">
-        <h2 className="text-center text-[1.9rem] leading-tight text-tinta sm:text-[2.3rem]">
+        <h2 className="text-center text-[2rem] leading-tight text-tinta sm:text-[2.4rem]">
           Preguntas frecuentes
         </h2>
         <Preguntas textos={textos} className="mx-auto mt-12 max-w-2xl" />

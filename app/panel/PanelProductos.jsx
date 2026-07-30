@@ -233,7 +233,7 @@ export default function PanelProductos() {
     <div className="grid gap-14 lg:grid-cols-[minmax(0,420px)_1fr]">
       {/* ---------------------------------------------------------- Formulario */}
       <section>
-        <h2 className="text-[1.4rem] text-tinta">
+        <h2 className="text-[1.5rem] text-tinta">
           {editandoId ? "Editar material" : "Nuevo material"}
         </h2>
 
@@ -369,7 +369,7 @@ export default function PanelProductos() {
 
       {/* ------------------------------------------------------------- Listado */}
       <section>
-        <h2 className="text-[1.4rem] text-tinta">Materiales cargados</h2>
+        <h2 className="text-[1.5rem] text-tinta">Materiales cargados</h2>
 
         {cargando ? (
           <p className="mt-6 text-tinta-tenue">Cargando…</p>
@@ -386,16 +386,16 @@ export default function PanelProductos() {
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <h3 className="text-[1.18rem] leading-snug text-tinta">
+                    <h3 className="text-[1.27rem] leading-snug text-tinta">
                       {p.titulo}
                     </h3>
-                    <p className="mt-1 text-[0.95rem] text-tinta-tenue">
+                    <p className="mt-1 text-[1.05rem] text-tinta-tenue">
                       {formatearPrecio(p.precio)}
                       {p.destacado ? " · destacado" : ""}
                       {" · /guias/"}
                       {p.slug}
                     </p>
-                    <p className="mt-2 flex flex-wrap gap-3 text-[0.85rem]">
+                    <p className="mt-2 flex flex-wrap gap-3 text-[0.95rem]">
                       <span
                         className={
                           p.activo ? "text-verde" : "text-tinta-tenue"
@@ -434,7 +434,7 @@ export default function PanelProductos() {
                 </div>
 
                 {p.activo && !p.archivo_path ? (
-                  <p className="mt-4 rounded-[2px] border border-alerta/30 bg-alerta/5 px-4 py-2.5 text-[0.85rem] text-alerta">
+                  <p className="mt-4 rounded-[2px] border border-alerta/30 bg-alerta/5 px-4 py-2.5 text-[0.95rem] text-alerta">
                     Está publicado pero no tiene PDF: si alguien lo compra, no va
                     a poder leerlo. Subí el archivo o despublicalo.
                   </p>

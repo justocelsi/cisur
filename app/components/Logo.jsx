@@ -16,7 +16,7 @@
 export default function Logo({ conBajada = true, className = "" }) {
   return (
     <span className={`inline-flex flex-col leading-none ${className}`}>
-      <span className="font-marca text-[1.22rem] font-bold tracking-[0.14em] text-verde">
+      <span className="font-marca text-[1.32rem] font-bold tracking-[0.14em] text-verde">
         CISUR
       </span>
       {conBajada ? (

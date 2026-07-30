@@ -10,7 +10,7 @@
  */
 
 const CLASE_CAMPO =
-  "mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-2.5 font-serif text-[1.1rem] text-tinta focus:border-verde";
+  "mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-2.5 font-serif text-[1.19rem] text-tinta focus:border-verde";
 
 export function Campo({
   id,
@@ -38,7 +38,7 @@ export function Campo({
         {...resto}
       />
       {ayuda ? (
-        <p className="mt-1.5 text-[0.85rem] leading-relaxed text-tinta-tenue">{ayuda}</p>
+        <p className="mt-1.5 text-[0.95rem] leading-relaxed text-tinta-tenue">{ayuda}</p>
       ) : null}
     </div>
   );
@@ -70,7 +70,7 @@ export function CampoLargo({
         {...resto}
       />
       {ayuda ? (
-        <p className="mt-1.5 text-[0.85rem] leading-relaxed text-tinta-tenue">{ayuda}</p>
+        <p className="mt-1.5 text-[0.95rem] leading-relaxed text-tinta-tenue">{ayuda}</p>
       ) : null}
     </div>
   );
@@ -90,7 +90,7 @@ export function CampoSiNo({ id, etiqueta, ayuda, valor, alCambiar }) {
         <span>
           <span className="text-tinta">{etiqueta}</span>
           {ayuda ? (
-            <span className="mt-0.5 block text-[0.85rem] leading-relaxed text-tinta-tenue">
+            <span className="mt-0.5 block text-[0.95rem] leading-relaxed text-tinta-tenue">
               {ayuda}
             </span>
           ) : null}
@@ -118,15 +118,15 @@ export function CampoArchivo({
         type="file"
         accept={acepta}
         onChange={(e) => alElegir(e.target.files?.[0] ?? null)}
-        className="mt-2 w-full cursor-pointer rounded-[2px] border border-dashed border-salvia bg-papel-2 px-4 py-3 text-[0.95rem] text-tinta-suave file:mr-4 file:cursor-pointer file:rounded-[2px] file:border-0 file:bg-verde file:px-4 file:py-2 file:font-serif file:text-papel"
+        className="mt-2 w-full cursor-pointer rounded-[2px] border border-dashed border-salvia bg-papel-2 px-4 py-3 text-[1.05rem] text-tinta-suave file:mr-4 file:cursor-pointer file:rounded-[2px] file:border-0 file:bg-verde file:px-4 file:py-2 file:font-serif file:text-papel"
       />
       {nombreActual ? (
-        <p className="mt-1.5 text-[0.85rem] text-verde">
+        <p className="mt-1.5 text-[0.95rem] text-verde">
           Ya hay un archivo cargado: {nombreActual}
         </p>
       ) : null}
       {ayuda ? (
-        <p className="mt-1.5 text-[0.85rem] leading-relaxed text-tinta-tenue">{ayuda}</p>
+        <p className="mt-1.5 text-[0.95rem] leading-relaxed text-tinta-tenue">{ayuda}</p>
       ) : null}
     </div>
   );
@@ -144,7 +144,7 @@ export function Aviso({ tipo = "info", children }) {
   return (
     <p
       role={tipo === "error" ? "alert" : "status"}
-      className={`rounded-[2px] border px-4 py-3 text-[0.95rem] ${estilos[tipo]}`}
+      className={`rounded-[2px] border px-4 py-3 text-[1.05rem] ${estilos[tipo]}`}
     >
       {children}
     </p>

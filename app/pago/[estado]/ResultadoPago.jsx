@@ -97,7 +97,7 @@ export default function ResultadoPago({ estado }) {
           icono="◌"
           texto="Esto suele tardar unos segundos. No cierres esta página."
         >
-          <p className="mt-6 text-[0.95rem] text-tinta-tenue" role="status">
+          <p className="mt-6 text-[1.05rem] text-tinta-tenue" role="status">
             Verificando con Mercado Pago…
           </p>
         </Marco>
@@ -146,7 +146,7 @@ export default function ResultadoPago({ estado }) {
               Ver mis materiales
             </Link>
           </div>
-          <p className="mt-8 text-[0.95rem] text-tinta-tenue">
+          <p className="mt-8 text-[1.05rem] text-tinta-tenue">
             Si en una hora sigue sin aparecer, escribinos por WhatsApp con este
             número de operación:{" "}
             <span className="break-all text-tinta">{orderId ?? "—"}</span>
@@ -187,7 +187,7 @@ export default function ResultadoPago({ estado }) {
           Ver mis materiales
         </Link>
         {orderId ? (
-          <p className="mt-8 text-[0.95rem] text-tinta-tenue">
+          <p className="mt-8 text-[1.05rem] text-tinta-tenue">
             Número de operación:{" "}
             <span className="break-all text-tinta">{orderId}</span>
           </p>
@@ -227,7 +227,7 @@ function Marco({ titulo, texto, icono, children }) {
       <p aria-hidden="true" className="text-3xl text-salvia">
         {icono}
       </p>
-      <h1 className="mt-5 text-[2rem] leading-tight text-tinta">{titulo}</h1>
+      <h1 className="mt-5 text-[2.1rem] leading-tight text-tinta">{titulo}</h1>
       <p className="mt-4 leading-relaxed text-tinta-suave">{texto}</p>
       {children}
     </div>

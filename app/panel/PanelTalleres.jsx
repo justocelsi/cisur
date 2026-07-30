@@ -175,10 +175,10 @@ export default function PanelTalleres() {
   return (
     <div className="grid gap-14 lg:grid-cols-[minmax(0,420px)_1fr]">
       <section>
-        <h2 className="text-[1.4rem] text-tinta">
+        <h2 className="text-[1.5rem] text-tinta">
           {editandoId ? "Editar taller" : "Nuevo taller"}
         </h2>
-        <p className="mt-2 text-[0.95rem] leading-relaxed text-tinta-suave">
+        <p className="mt-2 text-[1.05rem] leading-relaxed text-tinta-suave">
           Los talleres no se venden por la web: se muestran para dar prueba de tu
           trabajo, y quien se interesa te escribe por WhatsApp.
         </p>
@@ -255,7 +255,7 @@ export default function PanelTalleres() {
       </section>
 
       <section>
-        <h2 className="text-[1.4rem] text-tinta">Talleres cargados</h2>
+        <h2 className="text-[1.5rem] text-tinta">Talleres cargados</h2>
 
         {cargando ? (
           <p className="mt-6 text-tinta-tenue">Cargando…</p>
@@ -271,15 +271,15 @@ export default function PanelTalleres() {
                 className="flex flex-wrap items-start justify-between gap-4 rounded-[3px] border border-papel-3 bg-papel-2 p-5"
               >
                 <div className="min-w-0">
-                  <h3 className="text-[1.18rem] leading-snug text-tinta">
+                  <h3 className="text-[1.27rem] leading-snug text-tinta">
                     {t.titulo}
                   </h3>
-                  <p className="mt-1 text-[0.95rem] text-tinta-tenue">
+                  <p className="mt-1 text-[1.05rem] text-tinta-tenue">
                     {[t.lugar, formatearFecha(t.fecha)].filter(Boolean).join(" · ") ||
                       "Sin lugar ni fecha"}
                   </p>
                   <p
-                    className={`mt-2 text-[0.85rem] ${
+                    className={`mt-2 text-[0.95rem] ${
                       t.visible ? "text-verde" : "text-tinta-tenue"
                     }`}
                   >

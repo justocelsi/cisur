@@ -50,18 +50,18 @@ export default function PortadaGuia({
           <div className="mt-6 h-px w-12 bg-salvia/60" />
         </div>
 
-        <p className="text-[1.6rem] leading-[1.15] text-papel">
+        <p className="text-[1.7rem] leading-[1.15] text-papel">
           {producto?.titulo ?? "El rol de la familia en el proceso de alfabetización"}
         </p>
 
         <div>
-          <div className="mb-5 text-center text-[1.2rem] text-salvia/70" aria-hidden="true">
+          <div className="mb-5 text-center text-[1.3rem] text-salvia/70" aria-hidden="true">
             ❧
           </div>
-          <p className="text-[0.95rem] text-salvia">
+          <p className="text-[1.05rem] text-salvia">
             {producto?.autor ?? "Lic. Tatiana Galera"}
           </p>
-          <p className="mt-1 text-[0.85rem] text-salvia/70">Psicopedagoga</p>
+          <p className="mt-1 text-[0.95rem] text-salvia/70">Psicopedagoga</p>
         </div>
       </div>
     </div>

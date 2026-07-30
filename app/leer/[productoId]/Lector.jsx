@@ -102,7 +102,7 @@ export default function Lector({ productoId }) {
         <p aria-hidden="true" className="text-3xl text-salvia">
           {sinAcceso ? "🔒" : "◌"}
         </p>
-        <h1 className="mt-5 text-[2rem] leading-tight text-tinta">
+        <h1 className="mt-5 text-[2.1rem] leading-tight text-tinta">
           {sinAcceso ? "Todavía no tenés acceso" : "No pudimos abrir el material"}
         </h1>
         <p className="mt-4 leading-relaxed text-tinta-suave">{error.mensaje}</p>

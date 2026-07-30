@@ -65,7 +65,7 @@ los datos (no desde tu compu).
 
 ## El Panel
 
-Hacé clic en **"Panel"** arriba a la derecha. Tiene tres solapas.
+Hacé clic en **"Panel"** arriba a la derecha. Tiene cuatro solapas.
 
 ---
 
@@ -78,7 +78,7 @@ Acá está la guía que vendés y podés agregar más.
 1. **Panel → Materiales**
 2. En la lista de la derecha, botón **"Editar"** sobre la guía.
 3. Cambiá el campo **Precio**. Se escribe **sin puntos y sin el signo $**:
-   para $19.900 escribís `19900`.
+   para $25.000 escribís `25000`.
 4. Abajo de todo, **"Guardar cambios"**.
 
 El campo **"Precio tachado"** es opcional: si lo llenás, en la web aparece ese
@@ -147,6 +147,21 @@ que te está conociendo.
 
 ---
 
+## Solapa "Tu foto y las preguntas"
+
+Dos cosas que no se pueden cambiar haciendo click en la página.
+
+**Tu foto.** Es la que aparece al lado de "Hola, soy Tatiana". Elegí una imagen
+**vertical** (más alta que ancha) y dale a "Guardar la foto". La nueva reemplaza
+a la anterior. Si todavía no subiste ninguna, la web muestra un ornamento en su
+lugar y no se ve rota.
+
+**Las preguntas frecuentes.** Son las seis que aparecen al final de la página de
+inicio. Podés cambiar tanto la pregunta como la respuesta. Cambiá las que
+quieras y al final dale a "Guardar las preguntas" una sola vez.
+
+---
+
 ## Solapa "Ventas"
 
 Acá ves todo lo que vendiste: quién compró, cuándo, cuánto y con qué mail.
@@ -177,10 +192,12 @@ Esperá 5 minutos y recargá. Si seguís sin verlo, probá desde otro dispositiv
 puede ser que tu navegador te esté mostrando una copia vieja.
 
 **¿Cómo cambio las preguntas frecuentes?**
-Esas todavía no se editan desde la web. Mandámelas por WhatsApp y las cambio yo.
+**Panel → Tu foto y las preguntas**. Están las seis, con su pregunta y su
+respuesta. Cambiás las que quieras y le das a "Guardar las preguntas".
 
 **¿Cómo cambio mi foto de "Sobre mí"?**
-Todavía no tiene lugar en el panel. Mandámela y la subo yo.
+En esa misma solapa, arriba. Elegís la imagen y "Guardar la foto". Conviene una
+foto vertical; la nueva reemplaza a la anterior.
 
 **El logo de la web es el mismo de mi Instagram, ¿no?**
 Sí, usé ese. Y de ahí saqué el verde que se ve en todo el sitio, para que sea

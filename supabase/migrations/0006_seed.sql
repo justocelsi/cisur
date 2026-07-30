@@ -128,7 +128,7 @@ insert into productos (
   'Una guía para familias',
   'Siete capítulos para entender cómo aprenden a leer y escribir los chicos, reconocer las etapas de la escritura y acompañar el proceso desde casa con confianza, respeto y disfrute. Incluye propuestas de reflexión al final de cada capítulo.',
   'Lic. Tatiana Galera',
-  19900, 29900, null, true, true, 0,
+  25000, 34900, null, true, true, 0,
   '[
     "¿Qué significa alfabetizar?",
     "El rol de la familia: acompañar sin reemplazar",

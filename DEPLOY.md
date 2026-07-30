@@ -331,7 +331,7 @@ Necesitás de Tati:
 2. **La portada**, como imagen aparte (PNG o JPG, vertical). Puede exportar sólo
    la primera página del Canva como PNG.
 3. **Una foto suya** para la página "Sobre mí" (hoy muestra un ornamento).
-4. **El precio final.** Está en $19.900 como referencia; ella lo cambia desde el
+4. **El precio final.** Está en $25.000; ella lo cambia desde el
    panel cuando quiera.
 
 El **logo ya está puesto**, pero compuesto en código: el único archivo que había

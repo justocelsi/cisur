@@ -23,7 +23,7 @@ export default function BloqueTalleres({ talleres = [], textos }) {
       <div className="contenedor">
         <div className="mx-auto max-w-2xl text-center">
           <p className="versalitas text-verde-claro">Presencial</p>
-          <h2 className="mt-4 text-[1.9rem] leading-tight text-tinta sm:text-[2.3rem]">
+          <h2 className="mt-4 text-[2rem] leading-tight text-tinta sm:text-[2.4rem]">
             {t(textos, "talleres_titulo", "Talleres para colegios e instituciones")}
           </h2>
           <p className="mt-5 leading-relaxed text-tinta-suave">
@@ -64,18 +64,18 @@ export default function BloqueTalleres({ talleres = [], textos }) {
                   )}
 
                   <div className="p-6">
-                    <h3 className="text-[1.22rem] leading-snug text-tinta">
+                    <h3 className="text-[1.32rem] leading-snug text-tinta">
                       {taller.titulo}
                     </h3>
                     {taller.lugar || taller.fecha ? (
-                      <p className="mt-2 text-[0.95rem] text-tinta-tenue">
+                      <p className="mt-2 text-[1.05rem] text-tinta-tenue">
                         {[taller.lugar, formatearFecha(taller.fecha)]
                           .filter(Boolean)
                           .join(" · ")}
                       </p>
                     ) : null}
                     {taller.descripcion ? (
-                      <p className="mt-3 text-[1.02rem] leading-relaxed text-tinta-suave">
+                      <p className="mt-3 text-[1.1rem] leading-relaxed text-tinta-suave">
                         {taller.descripcion}
                       </p>
                     ) : null}

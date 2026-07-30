@@ -85,7 +85,7 @@ export default async function DetalleGuia({ params }) {
               <p className="versalitas text-verde-claro">{producto.subtitulo}</p>
             ) : null}
 
-            <h1 className="mt-4 text-[2.2rem] leading-[1.1] text-tinta sm:text-[2.7rem]">
+            <h1 className="mt-4 text-[2.3rem] leading-[1.1] text-tinta sm:text-[2.8rem]">
               {producto.titulo}
             </h1>
 
@@ -95,7 +95,7 @@ export default async function DetalleGuia({ params }) {
             </p>
 
             {producto.descripcion ? (
-              <p className="mt-7 text-[1.18rem] leading-relaxed text-tinta-suave">
+              <p className="mt-7 text-[1.27rem] leading-relaxed text-tinta-suave">
                 {producto.descripcion}
               </p>
             ) : null}
@@ -106,19 +106,19 @@ export default async function DetalleGuia({ params }) {
               className="mt-10 scroll-mt-28 rounded-[3px] border border-tostado-claro bg-tostado-tenue p-7 sm:p-8"
             >
               <div className="flex flex-wrap items-baseline gap-3">
-                <span className="text-[2.2rem] leading-none text-verde">
+                <span className="text-[2.3rem] leading-none text-verde">
                   {formatearPrecio(producto.precio)}
                 </span>
                 {producto.precio_lista &&
                 Number(producto.precio_lista) > Number(producto.precio) ? (
-                  <span className="text-[1.2rem] text-tinta-tenue line-through">
+                  <span className="text-[1.3rem] text-tinta-tenue line-through">
                     {formatearPrecio(producto.precio_lista)}
                   </span>
                 ) : null}
-                <span className="text-[0.95rem] text-tinta-tenue">pago único</span>
+                <span className="text-[1.05rem] text-tinta-tenue">pago único</span>
               </div>
 
-              <ul className="lista mt-5 text-[1.05rem] text-tinta-suave">
+              <ul className="lista mt-5 text-[1.13rem] text-tinta-suave">
                 <li>{t(textos, "compra_detalle_1", "Acceso inmediato después del pago")}</li>
                 <li>{t(textos, "compra_detalle_2", "Lectura online desde celular, tablet o computadora")}</li>
                 <li>{t(textos, "compra_detalle_3", "Sin vencimiento: la leés cuando quieras")}</li>
@@ -139,7 +139,7 @@ export default async function DetalleGuia({ params }) {
                     >
                       <span
                         aria-hidden="true"
-                        className="mt-0.5 shrink-0 text-[0.95rem] text-salvia"
+                        className="mt-0.5 shrink-0 text-[1.05rem] text-salvia"
                       >
                         {String(i + 1).padStart(2, "0")}
                       </span>
@@ -155,7 +155,7 @@ export default async function DetalleGuia({ params }) {
         </div>
 
         <section className="mt-24 border-t border-papel-3 pt-16">
-          <h2 className="text-center text-[1.7rem] leading-tight text-tinta sm:text-[2rem]">
+          <h2 className="text-center text-[1.8rem] leading-tight text-tinta sm:text-[2.1rem]">
             Preguntas frecuentes
           </h2>
           <Preguntas textos={textos} className="mx-auto mt-10 max-w-2xl" />

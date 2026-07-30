@@ -40,7 +40,7 @@ export default function Encabezado() {
               key={e.href}
               href={e.href}
               aria-current={ruta === e.href ? "page" : undefined}
-              className={`text-[1.02rem] transition-colors hover:text-verde ${
+              className={`text-[1.1rem] transition-colors hover:text-verde ${
                 ruta === e.href
                   ? "text-verde underline decoration-salvia decoration-1 underline-offset-[6px]"
                   : "text-tinta-suave"
@@ -57,7 +57,7 @@ export default function Encabezado() {
               type="button"
               onClick={alternar}
               aria-pressed={editando}
-              className={`rounded-[2px] border px-3 py-1.5 text-[0.95rem] transition-colors ${
+              className={`rounded-[2px] border px-3 py-1.5 text-[1.05rem] transition-colors ${
                 editando
                   ? "border-verde bg-verde text-papel"
                   : "border-papel-3 text-tinta-suave hover:border-salvia"
@@ -70,7 +70,7 @@ export default function Encabezado() {
           {esEditor ? (
             <Link
               href="/panel"
-              className="text-[1.02rem] text-tinta-suave hover:text-verde"
+              className="text-[1.1rem] text-tinta-suave hover:text-verde"
             >
               Panel
             </Link>
@@ -80,14 +80,14 @@ export default function Encabezado() {
             <>
               <Link
                 href="/mis-materiales"
-                className="text-[1.02rem] text-tinta-suave hover:text-verde"
+                className="text-[1.1rem] text-tinta-suave hover:text-verde"
               >
                 Mis materiales
               </Link>
               <button
                 type="button"
                 onClick={salir}
-                className="text-[1.02rem] text-tinta-tenue hover:text-alerta"
+                className="text-[1.1rem] text-tinta-tenue hover:text-alerta"
               >
                 Salir
               </button>
@@ -95,7 +95,7 @@ export default function Encabezado() {
           ) : (
             <Link
               href="/ingresar"
-              className="rounded-[2px] border border-verde px-4 py-1.5 text-[1.02rem] text-verde transition-colors hover:bg-verde hover:text-papel"
+              className="rounded-[2px] border border-verde px-4 py-1.5 text-[1.1rem] text-verde transition-colors hover:bg-verde hover:text-papel"
             >
               Ingresar
             </Link>
@@ -111,7 +111,7 @@ export default function Encabezado() {
           aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
           className="flex h-10 w-10 items-center justify-center rounded-[2px] border border-papel-3 text-verde md:hidden"
         >
-          <span aria-hidden="true" className="text-[1.2rem] leading-none">
+          <span aria-hidden="true" className="text-[1.3rem] leading-none">
             {abierto ? "✕" : "☰"}
           </span>
         </button>
@@ -170,7 +170,7 @@ export default function Encabezado() {
                     {editando ? "Terminar de editar" : "Editar la página"}
                   </button>
                 ) : null}
-                <span className="py-3 text-[0.95rem] text-tinta-tenue">
+                <span className="py-3 text-[1.05rem] text-tinta-tenue">
                   {profile?.nombre || profile?.email}
                 </span>
                 <button

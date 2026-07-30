@@ -6,10 +6,10 @@ export const metadata = {
 export default function Privacidad() {
   return (
     <>
-      <h1 className="text-[2rem] leading-tight text-tinta">
+      <h1 className="text-[2.1rem] leading-tight text-tinta">
         Política de privacidad
       </h1>
-      <p className="text-[0.95rem] text-tinta-tenue">
+      <p className="text-[1.05rem] text-tinta-tenue">
         Última actualización: julio de 2026
       </p>
 

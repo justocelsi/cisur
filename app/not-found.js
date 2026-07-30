@@ -10,7 +10,7 @@ export default function NoEncontrada() {
       <p aria-hidden="true" className="text-3xl text-salvia">
         ❧
       </p>
-      <h1 className="mt-5 text-[2rem] leading-tight text-tinta">
+      <h1 className="mt-5 text-[2.1rem] leading-tight text-tinta">
         No encontramos esta página
       </h1>
       <p className="mt-4 leading-relaxed text-tinta-suave">

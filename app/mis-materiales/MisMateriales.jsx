@@ -56,7 +56,7 @@ export default function MisMateriales() {
     <>
       <header className="border-b border-papel-3 pb-8">
         <p className="versalitas text-verde-claro">Tu cuenta</p>
-        <h1 className="mt-4 text-[2.2rem] leading-tight text-tinta sm:text-[2.6rem]">
+        <h1 className="mt-4 text-[2.3rem] leading-tight text-tinta sm:text-[2.7rem]">
           Mis materiales
         </h1>
         {profile?.nombre || profile?.email ? (
@@ -107,11 +107,11 @@ export default function MisMateriales() {
                     }}
                   />
                 </div>
-                <h2 className="mt-6 text-[1.28rem] leading-snug text-tinta group-hover:text-verde">
+                <h2 className="mt-6 text-[1.38rem] leading-snug text-tinta group-hover:text-verde">
                   {compra.titulo}
                 </h2>
                 {compra.pagado_en ? (
-                  <p className="mt-2 text-[0.95rem] text-tinta-tenue">
+                  <p className="mt-2 text-[1.05rem] text-tinta-tenue">
                     Comprado el {formatearFecha(compra.pagado_en)}
                   </p>
                 ) : null}

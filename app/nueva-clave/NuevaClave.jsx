@@ -44,7 +44,7 @@ export default function NuevaClave() {
   if (listo) {
     return (
       <div className="mx-auto max-w-md text-center">
-        <h1 className="text-[2rem] text-tinta">Contraseña cambiada</h1>
+        <h1 className="text-[2.1rem] text-tinta">Contraseña cambiada</h1>
         <p className="mt-4 text-tinta-suave">
           Ya podés usar la nueva. Te llevamos a tus materiales…
         </p>
@@ -55,7 +55,7 @@ export default function NuevaClave() {
   if (!cargando && !autenticado) {
     return (
       <div className="mx-auto max-w-md">
-        <h1 className="text-[2rem] leading-tight text-tinta">
+        <h1 className="text-[2.1rem] leading-tight text-tinta">
           El link no es válido
         </h1>
         <p className="mt-4 text-tinta-suave">
@@ -74,7 +74,7 @@ export default function NuevaClave() {
 
   return (
     <div className="mx-auto max-w-md">
-      <h1 className="text-[2rem] leading-tight text-tinta">
+      <h1 className="text-[2.1rem] leading-tight text-tinta">
         Elegí una contraseña nueva
       </h1>
 
@@ -91,9 +91,9 @@ export default function NuevaClave() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-[1.1rem] text-tinta focus:border-verde"
+            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-[1.19rem] text-tinta focus:border-verde"
           />
-          <p className="mt-2 text-[0.85rem] text-tinta-tenue">Mínimo 6 caracteres.</p>
+          <p className="mt-2 text-[0.95rem] text-tinta-tenue">Mínimo 6 caracteres.</p>
         </div>
 
         <div>
@@ -108,14 +108,14 @@ export default function NuevaClave() {
             value={repetida}
             onChange={(e) => setRepetida(e.target.value)}
             autoComplete="new-password"
-            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-[1.1rem] text-tinta focus:border-verde"
+            className="mt-2 w-full rounded-[2px] border border-papel-3 bg-white px-4 py-3 font-serif text-[1.19rem] text-tinta focus:border-verde"
           />
         </div>
 
         {error ? (
           <p
             role="alert"
-            className="rounded-[2px] border border-alerta/30 bg-alerta/5 px-4 py-3 text-[0.95rem] text-alerta"
+            className="rounded-[2px] border border-alerta/30 bg-alerta/5 px-4 py-3 text-[1.05rem] text-alerta"
           >
             {error}
           </p>

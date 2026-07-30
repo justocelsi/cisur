@@ -9,6 +9,8 @@ Autora del contenido: **Lic. Tatiana Galera**, psicopedagoga (Mat. Prov. 205281)
 - **Producción:** https://cisur.vercel.app
 - **Puesta en producción:** [`DEPLOY.md`](DEPLOY.md)
 - **Instructivos para la clienta:** [`PARA-TATI-mercadopago.md`](PARA-TATI-mercadopago.md) · [`PARA-TATI-editar-la-web.md`](PARA-TATI-editar-la-web.md)
+- **Onboarding de desarrollo:** [`PARA-MORA-aprender.md`](PARA-MORA-aprender.md)
+- **Probar los cobros:** [`PRUEBA-MERCADOPAGO.md`](PRUEBA-MERCADOPAGO.md)
 
 ---
 
@@ -94,7 +96,7 @@ corren incluso dentro de las funciones que bypassean RLS:
 
 1. `prevent_role_change` — nadie se auto-promueve a admin.
 2. `snapshot_compra` — el precio lo pone la base leyendo `productos`, nunca el
-   cliente. Imposible pagar $1 por algo de $19.900.
+   cliente. Imposible pagar $1 por algo de $25.000.
 3. `prevent_compra_escalation` — sólo el `service_role` (el webhook) mueve una
    compra a `pagada`. Ni un editor puede regalarse acceso.
 
