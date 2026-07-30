@@ -12,6 +12,56 @@ alter table talleres           enable row level security;
 alter table site_settings      enable row level security;
 alter table editor_invitations enable row level security;
 
+-- ===========================================================================
+-- PRIVILEGIOS DE TABLA (la capa de abajo de RLS)
+--
+-- Supabase configura default privileges que otorgan permisos amplios sobre
+-- todo lo que se crea en `public` a anon y authenticated: sin esto, el único
+-- freno serían las policies.
+--
+-- Acá los recortamos a lo que cada rol realmente necesita. Son dos candados
+-- distintos: los privilegios dicen si la operación está permitida siquiera, y
+-- RLS dice sobre qué filas. Si algún día una policy se escribe mal, el
+-- privilegio faltante sigue tapando el agujero.
+-- ===========================================================================
+
+-- Punto de partida limpio.
+revoke all on profiles, productos, compras, talleres, site_settings,
+              editor_invitations
+  from anon, authenticated;
+
+-- El backend hace de todo: bypassea RLS y necesita los privilegios.
+grant all on profiles, productos, compras, talleres, site_settings,
+             editor_invitations
+  to service_role;
+
+-- --- anon (visitante sin cuenta): sólo lee lo público. -------------------
+grant select on productos     to anon;
+grant select on talleres      to anon;
+grant select on site_settings to anon;
+
+-- --- authenticated ------------------------------------------------------
+-- profiles: lee (RLS: el propio + editores) y edita el propio nombre.
+-- Sin INSERT ni DELETE: el profile lo crea el trigger handle_new_user.
+grant select, update on profiles to authenticated;
+
+-- productos y talleres: los administran los editores (RLS: is_editor()).
+grant select, insert, update, delete on productos to authenticated;
+grant select, insert, update, delete on talleres  to authenticated;
+
+-- site_settings: los textos editables. Sin DELETE: una clave borrada dejaría
+-- la página sin ese texto y no hay forma de recuperarla desde la interfaz.
+grant select, insert, update on site_settings to authenticated;
+
+-- compras: SÓLO LECTURA desde el cliente.
+-- Toda escritura pasa por crear_compra() / confirmar_pago() (SECURITY DEFINER)
+-- o por el service_role del webhook. Sin privilegio de INSERT, ni siquiera una
+-- policy mal escrita permitiría fabricar una compra.
+grant select on compras to authenticated;
+
+-- editor_invitations: administración de invitaciones (RLS: is_admin()).
+grant select, insert, update, delete on editor_invitations to authenticated;
+
 -- ---------------------------------------------------------------------------
 -- profiles: cada uno ve y edita el suyo. Los editores ven todos (para el
 -- panel de ventas). El rol NO se puede tocar: lo bloquea un trigger (0003).
