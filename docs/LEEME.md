@@ -17,3 +17,8 @@ Dos cosas del diseño que conviene no romper:
 - **La portada no sangra hasta el borde del papel.** Chrome recorta contra el
   área de `@page`, así que el panel verde llena el alto útil (262mm en A4) y el
   margen blanco queda como marco. Los márgenes negativos no funcionan acá.
+
+- **Sin saltos de página forzados.** Poner `page-break-before` en cada sección
+  dejaba cuatro hojas con dos líneas. El texto fluye y lo único que se protege
+  es que un título no se separe de lo que introduce (`page-break-after: avoid`)
+  y que un recuadro no se corte al medio (`page-break-inside: avoid`).
