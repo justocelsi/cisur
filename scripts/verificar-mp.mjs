@@ -2,18 +2,24 @@
 /**
  * Verifica las credenciales de Mercado Pago ANTES de mover plata.
  *
- *   node scripts/verificar-mp.mjs
+ *   npm run verificar:mp
  *
- * Contesta tres preguntas, en orden de importancia:
+ * Contesta cuatro preguntas, en orden de gravedad:
  *
- *   1. ¿El Access Token es válido?
- *   2. ¿DE QUIÉN ES LA CUENTA a la que va a entrar el dinero?  ← la que importa
- *   3. ¿Puede crear cobros? (crea una preferencia de prueba y la descarta)
+ *   1. ¿Están cambiadas de lugar?  ← la peor, y la más fácil de cometer
+ *   2. ¿Son de prueba o de verdad?
+ *   3. ¿DE QUIÉN ES LA CUENTA a la que va a entrar el dinero?
+ *   4. ¿Puede generar cobros?
  *
- * La segunda es la razón de ser de este script. Una credencial pegada mal, o
- * la de otra aplicación, falla de la peor manera posible: todo parece andar y
- * la plata cae en la cuenta equivocada. Preguntárselo a la API de MP cuesta
- * una llamada; descubrirlo después cuesta una conversación incómoda.
+ * Sobre la primera: la Public Key y el Access Token empiezan las dos con
+ * APP_USR- y se distinguen sólo por el largo. Pegarlas al revés pone el
+ * Access Token —que es un secreto— en una variable NEXT_PUBLIC_, y todo lo
+ * que lleva ese prefijo se hornea en el bundle y se sirve a cada visitante.
+ * El error no da ningún síntoma: los cobros funcionan igual.
+ *
+ * Sobre la segunda: en el panel actual de Mercado Pago las credenciales de
+ * prueba TAMBIÉN empiezan con APP_USR-. Mirar el prefijo no alcanza; hay que
+ * preguntarle a la API de quién es la cuenta y ver si es un usuario de test.
  *
  * No imprime ningún secreto: sólo prefijos y longitudes.
  */
@@ -22,7 +28,18 @@ import { readFileSync } from "node:fs";
 
 const API = "https://api.mercadopago.com";
 
-// --- leer .env.local sin dependencias -------------------------------------
+const ok = (s) => console.log(`  \x1b[32m✓\x1b[0m ${s}`);
+const mal = (s) => console.log(`  \x1b[31m✗\x1b[0m ${s}`);
+const ojo = (s) => console.log(`  \x1b[33m!\x1b[0m ${s}`);
+const nota = (s) => console.log(`    \x1b[2m${s}\x1b[0m`);
+const titulo = (s) => console.log(`\n\x1b[1m${s}\x1b[0m\n`);
+const salir = (s) => {
+  console.error(`\n\x1b[31m${s}\x1b[0m\n`);
+  process.exit(1);
+};
+
+const huella = (v) => `${v.slice(0, 12)}…${v.slice(-4)} · ${v.length} caracteres`;
+
 function leerEnv(ruta = ".env.local") {
   let texto;
   try {
@@ -38,103 +55,130 @@ function leerEnv(ruta = ".env.local") {
   return env;
 }
 
-const ok = (s) => console.log(`  \x1b[32m✓\x1b[0m ${s}`);
-const mal = (s) => console.log(`  \x1b[31m✗\x1b[0m ${s}`);
-const nota = (s) => console.log(`    \x1b[2m${s}\x1b[0m`);
-const salir = (s) => {
-  console.error(`\n\x1b[31m${s}\x1b[0m\n`);
-  process.exit(1);
-};
-
-const huella = (v) => `${v.slice(0, 12)}…${v.slice(-4)} (${v.length} caracteres)`;
-
-// --- 1. formato ------------------------------------------------------------
-const env = leerEnv();
-const token = env.MP_ACCESS_TOKEN ?? "";
-const publicKey = env.NEXT_PUBLIC_MP_PUBLIC_KEY ?? "";
-const secret = env.MP_WEBHOOK_SECRET ?? "";
-
-console.log("\n\x1b[1mCredenciales de Mercado Pago\x1b[0m\n");
-
-if (!token) salir("MP_ACCESS_TOKEN está vacío en .env.local.");
-
-const modo = token.startsWith("TEST-")
-  ? "prueba"
-  : token.startsWith("APP_USR-")
-    ? "producción"
-    : null;
-
-if (!modo) {
-  mal("MP_ACCESS_TOKEN no empieza con TEST- ni con APP_USR-.");
-  nota(`empieza con: ${token.slice(0, 12)}…`);
-  nota("Probablemente se pegó cortado, o es la Public Key en vez del token.");
-  process.exit(1);
-}
-ok(`Access Token en modo \x1b[1m${modo}\x1b[0m — ${huella(token)}`);
-
-if (!publicKey) {
-  mal("NEXT_PUBLIC_MP_PUBLIC_KEY está vacía.");
-} else {
-  const modoPk = publicKey.startsWith("TEST-")
-    ? "prueba"
-    : publicKey.startsWith("APP_USR-")
-      ? "producción"
-      : null;
-  if (modoPk !== modo) {
-    mal(`La Public Key es de ${modoPk ?? "formato desconocido"} y el token de ${modo}.`);
-    nota("Tienen que ser del mismo par: o las dos de prueba, o las dos de producción.");
-  } else {
-    ok(`Public Key en modo ${modoPk} — ${huella(publicKey)}`);
+/** Le pregunta a MP de quién es la credencial. null si no la acepta. */
+async function quienEs(credencial) {
+  if (!credencial) return null;
+  try {
+    const r = await fetch(`${API}/users/me`, {
+      headers: { Authorization: `Bearer ${credencial}` },
+    });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d?.id ? d : null;
+  } catch {
+    return null;
   }
 }
 
+// Acepta otra ruta como argumento: sirve para revisar un archivo de variables
+// antes de pegarlo en Vercel, y para probar este script contra casos armados.
+const env = leerEnv(process.argv[2] ?? ".env.local");
+let token = env.MP_ACCESS_TOKEN ?? "";
+let publicKey = env.NEXT_PUBLIC_MP_PUBLIC_KEY ?? "";
+const secret = env.MP_WEBHOOK_SECRET ?? "";
+
+// --- 1. formato y orden ----------------------------------------------------
+titulo("Las tres variables");
+
+if (!token && !publicKey) {
+  salir("MP_ACCESS_TOKEN y NEXT_PUBLIC_MP_PUBLIC_KEY están vacías en .env.local.");
+}
+
+const prefijoValido = (v) => v.startsWith("TEST-") || v.startsWith("APP_USR-");
+for (const [nombre, v] of [
+  ["MP_ACCESS_TOKEN", token],
+  ["NEXT_PUBLIC_MP_PUBLIC_KEY", publicKey],
+]) {
+  if (v && !prefijoValido(v)) {
+    mal(`${nombre} no empieza con TEST- ni con APP_USR-.`);
+    nota(`empieza con: ${v.slice(0, 14)}…`);
+    nota("Se pegó cortado, o quedó una comilla o un espacio de más.");
+    process.exit(1);
+  }
+}
+
+let cuenta = await quienEs(token);
+
+// El Access Token es el único de los dos que la API acepta. Si el que anda es
+// el que está en la variable NEXT_PUBLIC_, están al revés.
+if (!cuenta) {
+  const cruzada = await quienEs(publicKey);
+  if (cruzada) {
+    console.log(
+      "\n\x1b[41m\x1b[97m  ESTÁN CAMBIADAS DE LUGAR  \x1b[0m\n",
+    );
+    mal("El Access Token está en NEXT_PUBLIC_MP_PUBLIC_KEY.");
+    nota(
+      "Todo lo que empieza con NEXT_PUBLIC_ se hornea en el bundle y se sirve",
+    );
+    nota("a cada visitante del sitio. El Access Token es un secreto.");
+    console.log("\n  Intercambialas en .env.local:\n");
+    nota(`MP_ACCESS_TOKEN            ← el largo  (${publicKey.length} caracteres)`);
+    nota(`NEXT_PUBLIC_MP_PUBLIC_KEY  ← el corto  (${token.length} caracteres)`);
+    console.log(
+      "\n  \x1b[33mSi ya las cargaste así en Vercel, rotá el Access Token en Mercado Pago.\x1b[0m\n",
+    );
+    process.exit(1);
+  }
+  mal("Mercado Pago no acepta MP_ACCESS_TOKEN.");
+  nota("Está mal copiado, o fue revocado desde el panel de desarrolladores.");
+  process.exit(1);
+}
+
+ok(`Access Token válido — ${huella(token)}`);
+
+if (!publicKey) {
+  ojo("NEXT_PUBLIC_MP_PUBLIC_KEY está vacía.");
+  nota("Hoy Checkout Pro no la usa, pero conviene tenerla cargada.");
+} else if (publicKey.length > token.length) {
+  ojo("La Public Key es más larga que el Access Token: revisá que no estén cruzadas.");
+} else {
+  ok(`Public Key — ${huella(publicKey)}`);
+}
+
 if (!secret) {
-  mal("MP_WEBHOOK_SECRET está vacío: el webhook va a rechazar TODO con 401.");
-  nota("Sin esto la persona paga y nunca recibe el material.");
+  mal("MP_WEBHOOK_SECRET está vacío: el webhook rechaza TODO con 401.");
+  nota("La persona paga y nunca recibe el material. Falta pedírselo a Tati.");
 } else {
   ok(`Clave del webhook cargada — ${secret.length} caracteres`);
 }
 
-// --- 2. de quién es la cuenta ---------------------------------------------
-console.log("\n\x1b[1mA qué cuenta entra la plata\x1b[0m\n");
+// --- 2 y 3. modo real y titular -------------------------------------------
+titulo("A qué cuenta entra la plata");
 
-const cabeceras = { Authorization: `Bearer ${token}` };
+const esUsuarioDePrueba =
+  String(cuenta.nickname ?? "").startsWith("TESTUSER") ||
+  String(cuenta.email ?? "").includes("@testuser.com");
 
-let cuenta;
-try {
-  const r = await fetch(`${API}/users/me`, { headers: cabeceras });
-  if (!r.ok) {
-    mal(`Mercado Pago rechazó el token (HTTP ${r.status}).`);
-    nota(await r.text().then((t) => t.slice(0, 200)));
-    nota("Si es 401: el token está mal copiado o fue revocado.");
-    process.exit(1);
-  }
-  cuenta = await r.json();
-} catch (e) {
-  salir(`No pude conectarme con Mercado Pago: ${e.message}`);
-}
+const modo = token.startsWith("TEST-") || esUsuarioDePrueba ? "prueba" : "producción";
 
-ok(`Titular: \x1b[1m${cuenta.first_name ?? ""} ${cuenta.last_name ?? ""}\x1b[0m`.trimEnd());
+ok(`Titular: \x1b[1m${`${cuenta.first_name ?? ""} ${cuenta.last_name ?? ""}`.trim() || "—"}\x1b[0m`);
 ok(`Mail: ${cuenta.email ?? "—"}`);
-ok(`Usuario: ${cuenta.nickname ?? "—"}  ·  id ${cuenta.id}`);
+ok(`Usuario: ${cuenta.nickname ?? "—"} · id ${cuenta.id}`);
 ok(`País: ${cuenta.site_id ?? "—"}${cuenta.site_id === "MLA" ? " (Argentina)" : ""}`);
 
-if (modo === "producción") {
-  console.log(
-    "\n  \x1b[33m→ Confirmá que ese nombre y ese mail son los de Tatiana.\x1b[0m",
-  );
-  console.log("    \x1b[2mSi no lo son, la plata de cada venta cae ahí.\x1b[0m");
+console.log();
+if (modo === "prueba") {
+  ojo("Son credenciales de \x1b[1mPRUEBA\x1b[0m: no mueven plata real.");
+  if (esUsuarioDePrueba && !token.startsWith("TEST-")) {
+    nota("Empiezan con APP_USR-, pero la cuenta detrás es un usuario de test.");
+    nota("Es cómo las entrega hoy el panel de Mercado Pago: el prefijo engaña.");
+  }
+} else {
+  ojo("Son credenciales de \x1b[1mPRODUCCIÓN\x1b[0m: cada cobro es dinero real.");
+  nota("Confirmá que el nombre y el mail de arriba son los de Tatiana.");
+  nota("Si no lo son, la plata de cada venta cae en esa otra cuenta.");
 }
 
-// --- 3. ¿puede cobrar? -----------------------------------------------------
-console.log("\n\x1b[1m¿Puede generar cobros?\x1b[0m\n");
+// --- 4. ¿puede cobrar? -----------------------------------------------------
+titulo("¿Puede generar cobros?");
 
 const sitio = env.NEXT_PUBLIC_SITE_URL || "https://cisur.vercel.app";
 
 try {
   const r = await fetch(`${API}/checkout/preferences`, {
     method: "POST",
-    headers: { ...cabeceras, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       items: [
         {
@@ -159,20 +203,16 @@ try {
   }
 
   ok("Creó una preferencia de prueba correctamente.");
-  nota("Nadie la va a pagar: queda ahí y vence sola. No cobra nada.");
-
-  if (modo === "prueba" && !datos.sandbox_init_point) {
-    mal("El token es TEST- pero MP no devolvió sandbox_init_point.");
-    nota("El checkout de prueba puede no abrir. Revisá las credenciales.");
-  }
+  nota("Nadie la va a pagar: vence sola y no cobra nada.");
 } catch (e) {
   salir(`Falló la llamada a Mercado Pago: ${e.message}`);
 }
 
 // --- resumen ---------------------------------------------------------------
+const nombre = `${cuenta.first_name ?? ""} ${cuenta.last_name ?? ""}`.trim() || cuenta.nickname;
 console.log(
-  `\n\x1b[1mListo.\x1b[0m Credenciales de \x1b[1m${modo}\x1b[0m, válidas, sobre la cuenta de ${cuenta.nickname ?? cuenta.id}.`,
+  `\n\x1b[1mListo.\x1b[0m Credenciales de \x1b[1m${modo}\x1b[0m, válidas, sobre la cuenta de ${nombre}.`,
 );
 console.log(
-  `\x1b[2mFalta cargar estas mismas tres variables en Vercel y redeployar.\x1b[0m\n`,
+  "\x1b[2mPara que apliquen en el sitio hay que cargar estas mismas tres en Vercel y redeployar.\x1b[0m\n",
 );

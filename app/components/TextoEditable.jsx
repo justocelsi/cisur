@@ -40,7 +40,14 @@ export default function TextoEditable({
   // El borrador se siembra al abrir el editor, en el handler del click, no en
   // un efecto que observe `abierto`: así no hay un render intermedio con el
   // textarea mostrando el valor viejo.
-  function abrir() {
+  //
+  // El preventDefault es lo que permite usar esto con `como="a"`: en modo
+  // edición, un click sobre el botón abre el editor en vez de navegar. Fuera
+  // del modo edición el enlace funciona normal, porque este handler ni se
+  // engancha.
+  function abrir(evento) {
+    evento?.preventDefault?.();
+    evento?.stopPropagation?.();
     setBorrador(valor);
     setError(null);
     setAbierto(true);

@@ -190,6 +190,19 @@ como sección Y en el nav sin tocar código. No hay páginas de catálogo ni de
 detalle: eran el mismo contenido dos veces. Las URLs viejas (`/guias`,
 `/talleres`, `/sobre-mi`) redirigen al ancla correspondiente.
 
+**Todo el texto del sitio público lo edita Tati, sin nosotros.** No queda ni
+un string escrito a mano en la página: cada texto es un `<TextoEditable>` con su
+clave en `site_settings`, y el children hace de valor por defecto. Lo que no se
+puede editar haciendo click está en el panel: la foto (es un archivo), las FAQ
+(viven en un acordeón) y el WhatsApp/Instagram (no son texto de pantalla sino
+los datos con que se arman los enlaces, y aparecen en varios lugares a la vez).
+**Si agregás texto nuevo a la página, va como `TextoEditable`.** Un texto
+hardcodeado es una llamada telefónica futura.
+
+`TextoEditable` acepta `como="a"` con su `href`: fuera del modo edición es un
+enlace normal, y adentro el click abre el editor en vez de navegar. Así los
+botones también son editables.
+
 **Las imágenes tienen dos orígenes.** `urlPublica()` devuelve la ruta tal cual si
 empieza con `/` (un archivo de `public/`, versionado) y si no la resuelve contra
 Supabase Storage. Así una portada puede venir con el repo y ser reemplazada

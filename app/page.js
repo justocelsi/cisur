@@ -5,7 +5,7 @@ import SeccionSobreMi from "./components/SeccionSobreMi";
 import BloqueTalleres from "./components/BloqueTalleres";
 import BloqueContacto from "./components/BloqueContacto";
 import Preguntas from "./components/Preguntas";
-import { getProductos, getTalleres, getTextos, t } from "@/lib/datos";
+import { getProductos, getTalleres, getTextos } from "@/lib/datos";
 import { formatearPrecio, urlPublicaAbsoluta, urlSitio } from "@/lib/utils";
 
 // Estático, revalidado cada 5 minutos: la página carga al instante y no consume
@@ -25,18 +25,20 @@ export default async function Inicio() {
   // propia sección más abajo.
   const destacado = productos.find((p) => p.destacado) ?? productos[0] ?? null;
 
+  // Se listan las claves, no los valores ya resueltos: cada ítem se renderiza
+  // con TextoEditable, que lee el valor y además lo hace editable en el sitio.
   const dolores = [
-    t(textos, "dolor_1", "¿Lo estaré ayudando bien?"),
-    t(textos, "dolor_2", "¿Debería practicar más en casa?"),
-    t(textos, "dolor_3", "¿Es normal que escriba así?"),
-    t(textos, "dolor_4", "¿Tengo que corregirle los errores?"),
+    "¿Lo estaré ayudando bien?",
+    "¿Debería practicar más en casa?",
+    "¿Es normal que escriba así?",
+    "¿Tengo que corregirle los errores?",
   ];
 
   const comoFunciona = [
-    t(textos, "compra_detalle_1", "Acceso inmediato después del pago"),
-    t(textos, "compra_detalle_2", "Lectura online desde celular, tablet o computadora"),
-    t(textos, "compra_detalle_3", "Sin vencimiento: lo leés cuando quieras"),
-    t(textos, "compra_detalle_4", "Escrito por una psicopedagoga matriculada"),
+    "Acceso inmediato después del pago",
+    "Lectura online desde celular, tablet o computadora",
+    "Sin vencimiento: lo leés cuando quieras",
+    "Escrito por una psicopedagoga matriculada",
   ];
 
   // Un ItemList con los productos: le da a Google el catálogo completo de una
@@ -117,12 +119,14 @@ export default async function Inicio() {
 
             {destacado ? (
               <div className="mt-9 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-                <a
+                <TextoEditable
+                  clave="hero_cta"
+                  como="a"
                   href={`#${destacado.slug}`}
                   className="inline-flex w-full items-center justify-center rounded-[2px] bg-verde px-8 py-4 text-[1.21rem] text-papel transition-colors hover:bg-verde-oscuro sm:w-auto"
                 >
-                  {t(textos, "hero_cta", "Quiero la guía")}
-                </a>
+                  Quiero la guía
+                </TextoEditable>
                 <p className="text-[1.05rem] text-tinta-tenue">
                   <span className="text-tinta">
                     {formatearPrecio(destacado.precio)}
@@ -166,7 +170,8 @@ export default async function Inicio() {
               key={i}
               className="rounded-[3px] border border-papel-3 bg-papel-2 px-6 py-5 text-[1.21rem] italic text-tinta-suave"
             >
-              «{pregunta}»
+              «
+              <TextoEditable clave={`dolor_${i + 1}`}>{pregunta}</TextoEditable>»
             </li>
           ))}
         </ul>
@@ -191,13 +196,24 @@ export default async function Inicio() {
           <p aria-hidden="true" className="text-2xl text-salvia/60">
             ❧
           </p>
-          <blockquote className="mt-6 text-[1.6rem] leading-[1.45] text-papel sm:text-[1.95rem]">
+          <TextoEditable
+            clave="cita_texto"
+            como="blockquote"
+            multilinea
+            className="mt-6 text-[1.6rem] leading-[1.45] text-papel sm:text-[1.95rem]"
+          >
             «La alfabetización no comienza cuando el niño o la niña ingresan a la
             escuela primaria. Comienza mucho antes, en cada conversación, en cada
             cuento compartido y en cada oportunidad de descubrir que las palabras
             tienen un significado.»
-          </blockquote>
-          <p className="mt-7 versalitas text-salvia">Capítulo 1 de la guía</p>
+          </TextoEditable>
+          <TextoEditable
+            clave="cita_autor"
+            como="p"
+            className="mt-7 versalitas text-salvia"
+          >
+            Capítulo 1 de la guía
+          </TextoEditable>
         </div>
       </section>
 
@@ -226,7 +242,9 @@ export default async function Inicio() {
                   <span aria-hidden="true" className="text-verde-claro">
                     ❧
                   </span>
-                  {detalle}
+                  <TextoEditable clave={`compra_detalle_${i + 1}`}>
+                    {detalle}
+                  </TextoEditable>
                 </li>
               ))}
             </ul>
@@ -248,9 +266,13 @@ export default async function Inicio() {
           PREGUNTAS
           ================================================================ */}
       <section className="contenedor py-20 md:py-28">
-        <h2 className="text-center text-[2rem] leading-tight text-tinta sm:text-[2.4rem]">
+        <TextoEditable
+          clave="faq_titulo"
+          como="h2"
+          className="block text-center text-[2rem] leading-tight text-tinta sm:text-[2.4rem]"
+        >
           Preguntas frecuentes
-        </h2>
+        </TextoEditable>
         <Preguntas textos={textos} className="mx-auto mt-12 max-w-2xl" />
       </section>
 

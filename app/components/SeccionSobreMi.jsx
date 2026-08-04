@@ -42,7 +42,13 @@ export default function SeccionSobreMi({ textos }) {
           </div>
 
           <div>
-            <p className="versalitas text-verde-claro">Quién está detrás</p>
+            <TextoEditable
+              clave="sobre_kicker"
+              como="p"
+              className="versalitas text-verde-claro"
+            >
+              Quién está detrás
+            </TextoEditable>
 
             <TextoEditable
               clave="sobre_titulo"
@@ -78,10 +84,15 @@ export default function SeccionSobreMi({ textos }) {
             </div>
 
             <hr className="filete mt-8 max-w-sm" />
-            <p className="mt-4 text-[1.05rem] text-tinta-tenue">
+            <TextoEditable
+              clave="sobre_credenciales"
+              como="p"
+              multilinea
+              className="mt-4 text-[1.05rem] text-tinta-tenue"
+            >
               Licenciada en Psicopedagogía · Profesora de Nivel Inicial y
               Maternal · Matrícula Provincial N.º 205281
-            </p>
+            </TextoEditable>
           </div>
         </div>
       </div>

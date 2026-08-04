@@ -9,14 +9,27 @@ import { mensajeDeError } from "@/lib/errores";
 import { urlPublica } from "@/lib/utils";
 
 /**
- * Lo que no se puede editar haciendo click en la página: la foto de "Sobre mí"
- * (es un archivo, no un texto) y las preguntas frecuentes (viven dentro de un
- * acordeón, donde el editor inline queda incómodo).
+ * Lo que no se puede editar haciendo click en la página:
  *
- * Con esto Tati ya no depende de nadie para ningún contenido del sitio.
+ *   · la foto de "Sobre mí"     — es un archivo, no un texto
+ *   · las preguntas frecuentes  — viven en un acordeón, donde el editor
+ *                                 inline queda incómodo
+ *   · el WhatsApp y el Instagram — no son texto de pantalla sino los datos
+ *                                 con que se arman los enlaces, y aparecen
+ *                                 en varios lugares a la vez
+ *
+ * Todo el resto del sitio se edita haciendo click sobre el texto, con
+ * "Editar la página" activado.
  */
 
 const PREGUNTAS = [1, 2, 3, 4, 5, 6];
+
+// Se guarda sólo el número, sin +, sin espacios y sin guiones: es lo que
+// espera la API de wa.me. Si Tati pega "+54 223 447-4674" lo limpiamos acá en
+// vez de hacerla pelear con el formato.
+function soloDigitos(texto) {
+  return String(texto ?? "").replace(/\D/g, "");
+}
 
 export default function PanelSitio() {
   const { obtener, guardar } = useTextos();
@@ -24,6 +37,7 @@ export default function PanelSitio() {
   const [foto, setFoto] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
   const [guardandoFaq, setGuardandoFaq] = useState(false);
+  const [guardandoContacto, setGuardandoContacto] = useState(false);
   const [error, setError] = useState(null);
   const [ok, setOk] = useState(null);
 
@@ -103,6 +117,49 @@ export default function PanelSitio() {
     setEdiciones((prev) => ({ ...prev, [`faq_${n}_${campo}`]: nuevoValor }));
   }
 
+  function cambiarClave(clave, nuevoValor) {
+    setEdiciones((prev) => ({ ...prev, [clave]: nuevoValor }));
+  }
+
+  async function guardarContacto() {
+    setError(null);
+    setOk(null);
+
+    const numero = soloDigitos(valor("contacto_whatsapp"));
+    if (numero.length < 10) {
+      setError(
+        "El WhatsApp parece incompleto. Va con el código de país y el de área, por ejemplo 5492234474674.",
+      );
+      return;
+    }
+
+    setGuardandoContacto(true);
+    try {
+      const arroba = valor("contacto_instagram").trim().replace(/^@/, "");
+      for (const [clave, v] of [
+        ["contacto_whatsapp", numero],
+        ["contacto_instagram", arroba],
+      ]) {
+        const { error: e } = await guardar(clave, v);
+        if (e) throw new Error(e);
+      }
+      setOk("Datos de contacto guardados. Pueden tardar unos minutos en verse en la web.");
+      // Se olvidan sólo estas dos: el resto del formulario (las FAQ) puede
+      // tener ediciones sin guardar y no hay que pisarlas.
+      setEdiciones((prev) =>
+        Object.fromEntries(
+          Object.entries(prev).filter(
+            ([clave]) => !clave.startsWith("contacto_"),
+          ),
+        ),
+      );
+    } catch (e) {
+      setError(mensajeDeError(e));
+    } finally {
+      setGuardandoContacto(false);
+    }
+  }
+
   return (
     <div className="grid gap-14 lg:grid-cols-[minmax(0,420px)_1fr]">
       {/* ------------------------------------------------------------- Foto */}
@@ -147,6 +204,35 @@ export default function PanelSitio() {
 
           <Boton onClick={subirFoto} disabled={subiendo || !foto}>
             {subiendo ? "Subiendo…" : "Guardar la foto"}
+          </Boton>
+        </div>
+
+        {/* ------------------------------------------------------- Contacto */}
+        <h2 className="mt-16 text-[1.5rem] text-tinta">Tus datos de contacto</h2>
+        <p className="mt-2 leading-relaxed text-tinta-suave">
+          Con esto se arman los botones de WhatsApp e Instagram, que aparecen en
+          la sección «Hablemos», en los talleres y en el pie de la página. Si los
+          cambiás acá, cambian en todos lados.
+        </p>
+
+        <div className="mt-6 space-y-5">
+          <Campo
+            id="contacto_whatsapp"
+            etiqueta="WhatsApp"
+            valor={valor("contacto_whatsapp")}
+            alCambiar={(v) => cambiarClave("contacto_whatsapp", v)}
+            ayuda="Con código de país y de área, sin el + ni espacios: 5492234474674. Si lo pegás con espacios o guiones, se limpia solo al guardar."
+          />
+          <Campo
+            id="contacto_instagram"
+            etiqueta="Instagram"
+            valor={valor("contacto_instagram")}
+            alCambiar={(v) => cambiarClave("contacto_instagram", v)}
+            ayuda="Sólo el nombre de usuario, sin el arroba: cisur.mdp"
+          />
+
+          <Boton onClick={guardarContacto} disabled={guardandoContacto}>
+            {guardandoContacto ? "Guardando…" : "Guardar los datos de contacto"}
           </Boton>
         </div>
       </section>

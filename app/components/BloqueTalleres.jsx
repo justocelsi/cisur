@@ -1,4 +1,5 @@
 import Image from "next/image";
+import TextoEditable from "./TextoEditable";
 import { t } from "@/lib/datos";
 import { formatearFecha, linkWhatsApp, safeHref, urlPublica } from "@/lib/utils";
 
@@ -22,17 +23,35 @@ export default function BloqueTalleres({ talleres = [], textos }) {
     >
       <div className="contenedor">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="versalitas text-verde-claro">Presencial</p>
-          <h2 className="mt-4 text-[2rem] leading-tight text-tinta sm:text-[2.4rem]">
-            {t(textos, "talleres_titulo", "Talleres para colegios e instituciones")}
-          </h2>
-          <p className="mt-5 leading-relaxed text-tinta-suave">
-            {t(
-              textos,
-              "talleres_texto",
-              "Encuentros presenciales con familias y equipos docentes sobre alfabetización, conciencia fonológica, juego y lectura compartida. Se arman a medida de cada institución.",
-            )}
-          </p>
+          <TextoEditable
+            clave="talleres_kicker"
+            como="p"
+            className="versalitas text-verde-claro"
+          >
+            Presencial
+          </TextoEditable>
+
+          <TextoEditable
+            clave="talleres_titulo"
+            como="h2"
+            className="mt-4 text-[2rem] leading-tight text-tinta sm:text-[2.4rem]"
+          >
+            Talleres para colegios e instituciones
+          </TextoEditable>
+
+          <TextoEditable
+            clave="talleres_texto"
+            como="p"
+            multilinea
+            className="mt-5 leading-relaxed text-tinta-suave"
+          >
+            Acompaño a las familias brindándoles herramientas para comprender y
+            acompañar el proceso de alfabetización de sus hijos e hijas con mayor
+            seguridad y confianza. En cada encuentro trabajamos temas como el
+            desarrollo del lenguaje, el juego y la lectura compartida, siempre
+            adaptando la propuesta a la realidad y las necesidades de cada
+            institución.
+          </TextoEditable>
         </div>
 
         {talleres.length > 0 ? (
@@ -88,14 +107,16 @@ export default function BloqueTalleres({ talleres = [], textos }) {
 
         {urlWhatsapp ? (
           <div className="mt-14 text-center">
-            <a
+            <TextoEditable
+              clave="talleres_cta"
+              como="a"
               href={urlWhatsapp}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-[2px] border border-verde px-8 py-4 text-verde transition-colors hover:bg-verde hover:text-papel"
             >
-              {t(textos, "talleres_cta", "Consultar por un taller")}
-            </a>
+              Consultar por un taller
+            </TextoEditable>
           </div>
         ) : null}
       </div>

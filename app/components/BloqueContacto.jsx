@@ -1,3 +1,4 @@
+import TextoEditable from "./TextoEditable";
 import { t } from "@/lib/datos";
 import { linkWhatsApp, safeHref } from "@/lib/utils";
 
@@ -18,16 +19,22 @@ export default function BloqueContacto({ textos }) {
       className="ancla border-t border-papel-3 bg-verde py-20 text-papel md:py-24"
     >
       <div className="contenedor-angosto text-center">
-        <h2 className="text-[2rem] leading-tight sm:text-[2.4rem]">
-          {t(textos, "contacto_titulo", "Hablemos")}
-        </h2>
-        <p className="mx-auto mt-5 max-w-lg leading-relaxed text-salvia">
-          {t(
-            textos,
-            "contacto_texto",
-            "Consultas por la guía, turnos en consultorio o talleres para tu institución.",
-          )}
-        </p>
+        <TextoEditable
+          clave="contacto_titulo"
+          como="h2"
+          className="block text-[2rem] leading-tight sm:text-[2.4rem]"
+        >
+          Hablemos
+        </TextoEditable>
+        <TextoEditable
+          clave="contacto_texto"
+          como="p"
+          multilinea
+          className="mx-auto mt-5 max-w-lg leading-relaxed text-salvia"
+        >
+          Consultas por la guía, turnos en consultorio o talleres para tu
+          institución.
+        </TextoEditable>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           {urlWhatsapp ? (
@@ -52,9 +59,13 @@ export default function BloqueContacto({ textos }) {
           ) : null}
         </div>
 
-        <p className="mt-10 text-[1.05rem] text-salvia/70">
-          {t(textos, "contacto_ciudad", "Mar del Plata, Buenos Aires")}
-        </p>
+        <TextoEditable
+          clave="contacto_ciudad"
+          como="p"
+          className="mt-10 text-[1.05rem] text-salvia/70"
+        >
+          Mar del Plata, Buenos Aires
+        </TextoEditable>
       </div>
     </section>
   );
