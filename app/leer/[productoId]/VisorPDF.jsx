@@ -34,6 +34,10 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
   const [pagina, setPagina] = useState(1);
   const [ancho, setAncho] = useState(680);
   const [errorCarga, setErrorCarga] = useState(null);
+  // Porcentaje descargado. Los materiales pesan varios MB y por 4G la espera
+  // llega a la media docena de segundos larga: sin un número que se mueva, la
+  // pantalla parece colgada y la gente recarga (y vuelve a empezar de cero).
+  const [progreso, setProgreso] = useState(0);
 
   const contenedorRef = useRef(null);
   const renovando = useRef(false);
@@ -60,7 +64,14 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
   const alCargar = useCallback(({ numPages }) => {
     setPaginas(numPages);
     setErrorCarga(null);
+    setProgreso(100);
     renovando.current = false;
+  }, []);
+
+  // `total` puede venir en 0 si el servidor no manda Content-Length. En ese
+  // caso mostramos los MB bajados en vez de un porcentaje mentiroso.
+  const alProgresar = useCallback(({ loaded, total }) => {
+    setProgreso(total > 0 ? Math.round((loaded / total) * 100) : -Math.round(loaded / 1048576));
   }, []);
 
   /**
@@ -183,13 +194,30 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
           <Document
             file={url}
             onLoadSuccess={alCargar}
+            onLoadProgress={alProgresar}
             onLoadError={alFallar}
             onSourceError={alFallar}
             options={OPCIONES_DOC}
             loading={
-              <p className="py-24 text-center text-tinta-tenue">
-                Cargando el material…
-              </p>
+              <div className="w-full max-w-sm py-24 text-center">
+                <p className="text-tinta-tenue">
+                  {progreso > 0
+                    ? `Cargando el material… ${progreso}%`
+                    : progreso < 0
+                      ? `Cargando el material… ${-progreso} MB`
+                      : "Cargando el material…"}
+                </p>
+                <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-papel-3">
+                  <div
+                    className="h-full bg-verde-claro transition-[width] duration-300"
+                    style={{ width: `${progreso > 0 ? progreso : 8}%` }}
+                  />
+                </div>
+                <p className="mt-4 text-[0.95rem] text-tinta-tenue">
+                  Son varios megas. Por datos móviles puede tardar unos
+                  segundos.
+                </p>
+              </div>
             }
             error={
               <p className="py-24 text-center text-alerta">
