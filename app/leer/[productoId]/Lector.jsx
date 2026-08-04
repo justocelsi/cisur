@@ -139,6 +139,7 @@ export default function Lector({ productoId }) {
     <VisorPDF
       url={datos.url}
       titulo={datos.titulo}
+      productoId={productoId}
       soloVistaPrevia={datos.soloVistaPrevia}
       renovarUrl={renovarUrl}
     />

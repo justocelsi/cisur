@@ -21,6 +21,44 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 // pantalla. Alcanza para que copiar el material sea incómodo.
 const OPCIONES_DOC = { disableAutoFetch: false, disableStream: false };
 
+// Tope de 820px para el ancho "natural": en un monitor grande una página a
+// todo el ancho da líneas larguísimas, que es el error de legibilidad más
+// común en la web. El zoom del lector se aplica encima de ese ancho.
+const ANCHO_COMODO = 820;
+
+const ZOOM_MIN = 0.6;
+const ZOOM_MAX = 3;
+const ZOOM_PASO = 0.2;
+
+/**
+ * Preferencias del lector, guardadas por material.
+ *
+ * Se leen con un inicializador perezoso de useState, no con un efecto: el
+ * componente se monta sólo en el navegador (`ssr: false`), así que
+ * localStorage está disponible desde el primer render y no hace falta un
+ * segundo render para sincronizar.
+ */
+function leerPreferencia(clave, porDefecto) {
+  try {
+    const crudo = window.localStorage.getItem(clave);
+    if (crudo === null) return porDefecto;
+    const valor = Number(crudo);
+    return Number.isFinite(valor) ? valor : porDefecto;
+  } catch {
+    // Modo incógnito con almacenamiento bloqueado. No es un error: se lee sin
+    // preferencias y listo.
+    return porDefecto;
+  }
+}
+
+function guardarPreferencia(clave, valor) {
+  try {
+    window.localStorage.setItem(clave, String(valor));
+  } catch {
+    // Ídem: que no se pueda recordar la página no debe romper la lectura.
+  }
+}
+
 /**
  * `url` es la única fuente de verdad y viene del padre.
  *
@@ -29,9 +67,22 @@ const OPCIONES_DOC = { disableAutoFetch: false, disableStream: false };
  * local acá sólo agregaría un efecto de sincronización y una fuente de
  * verdad duplicada.
  */
-export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
+export default function VisorPDF({
+  url,
+  titulo,
+  productoId,
+  soloVistaPrevia,
+  renovarUrl,
+}) {
+  const clavePagina = `cisur:pagina:${productoId}`;
+  const claveZoom = `cisur:zoom:${productoId}`;
+
   const [paginas, setPaginas] = useState(null);
-  const [pagina, setPagina] = useState(1);
+  // Retomar donde se dejó. En un material de decenas de páginas, volver
+  // siempre a la 1 obliga a buscar de nuevo dónde iba: es la diferencia entre
+  // un lector y un visor de archivos.
+  const [pagina, setPagina] = useState(() => leerPreferencia(clavePagina, 1));
+  const [zoom, setZoom] = useState(() => leerPreferencia(claveZoom, 1));
   const [ancho, setAncho] = useState(680);
   const [errorCarga, setErrorCarga] = useState(null);
   // Porcentaje descargado. Los materiales pesan varios MB y por 4G la espera
@@ -40,7 +91,11 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
   const [progreso, setProgreso] = useState(0);
 
   const contenedorRef = useRef(null);
+  const zonaRef = useRef(null);
   const renovando = useRef(false);
+  const tactil = useRef(null);
+
+  const anchoRender = Math.round(ancho * zoom);
 
   // El PDF se renderiza a un ancho fijo en píxeles, así que hay que medir el
   // contenedor y volver a medir en cada resize / rotación del celular.
@@ -49,10 +104,7 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
     if (!nodo) return;
 
     function medir() {
-      const disponible = nodo.clientWidth;
-      // Tope de 820px: en un monitor grande una página a todo el ancho es
-      // ilegible (líneas larguísimas).
-      setAncho(Math.max(280, Math.min(disponible, 820)));
+      setAncho(Math.max(280, Math.min(nodo.clientWidth, ANCHO_COMODO)));
     }
 
     medir();
@@ -61,17 +113,25 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
     return () => observador.disconnect();
   }, []);
 
-  const alCargar = useCallback(({ numPages }) => {
-    setPaginas(numPages);
-    setErrorCarga(null);
-    setProgreso(100);
-    renovando.current = false;
-  }, []);
+  const alCargar = useCallback(
+    ({ numPages }) => {
+      setPaginas(numPages);
+      setErrorCarga(null);
+      setProgreso(100);
+      renovando.current = false;
+      // La página recordada puede haber quedado fuera de rango si el material
+      // se reemplazó por una versión más corta.
+      setPagina((actual) => Math.min(Math.max(actual, 1), numPages));
+    },
+    [],
+  );
 
   // `total` puede venir en 0 si el servidor no manda Content-Length. En ese
   // caso mostramos los MB bajados en vez de un porcentaje mentiroso.
   const alProgresar = useCallback(({ loaded, total }) => {
-    setProgreso(total > 0 ? Math.round((loaded / total) * 100) : -Math.round(loaded / 1048576));
+    setProgreso(
+      total > 0 ? Math.round((loaded / total) * 100) : -Math.round(loaded / 1048576),
+    );
   }, []);
 
   /**
@@ -89,36 +149,107 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
     renovarUrl();
   }, [renovarUrl]);
 
+  // El destino se calcula acá y no dentro del updater de setPagina: React
+  // puede ejecutar un updater más de una vez, así que no es lugar para
+  // guardar en localStorage ni para scrollear.
   const irA = useCallback(
     (destino) => {
-      setPagina((actual) => {
-        const total = paginas ?? 1;
-        return Math.min(Math.max(destino, 1), total);
-      });
+      const total = paginas ?? 1;
+      const siguiente = Math.min(Math.max(destino, 1), total);
+      if (!Number.isFinite(siguiente) || siguiente === pagina) return;
+
+      setPagina(siguiente);
+      guardarPreferencia(clavePagina, siguiente);
+      // Al pasar de página, volver arriba: si no, quien venía leyendo el pie
+      // de una página aterriza en el medio de la siguiente.
+      zonaRef.current?.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    [paginas],
+    [pagina, paginas, clavePagina],
   );
 
-  // Navegación con teclado, como en un lector de verdad.
+  const cambiarZoom = useCallback(
+    (siguiente) => {
+      const acotado = Math.min(Math.max(Number(siguiente.toFixed(2)), ZOOM_MIN), ZOOM_MAX);
+      setZoom(acotado);
+      guardarPreferencia(claveZoom, acotado);
+    },
+    [claveZoom],
+  );
+
+  // Navegación y zoom con teclado, como en un lector de verdad.
   useEffect(() => {
     function alTeclado(evento) {
-      if (evento.key === "ArrowRight" || evento.key === "PageDown") {
-        irA(pagina + 1);
-      }
-      if (evento.key === "ArrowLeft" || evento.key === "PageUp") {
-        irA(pagina - 1);
+      // Sin esto, escribir en el campo de página movería el cursor Y pasaría
+      // de página al mismo tiempo.
+      const etiqueta = evento.target?.tagName;
+      if (etiqueta === "INPUT" || etiqueta === "TEXTAREA") return;
+      if (evento.metaKey || evento.ctrlKey || evento.altKey) return;
+
+      switch (evento.key) {
+        case "ArrowRight":
+        case "PageDown":
+        case " ":
+          evento.preventDefault();
+          irA(pagina + 1);
+          break;
+        case "ArrowLeft":
+        case "PageUp":
+          evento.preventDefault();
+          irA(pagina - 1);
+          break;
+        case "Home":
+          irA(1);
+          break;
+        case "End":
+          irA(paginas ?? 1);
+          break;
+        case "+":
+        case "=":
+          cambiarZoom(zoom + ZOOM_PASO);
+          break;
+        case "-":
+          cambiarZoom(zoom - ZOOM_PASO);
+          break;
+        case "0":
+          cambiarZoom(1);
+          break;
+        default:
       }
     }
     window.addEventListener("keydown", alTeclado);
     return () => window.removeEventListener("keydown", alTeclado);
-  }, [pagina, irA]);
+  }, [pagina, paginas, zoom, irA, cambiarZoom]);
+
+  // Pasar página con el dedo. Se desactiva con zoom, donde el gesto
+  // horizontal sirve para desplazarse dentro de la página ampliada.
+  function alTocarInicio(evento) {
+    if (zoom > 1) return;
+    const t = evento.changedTouches[0];
+    tactil.current = { x: t.clientX, y: t.clientY };
+  }
+
+  function alTocarFin(evento) {
+    if (!tactil.current) return;
+    const t = evento.changedTouches[0];
+    const dx = t.clientX - tactil.current.x;
+    const dy = t.clientY - tactil.current.y;
+    tactil.current = null;
+    // Umbral generoso y más horizontal que vertical: si no, cualquier scroll
+    // con el pulgar cambiaría de página.
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    irA(pagina + (dx < 0 ? 1 : -1));
+  }
+
+  const claseBoton =
+    "rounded-[2px] border border-papel-3 px-3 py-1.5 text-tinta-suave transition-colors hover:border-salvia disabled:opacity-40";
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] flex-col bg-papel-3/40">
       {/* Barra superior */}
       <div className="no-imprimir sticky top-[73px] z-30 border-b border-papel-3 bg-papel/95 backdrop-blur-sm">
         <div className="contenedor flex flex-wrap items-center justify-between gap-3 py-3">
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <Link
               href="/mis-materiales"
               className="text-[1.05rem] text-tinta-tenue hover:text-verde"
@@ -136,7 +267,7 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
               onClick={() => irA(pagina - 1)}
               disabled={pagina <= 1}
               aria-label="Página anterior"
-              className="rounded-[2px] border border-papel-3 px-3 py-1.5 text-tinta-suave disabled:opacity-40"
+              className={claseBoton}
             >
               ‹
             </button>
@@ -159,9 +290,39 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
               onClick={() => irA(pagina + 1)}
               disabled={paginas ? pagina >= paginas : true}
               aria-label="Página siguiente"
-              className="rounded-[2px] border border-papel-3 px-3 py-1.5 text-tinta-suave disabled:opacity-40"
+              className={claseBoton}
             >
               ›
+            </button>
+          </div>
+
+          {/* Zoom */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => cambiarZoom(zoom - ZOOM_PASO)}
+              disabled={zoom <= ZOOM_MIN}
+              aria-label="Achicar"
+              className={claseBoton}
+            >
+              −
+            </button>
+            <button
+              type="button"
+              onClick={() => cambiarZoom(1)}
+              title="Volver al tamaño que entra en la pantalla"
+              className="min-w-[4.5rem] rounded-[2px] border border-papel-3 px-2 py-1.5 text-[1.05rem] text-tinta-suave transition-colors hover:border-salvia"
+            >
+              {Math.round(zoom * 100)}%
+            </button>
+            <button
+              type="button"
+              onClick={() => cambiarZoom(zoom + ZOOM_PASO)}
+              disabled={zoom >= ZOOM_MAX}
+              aria-label="Agrandar"
+              className={claseBoton}
+            >
+              +
             </button>
           </div>
         </div>
@@ -191,71 +352,80 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
         {errorCarga ? (
           <p className="py-24 text-center text-alerta">{errorCarga}</p>
         ) : (
-          <Document
-            file={url}
-            onLoadSuccess={alCargar}
-            onLoadProgress={alProgresar}
-            onLoadError={alFallar}
-            onSourceError={alFallar}
-            options={OPCIONES_DOC}
-            loading={
-              <div className="w-full max-w-sm py-24 text-center">
-                <p className="text-tinta-tenue">
-                  {progreso > 0
-                    ? `Cargando el material… ${progreso}%`
-                    : progreso < 0
-                      ? `Cargando el material… ${-progreso} MB`
-                      : "Cargando el material…"}
-                </p>
-                <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-papel-3">
-                  <div
-                    className="h-full bg-verde-claro transition-[width] duration-300"
-                    style={{ width: `${progreso > 0 ? progreso : 8}%` }}
-                  />
-                </div>
-                <p className="mt-4 text-[0.95rem] text-tinta-tenue">
-                  Son varios megas. Por datos móviles puede tardar unos
-                  segundos.
-                </p>
-              </div>
-            }
-            error={
-              <p className="py-24 text-center text-alerta">
-                No pudimos mostrar este archivo.
-              </p>
-            }
-            className="select-none"
+          <div
+            ref={zonaRef}
+            onTouchStart={alTocarInicio}
+            onTouchEnd={alTocarFin}
+            // Con zoom la página se sale del contenedor: que se pueda arrastrar
+            // en horizontal en vez de recortarse.
+            className={`w-full ${zoom > 1 ? "overflow-x-auto" : "flex justify-center"}`}
           >
-            <Page
-              pageNumber={pagina}
-              width={ancho}
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
-              className="shadow-[0_10px_40px_-12px_rgba(31,42,28,0.35)]"
+            <Document
+              file={url}
+              onLoadSuccess={alCargar}
+              onLoadProgress={alProgresar}
+              onLoadError={alFallar}
+              onSourceError={alFallar}
+              options={OPCIONES_DOC}
               loading={
-                <div
-                  style={{ width: ancho, height: ancho * 1.414 }}
-                  className="animate-pulse bg-papel-2"
-                />
+                <div className="mx-auto w-full max-w-sm py-24 text-center">
+                  <p className="text-tinta-tenue">
+                    {progreso > 0
+                      ? `Cargando el material… ${progreso}%`
+                      : progreso < 0
+                        ? `Cargando el material… ${-progreso} MB`
+                        : "Cargando el material…"}
+                  </p>
+                  <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-papel-3">
+                    <div
+                      className="h-full bg-verde-claro transition-[width] duration-300"
+                      style={{ width: `${progreso > 0 ? progreso : 8}%` }}
+                    />
+                  </div>
+                  <p className="mt-4 text-[0.95rem] text-tinta-tenue">
+                    Son varios megas. Por datos móviles puede tardar unos
+                    segundos.
+                  </p>
+                </div>
               }
-            />
-          </Document>
+              error={
+                <p className="py-24 text-center text-alerta">
+                  No pudimos mostrar este archivo.
+                </p>
+              }
+              className={`select-none ${zoom > 1 ? "w-max" : ""}`}
+            >
+              <Page
+                pageNumber={pagina}
+                width={anchoRender}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+                className="shadow-[0_10px_40px_-12px_rgba(31,42,28,0.35)]"
+                loading={
+                  <div
+                    style={{ width: anchoRender, height: anchoRender * 1.414 }}
+                    className="animate-pulse bg-papel-2"
+                  />
+                }
+              />
+            </Document>
+          </div>
         )}
       </div>
 
       {/* Navegación inferior, para no tener que volver arriba en mobile */}
-      <div className="no-imprimir border-t border-papel-3 bg-papel">
-        <div className="contenedor flex items-center justify-between py-4">
+      <div className="no-imprimir sticky bottom-0 border-t border-papel-3 bg-papel/95 backdrop-blur-sm">
+        <div className="contenedor flex items-center justify-between gap-3 py-3">
           <button
             type="button"
             onClick={() => irA(pagina - 1)}
             disabled={pagina <= 1}
-            className="rounded-[2px] border border-papel-3 px-5 py-2.5 text-tinta-suave transition-colors hover:border-salvia disabled:opacity-40"
+            className="flex-1 rounded-[2px] border border-papel-3 py-3.5 text-tinta-suave transition-colors hover:border-salvia disabled:opacity-40 sm:flex-none sm:px-8"
           >
             ‹ Anterior
           </button>
 
-          <span className="text-[1.05rem] text-tinta-tenue">
+          <span className="shrink-0 text-[1.05rem] text-tinta-tenue">
             {pagina} / {paginas ?? "…"}
           </span>
 
@@ -263,7 +433,7 @@ export default function VisorPDF({ url, titulo, soloVistaPrevia, renovarUrl }) {
             type="button"
             onClick={() => irA(pagina + 1)}
             disabled={paginas ? pagina >= paginas : true}
-            className="rounded-[2px] border border-papel-3 px-5 py-2.5 text-tinta-suave transition-colors hover:border-salvia disabled:opacity-40"
+            className="flex-1 rounded-[2px] border border-papel-3 py-3.5 text-tinta-suave transition-colors hover:border-salvia disabled:opacity-40 sm:flex-none sm:px-8"
           >
             Siguiente ›
           </button>
