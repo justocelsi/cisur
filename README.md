@@ -8,7 +8,7 @@ Autora del contenido: **Lic. Tatiana Galera**, psicopedagoga (Mat. Prov. 205281)
 
 - **Producción:** https://cisur.vercel.app
 - **Puesta en producción:** [`DEPLOY.md`](DEPLOY.md)
-- **Instructivos para la clienta:** [`docs/tati-mercadopago.pdf`](docs/tati-mercadopago.pdf) (versión visual, la que se le manda) · [`PARA-TATI-editar-la-web.md`](PARA-TATI-editar-la-web.md)
+- **Instructivos para la clienta:** [`docs/tati-mercadopago.pdf`](docs/tati-mercadopago.pdf) · [`docs/tati-editar-la-web.pdf`](docs/tati-editar-la-web.pdf)
 - **Onboarding de desarrollo:** [`PARA-MORA-aprender.md`](PARA-MORA-aprender.md)
 - **Probar los cobros:** [`PRUEBA-MERCADOPAGO.md`](PRUEBA-MERCADOPAGO.md)
 

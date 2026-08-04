@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<title>CISUR — Cómo editar tu web</title>
+<style>
+/* ==========================================================================
+   Documento para imprimir / PDF. Misma paleta que la web de CISUR.
+   La tipografía es la de sistema: no depende de internet para verse bien.
+   ========================================================================== */
+
+:root {
+  --verde: #41664a;
+  --verde-oscuro: #33513a;
+  --verde-claro: #6f9179;
+  --tostado: #c9a77f;
+  --tostado-tenue: #ece0cd;
+  --papel: #faf7f1;
+  --papel-2: #f4efe3;
+  --linea: #e0d5c0;
+  --tinta: #1f2a1c;
+  --tinta-suave: #46523f;
+  --tinta-tenue: #737e6d;
+  --serif: "Times New Roman", Times, "Liberation Serif", serif;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@page {
+  size: A4;
+  margin: 16mm 15mm 18mm 15mm;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 11.5pt;
+  line-height: 1.55;
+  color: var(--tinta);
+  background: #fff;
+}
+
+/* --- Portada ----------------------------------------------------------- */
+/* Chrome no deja sangrar hasta el borde del papel al imprimir (recorta contra
+   el área de @page), así que el panel llena todo el alto útil y el margen
+   blanco queda como marco. A4 son 297mm menos 16 y 18 de márgenes: 263mm. */
+.portada {
+  background: var(--verde);
+  color: var(--papel);
+  padding: 26mm 18mm;
+  min-height: 262mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  page-break-after: always;
+}
+.portada .marca {
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: .22em;
+  font-size: 13pt;
+}
+.portada .bajada-marca {
+  font-family: var(--sans);
+  font-size: 7.5pt;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--tostado);
+  margin-top: 3mm;
+}
+.portada h1 {
+  font-size: 30pt;
+  line-height: 1.1;
+  font-weight: normal;
+  margin: 20mm 0 0;
+  letter-spacing: -.01em;
+}
+.portada .sub {
+  font-size: 13pt;
+  color: var(--tostado);
+  margin-top: 6mm;
+  max-width: 120mm;
+  line-height: 1.5;
+}
+.portada .meta {
+  margin-top: 22mm;
+  padding-top: 6mm;
+  border-top: 1px solid rgba(250,247,241,.25);
+  font-size: 10pt;
+  color: var(--tostado);
+}
+
+/* --- Estructura -------------------------------------------------------- */
+h2 {
+  font-size: 19pt;
+  font-weight: normal;
+  color: var(--verde);
+  margin: 9mm 0 3.5mm;
+  padding-bottom: 2.5mm;
+  border-bottom: 2px solid var(--tostado);
+  page-break-after: avoid;
+}
+h2 .num {
+  font-family: var(--sans);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--tostado);
+  display: block;
+  margin-bottom: 1.5mm;
+}
+h3 {
+  font-size: 12.5pt;
+  font-weight: normal;
+  color: var(--verde-oscuro);
+  margin: 5.5mm 0 2mm;
+  padding-left: 3.5mm;
+  border-left: 2.5px solid var(--tostado);
+  page-break-after: avoid;
+}
+p { margin: 0 0 3.5mm; }
+strong { font-weight: bold; }
+/* Se dejó de forzar un salto por parte: dejaba hojas casi vacías. Lo que sí
+   se protege es que un título no se separe de su contenido y que un recuadro
+   no se corte al medio (ver page-break-inside en .caja y .item). */
+h2 { page-break-before: auto; }
+
+/* --- Pasos numerados --------------------------------------------------- */
+ol.pasos { list-style: none; counter-reset: paso; padding: 0; margin: 4mm 0; }
+ol.pasos > li {
+  counter-increment: paso;
+  position: relative;
+  padding: 0 0 3.2mm 13mm;
+  page-break-inside: avoid;
+}
+ol.pasos > li::before {
+  content: counter(paso);
+  position: absolute;
+  left: 0; top: -0.5mm;
+  width: 8.5mm; height: 8.5mm;
+  background: var(--verde);
+  color: var(--papel);
+  border-radius: 50%;
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+ul.simple { margin: 3mm 0; padding-left: 6mm; }
+ul.simple li { margin-bottom: 2mm; }
+
+/* --- Recuadros --------------------------------------------------------- */
+.caja {
+  background: var(--papel-2);
+  border-left: 3px solid var(--verde-claro);
+  padding: 3.5mm 4.5mm;
+  margin: 4mm 0;
+  page-break-inside: avoid;
+}
+.caja.ojo { background: var(--tostado-tenue); border-left-color: var(--tostado); }
+.caja.calma { background: #eef3ef; border-left-color: var(--verde); }
+.caja .titulo {
+  font-family: var(--sans);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--verde);
+  margin-bottom: 2mm;
+}
+.caja.ojo .titulo { color: #8a5a2b; }
+.caja p:last-child { margin-bottom: 0; }
+
+/* --- Checklist --------------------------------------------------------- */
+.checklist { margin: 5mm 0; }
+.checklist .item {
+  display: flex;
+  gap: 4mm;
+  padding: 2.7mm 0;
+  border-bottom: 1px solid var(--linea);
+  page-break-inside: avoid;
+}
+.checklist .item:last-child { border-bottom: none; }
+.cuadro {
+  flex: 0 0 auto;
+  width: 5mm; height: 5mm;
+  border: 1.5px solid var(--verde);
+  margin-top: 1.2mm;
+}
+.checklist .que { font-weight: bold; }
+.checklist .como { color: var(--tinta-suave); font-size: 10.5pt; }
+
+/* --- Datos a copiar ---------------------------------------------------- */
+.dato {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  background: #fff;
+  border: 1px dashed var(--tostado);
+  padding: 2.5mm 3mm;
+  margin: 2mm 0;
+  word-break: break-all;
+}
+.etiqueta {
+  font-family: var(--sans);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tinta-tenue);
+}
+code {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  background: var(--papel-2);
+  padding: .5mm 1.5mm;
+  border-radius: 2px;
+}
+
+/* --- Camino de clics --------------------------------------------------- */
+.ruta {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  color: var(--verde-oscuro);
+  background: var(--papel-2);
+  border: 1px solid var(--linea);
+  padding: 2.5mm 3.5mm;
+  margin: 2.5mm 0;
+  display: inline-block;
+}
+
+/* --- Preguntas --------------------------------------------------------- */
+.faq { margin-top: 3mm; }
+.faq .p {
+  font-weight: bold;
+  color: var(--verde);
+  margin: 5mm 0 1mm;
+  page-break-after: avoid;
+}
+.faq .r { margin: 0 0 3mm; }
+
+.cierre {
+  margin-top: 4mm;
+  padding-top: 3mm;
+  border-top: 2px solid var(--tostado);
+  color: var(--tinta-suave);
+  font-size: 10.5pt;
+}
+</style>
+</head>
+<body>
+
+<!-- ====================== PORTADA ====================== -->
+<div class="portada">
+  <div class="marca">CISUR</div>
+  <div class="bajada-marca">Centro Integral Sur</div>
+
+  <h1>Cómo editar<br>tu web</h1>
+  <p class="sub">
+    Cambiar los textos, cargar materiales y talleres, y ver tus ventas. Todo lo
+    podés hacer vos sola, sin llamar a nadie.
+  </p>
+
+  <div class="meta">
+    Para Tatiana Galera &nbsp;·&nbsp; cisur.vercel.app &nbsp;·&nbsp; Agosto de 2026
+  </div>
+</div>
+
+<!-- ====================== ENTRAR ====================== -->
+<h2><span class="num">Para empezar</span>Entrá a tu cuenta</h2>
+
+<p>
+  Andá a <strong>cisur.vercel.app/ingresar</strong> y poné tu mail y tu
+  contraseña. Cuando entrás, arriba a la derecha te aparecen dos botones que las
+  demás personas no ven:
+</p>
+
+<ul class="simple">
+  <li><strong>«Editar la página»</strong> — para cambiar los textos.</li>
+  <li><strong>«Panel»</strong> — para los materiales, los talleres y las ventas.</li>
+</ul>
+
+<div class="caja calma">
+  <div class="titulo">No se puede romper nada</div>
+  <p>
+    Todo lo que cambies se puede volver a cambiar. Lo único que no se deshace es
+    borrar un taller, y antes de hacerlo te pregunta si estás segura. Las ventas
+    no se pueden borrar nunca: son tu comprobante.
+  </p>
+</div>
+
+<!-- ====================== TEXTOS ====================== -->
+<h2><span class="num">Lo más simple</span>Cambiar un texto</h2>
+
+<p>Es lo que vas a usar más seguido.</p>
+
+<ol class="pasos">
+  <li>Hacé clic en <strong>«Editar la página»</strong>, arriba a la derecha.</li>
+  <li>
+    Los textos que se pueden cambiar quedan marcados con un <strong>borde
+    punteado verde</strong> y un lapicito al lado.
+  </li>
+  <li>
+    <strong>Hacé clic sobre el texto</strong> que quieras cambiar. Se convierte
+    en un cuadro donde podés escribir.
+  </li>
+  <li>Escribí lo que quieras y apretá <strong>Guardar</strong>.</li>
+  <li>Cuando termines, hacé clic en <strong>«Terminar de editar»</strong>.</li>
+</ol>
+
+<p>
+  <strong>Atajos:</strong> <code>Enter</code> guarda y <code>Esc</code> cancela.
+  En los textos largos —los de varios párrafos— <code>Enter</code> hace un salto
+  de línea, y para guardar es <code>Ctrl + Enter</code>.
+</p>
+
+<h3>Qué podés cambiar así</h3>
+<p>
+  La web es <strong>una sola página</strong>: todo está ahí abajo, y el menú de
+  arriba te lleva a cada parte. Podés cambiar el título grande, el texto de la
+  portada, las cuatro preguntas del bloque «¿Alguna de estas preguntas te resulta
+  familiar?», los tres párrafos de «Hola, soy Tatiana», el título y la
+  descripción de los talleres, y los cuatro puntos de cómo funciona la compra.
+</p>
+
+<div class="caja">
+  <div class="titulo">El texto de cada material va por otro lado</div>
+  <p>
+    La descripción y la lista de cada guía no se cambian con click, sino desde
+    <strong>Panel → Materiales</strong>, porque van junto con su precio y su
+    archivo.
+  </p>
+</div>
+
+<h3>Un detalle sobre los tiempos</h3>
+<p>
+  Cuando guardás un cambio, <strong>vos lo ves al instante</strong>. Para el
+  resto de la gente puede tardar <strong>hasta 5 minutos</strong> en aparecer.
+</p>
+<p>
+  No es un error: la web guarda una copia lista para servir, para que cargue
+  rapidísimo, y esa copia se refresca cada 5 minutos. Si querés verificar cómo lo
+  ve otra persona, esperá un ratito y abrilo desde el celular con datos, no desde
+  tu compu.
+</p>
+
+<!-- ====================== PANEL ====================== -->
+<h2><span class="num">El panel</span>Las cuatro solapas</h2>
+
+<p>
+  Hacé clic en <strong>«Panel»</strong>, arriba a la derecha. Tiene cuatro
+  solapas: Materiales, Talleres, Tu foto y las preguntas, y Ventas.
+</p>
+
+<h3>Materiales — tus guías</h3>
+
+<p><strong>Para cambiar el precio:</strong> botón «Editar» sobre la guía, y
+cambiá el campo Precio. Se escribe <strong>sin puntos y sin el signo $</strong>:
+para $25.000 escribís <code>25000</code>.</p>
+
+<p>
+  El campo <strong>«Precio tachado»</strong> es opcional: si lo llenás, ese
+  número aparece tachado al lado del precio real. Sirve para mostrar una oferta.
+</p>
+
+<p><strong>Para subir el PDF:</strong> en «El PDF del material», elegí el archivo
+y dale a «Guardar cambios». Va a decir «Subiendo el PDF…»: no cierres la ventana
+hasta que termine.</p>
+
+<div class="ruta">Canva → Compartir → Descargar → Tipo de archivo: <strong>PDF estándar</strong></div>
+
+<p><strong>Para la portada:</strong> mismo formulario, campo «Portada». Tiene que
+ser una imagen <strong>vertical</strong>. Si no subís ninguna, la web dibuja sola
+una tapa verde con el título, que queda bien.</p>
+
+<div class="ruta">Canva → Compartir → Descargar → <strong>PNG</strong> → sólo la página 1</div>
+
+<div class="caja ojo">
+  <div class="titulo">La regla de oro</div>
+  <p>
+    <strong>No publiques una guía sin haberle subido el PDF.</strong> Si alguien
+    la compra, paga y no puede leer nada. El panel te avisa con un cartel rojo
+    cuando eso pasa.
+  </p>
+</div>
+
+<p>
+  <strong>«Publicado»</strong> tildado significa que se ve y se puede comprar;
+  destildado, que es un borrador que no ve nadie.
+  <strong>«Destacado»</strong> es la guía que protagoniza la portada: tildá sólo
+  una.
+</p>
+
+<p>
+  <strong>Nombre corto:</strong> cómo aparece el material en el menú de arriba.
+  Dos o tres palabras («La guía», «El frasco»), porque el título completo no
+  entra.
+</p>
+
+<p>
+  <strong>Título de la lista</strong> y <strong>la lista:</strong> un renglón por
+  línea. En la guía son los capítulos y el título es «Índice»; en el frasco son
+  ejemplos de invitaciones y el título es «Algunas invitaciones». En la web salen
+  numerados.
+</p>
+
+<h3>Talleres</h3>
+<p>
+  Los talleres <strong>no se venden por la web</strong>: se muestran para que se
+  vea tu trabajo, y quien se interesa te escribe por WhatsApp. Cargá los que ya
+  hiciste con una foto: es lo que más ayuda a que un colegio te elija.
+</p>
+<ul class="simple">
+  <li><strong>Título:</strong> por ejemplo «Taller de alfabetización para familias».</li>
+  <li><strong>Dónde:</strong> el colegio o la institución.</li>
+  <li><strong>Cuándo:</strong> la fecha. Es opcional.</li>
+  <li><strong>Descripción:</strong> dos o tres líneas de qué trabajaron.</li>
+  <li><strong>Foto:</strong> una del encuentro. Horizontal queda mejor.</li>
+  <li><strong>«Visible en la web»</strong> destildado lo esconde sin borrarlo.</li>
+</ul>
+
+<h3>Tu foto y las preguntas</h3>
+<p>
+  Dos cosas que no se pueden cambiar haciendo click en la página.
+</p>
+<p>
+  <strong>Tu foto:</strong> la que aparece al lado de «Hola, soy Tatiana». Elegí
+  una imagen vertical y dale a «Guardar la foto». La nueva reemplaza a la
+  anterior.
+</p>
+<p>
+  <strong>Las preguntas frecuentes:</strong> son las seis del final de la página.
+  Podés cambiar tanto la pregunta como la respuesta. Cambiá las que quieras y al
+  final dale a «Guardar las preguntas» una sola vez.
+</p>
+
+<h3>Ventas</h3>
+<p>
+  Acá ves todo lo que vendiste: quién compró, cuándo, cuánto y con qué mail.
+  Arriba hay cuatro números: total vendido, total del mes, pendientes y cuántas
+  personas distintas compraron.
+</p>
+
+<div class="caja">
+  <div class="titulo">Dos cosas que conviene entender</div>
+  <p>
+    <strong>Los importes son antes de la comisión</strong> de Mercado Pago. Lo
+    que realmente te entra a la cuenta lo ves en la app de Mercado Pago.
+  </p>
+  <p>
+    <strong>Las «pendientes» son normales.</strong> Son personas que empezaron a
+    pagar y no terminaron, o que eligieron pagar en efectivo y todavía no fueron
+    al Rapipago. No tenés que hacer nada: si después pagan, se convierten en
+    «Pagada» solas.
+  </p>
+</div>
+
+<!-- ====================== FAQ ====================== -->
+<h2><span class="num">Por las dudas</span>Preguntas frecuentes</h2>
+
+<div class="faq">
+  <p class="p">Cambié un texto y no lo veo en la web.</p>
+  <p class="r">
+    Esperá 5 minutos y recargá. Si seguís sin verlo, probá desde otro
+    dispositivo: puede ser que tu navegador te esté mostrando una copia vieja.
+  </p>
+
+  <p class="p">Me olvidé la contraseña.</p>
+  <p class="r">
+    En la pantalla de ingreso, «Me olvidé la contraseña». Te llega un mail con un
+    link. Si no llega, mirá en spam. Si tampoco está, avisame: hay un límite de
+    mails por hora y puede que haya que esperar un rato.
+  </p>
+
+  <p class="p">Alguien me dice que pagó y no le llegó el material.</p>
+  <p class="r">
+    Pedile el <strong>número de operación</strong> —le aparece en la pantalla
+    después de pagar— y mandámelo. Lo resuelvo en dos minutos.
+    <strong>Decile que no vuelva a comprar</strong>, porque se le cobraría dos
+    veces.
+  </p>
+
+  <p class="p">Alguien quiere que le devuelva la plata.</p>
+  <p class="r">
+    Por ley tiene 10 días para arrepentirse sin dar explicaciones. La devolución
+    la hacés desde la app de Mercado Pago (buscá el cobro → «Devolver dinero»), y
+    avisame para que le dé de baja el acceso.
+  </p>
+
+  <p class="p">¿Puedo ver el material yo, sin comprarlo?</p>
+  <p class="r">
+    Sí. Como administradora podés abrir el lector sin comprar: te aparece un
+    cartelito que dice «Vista previa de editora».
+  </p>
+
+  <p class="p">¿Puedo agregar una guía nueva más adelante?</p>
+  <p class="r">
+    Sí, todas las que quieras. En <strong>Panel → Materiales</strong>, el
+    formulario de la izquierda dice «Nuevo material». Cada material nuevo aparece
+    solo como una sección más de la página y en el menú de arriba.
+  </p>
+</div>
+
+<!-- ====================== CIERRE ====================== -->
+<h2><span class="num">Sugerencia</span>Por dónde empezar</h2>
+
+<ol class="pasos">
+  <li>
+    Revisá todos los textos con el modo edición y ponelos como te suenan a vos.
+    Los escribí a partir de tus documentos, pero seguro hay cosas que dirías
+    distinto.
+  </li>
+  <li>
+    Cargá dos o tres <strong>talleres con foto</strong>. Es lo que más ayuda a
+    que una familia o un colegio te elijan.
+  </li>
+  <li>Fijate que los precios sean los que querés.</li>
+  <li>
+    Pedile a alguien de confianza que <strong>compre de verdad</strong> y te
+    cuente si se entendió todo; después le devolvés la plata. Es la mejor manera
+    de ver la web con ojos nuevos.
+  </li>
+</ol>
+
+<p style="margin-top:5mm;color:var(--tinta-suave)">
+  Cualquier duda, escribime. Preguntar es mejor que quedarse trabada.
+</p>
+
+</body>
+</html>

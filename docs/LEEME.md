@@ -1,6 +1,11 @@
 # Documentos para la clienta
 
-`tati-mercadopago.html` es la fuente; el PDF se genera desde ahí.
+Dos documentos, mismo diseño:
+
+- `tati-mercadopago.html` — los códigos para poder cobrar.
+- `tati-editar-la-web.html` — cómo usar el panel, para cuando ya tiene permisos.
+
+El HTML es la fuente de cada uno; el PDF se genera desde ahí.
 
 Para regenerarlo después de editar el HTML:
 
@@ -9,6 +14,9 @@ google-chrome --headless=new --disable-gpu --no-sandbox --no-pdf-header-footer \
   --print-to-pdf=docs/tati-mercadopago.pdf \
   "file://$PWD/docs/tati-mercadopago.html"
 ```
+
+Los dos comparten el mismo bloque de CSS, copiado. Si se toca el diseño de uno,
+conviene copiarlo al otro para que no se despeguen.
 
 Dos cosas del diseño que conviene no romper:
 
