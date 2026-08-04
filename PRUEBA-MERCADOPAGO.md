@@ -42,15 +42,32 @@ Empezá acá. Es gratis y no toca dinero.
 
 ### 1.2 Credenciales de prueba
 
-En la aplicación → **Credenciales de prueba**. Copiá el **Access Token**
-(empieza con `TEST-`) a tu `.env.local`:
+En la aplicación → **Credenciales de prueba**. Son dos códigos, y van a
+`.env.local` en el par activo (ver `.env.example`).
 
-```
-MP_ACCESS_TOKEN=TEST-...
+**Ojo con el prefijo: hoy engaña.** Mercado Pago cambió el panel y las
+credenciales de prueba también empiezan con `APP_USR-`. No se distinguen de las
+de producción mirándolas: hay que preguntarle a la API de quién es la cuenta. Si
+detrás hay un usuario `TESTUSER…`, son de prueba.
+
+**Y las dos empiezan igual entre sí**, así que se pegan al revés muy fácil. La
+Public Key son ~44 caracteres; el Access Token, ~75. Cruzarlas publica el Access
+Token en el bundle del navegador **sin ningún síntoma**: los cobros funcionan
+igual.
+
+Las dos cosas las detecta:
+
+```bash
+npm run verificar:mp
 ```
 
-> El código detecta el prefijo `TEST-` solo y usa el sandbox de Mercado Pago.
-> No hay que cambiar ninguna otra cosa. Está en `app/api/checkout/route.js`.
+Corrélo cada vez que toques esos valores, **antes** de subirlos a Vercel.
+
+> Consecuencia de todo esto: la línea de `app/api/checkout/route.js` que decide
+> si usar el sandbox mira `startsWith("TEST-")`, y con estas credenciales da
+> `false`. Manda al `init_point` normal, que es lo que la documentación actual
+> de MP indica para credenciales de usuario de prueba. Si el checkout no se
+> comporta, ahí está el interruptor.
 
 ### 1.3 El webhook en local
 
@@ -103,6 +120,18 @@ de MP usá:
 
 El **nombre del titular** es lo que decide el resultado. Es la parte menos obvia
 del sandbox de MP.
+
+**No hay que cargarle plata a ninguna cuenta.** Las tarjetas de arriba son
+falsas y el resultado sale del nombre del titular, no de un saldo. Si en vez de
+tarjeta pagás con "dinero en cuenta", los usuarios de prueba ya vienen con saldo
+ficticio de fábrica. No hay nada que fondear ni nada que pedirle a Tati.
+
+**Probá al precio real, $25.000.** La plata es de mentira, así que no hay motivo
+para bajarlo. Bajar el precio a $100 es sólo para la Etapa 2, que es con dinero
+de verdad.
+
+**Y no intentes con precio 0:** Mercado Pago rechaza la preferencia con
+`unit_price invalid`. El mínimo que acepta es 1.
 
 ### 1.6 Qué verificar
 

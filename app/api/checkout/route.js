@@ -111,7 +111,15 @@ export async function POST(request) {
       siteUrl: urlSitio(),
     });
 
-    // Con credenciales de prueba, MP sólo acepta pagos por el sandbox.
+    // Las credenciales TEST- viejas sólo aceptaban pagos por el sandbox.
+    //
+    // Este chequeo ya no alcanza para saber si estamos en modo prueba: el
+    // panel actual de MP entrega credenciales de prueba con prefijo APP_USR-,
+    // atadas a un usuario TESTUSER…, y ahí esto da false. No se arregla desde
+    // el string —son indistinguibles— y tampoco hace falta: para esas
+    // credenciales la documentación de MP manda al init_point normal, que es
+    // lo que devuelve esta rama. El sandbox_init_point queda como camino de
+    // compatibilidad para un token TEST-.
     const esPrueba = String(process.env.MP_ACCESS_TOKEN ?? "").startsWith("TEST-");
     const destino = esPrueba ? (sandboxInitPoint ?? initPoint) : initPoint;
 
