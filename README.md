@@ -249,6 +249,11 @@ utilidades `lista` / `lista-numerada`.
 
 - **Botón de arrepentimiento** en `/legales/arrepentimiento`, linkeado desde el
   footer de todas las páginas — obligatorio por Res. 424/2020.
+- **El «precio tachado» sólo se usa si ese precio existió.** El campo
+  `precio_lista` dibuja un precio anterior tachado al lado del actual. Un número
+  inventado ahí es publicidad engañosa, no una decisión de diseño. La guía tuvo
+  uno cargado sin haberse vendido nunca a ese valor y se sacó; la ayuda del
+  panel ahora lo advierte.
 - Derecho de revocación a 10 días (art. 34, Ley 24.240) en la política de
   reembolsos.
 - Política de privacidad con las menciones que exige la Ley 25.326.

@@ -305,7 +305,7 @@ export default function PanelProductos() {
               step="100"
               valor={form.precio_lista}
               alCambiar={(v) => setForm({ ...form, precio_lista: v })}
-              ayuda="Opcional. Si lo llenás, se muestra tachado al lado del precio."
+              ayuda="Opcional, y sólo si el material se vendió de verdad a ese precio antes. Aparece tachado al lado del precio actual. Poner acá un número inventado para simular un descuento es publicidad engañosa, y la Ley de Defensa del Consumidor la sanciona. Ante la duda, dejalo vacío."
             />
           </div>
 
