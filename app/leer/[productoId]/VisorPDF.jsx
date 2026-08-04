@@ -241,15 +241,22 @@ export default function VisorPDF({
     irA(pagina + (dx < 0 ? 1 : -1));
   }
 
+  // 44px de lado mínimo: es el tamaño por debajo del cual un botón deja de ser
+  // cómodo de tocar con el pulgar.
   const claseBoton =
-    "rounded-[2px] border border-papel-3 px-3 py-1.5 text-tinta-suave transition-colors hover:border-salvia disabled:opacity-40";
+    "flex h-11 min-w-11 items-center justify-center rounded-[2px] border border-papel-3 text-tinta-suave transition-colors hover:border-salvia disabled:opacity-40";
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] flex-col bg-papel-3/40">
-      {/* Barra superior */}
-      <div className="no-imprimir sticky top-[73px] z-30 border-b border-papel-3 bg-papel/95 backdrop-blur-sm">
-        <div className="contenedor flex flex-wrap items-center justify-between gap-3 py-3">
-          <div className="min-w-0 flex-1">
+      {/*
+        El encabezado del lector NO es fijo en celular: se va con el scroll y
+        devuelve su alto a la lectura. Los controles viven todos en la barra de
+        abajo, al alcance del pulgar. En pantalla grande sí queda fijo, donde el
+        espacio vertical sobra y tener el título siempre a la vista ayuda.
+      */}
+      <div className="no-imprimir border-b border-papel-3 bg-papel/95 backdrop-blur-sm sm:sticky sm:top-[73px] sm:z-30">
+        <div className="contenedor flex items-center justify-between gap-4 py-3">
+          <div className="min-w-0">
             <Link
               href="/mis-materiales"
               className="text-[1.05rem] text-tinta-tenue hover:text-verde"
@@ -261,70 +268,20 @@ export default function VisorPDF({
             </h1>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => irA(pagina - 1)}
-              disabled={pagina <= 1}
-              aria-label="Página anterior"
-              className={claseBoton}
-            >
-              ‹
-            </button>
-
-            <label className="flex items-center gap-2 text-[1.05rem] text-tinta-tenue">
-              <span className="sr-only">Número de página</span>
-              <input
-                type="number"
-                min={1}
-                max={paginas ?? 1}
-                value={pagina}
-                onChange={(e) => irA(Number(e.target.value))}
-                className="w-14 rounded-[2px] border border-papel-3 bg-white px-2 py-1 text-center font-serif text-tinta"
-              />
-              <span>de {paginas ?? "…"}</span>
-            </label>
-
-            <button
-              type="button"
-              onClick={() => irA(pagina + 1)}
-              disabled={paginas ? pagina >= paginas : true}
-              aria-label="Página siguiente"
-              className={claseBoton}
-            >
-              ›
-            </button>
-          </div>
-
-          {/* Zoom */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => cambiarZoom(zoom - ZOOM_PASO)}
-              disabled={zoom <= ZOOM_MIN}
-              aria-label="Achicar"
-              className={claseBoton}
-            >
-              −
-            </button>
-            <button
-              type="button"
-              onClick={() => cambiarZoom(1)}
-              title="Volver al tamaño que entra en la pantalla"
-              className="min-w-[4.5rem] rounded-[2px] border border-papel-3 px-2 py-1.5 text-[1.05rem] text-tinta-suave transition-colors hover:border-salvia"
-            >
-              {Math.round(zoom * 100)}%
-            </button>
-            <button
-              type="button"
-              onClick={() => cambiarZoom(zoom + ZOOM_PASO)}
-              disabled={zoom >= ZOOM_MAX}
-              aria-label="Agrandar"
-              className={claseBoton}
-            >
-              +
-            </button>
-          </div>
+          {/* En pantalla grande el salto directo a una página vive acá arriba;
+              en celular sería una fila más de controles por muy poco uso. */}
+          <label className="hidden shrink-0 items-center gap-2 text-[1.05rem] text-tinta-tenue sm:flex">
+            <span>Ir a</span>
+            <input
+              type="number"
+              min={1}
+              max={paginas ?? 1}
+              value={pagina}
+              onChange={(e) => irA(Number(e.target.value))}
+              className="w-16 rounded-[2px] border border-papel-3 bg-white px-2 py-1 text-center font-serif text-tinta"
+            />
+            <span>de {paginas ?? "…"}</span>
+          </label>
         </div>
 
         {soloVistaPrevia ? (
@@ -413,31 +370,79 @@ export default function VisorPDF({
         )}
       </div>
 
-      {/* Navegación inferior, para no tener que volver arriba en mobile */}
-      <div className="no-imprimir sticky bottom-0 border-t border-papel-3 bg-papel/95 backdrop-blur-sm">
-        <div className="contenedor flex items-center justify-between gap-3 py-3">
+      {/*
+        La única barra de controles. Fija abajo en todas las pantallas: es la
+        zona que el pulgar alcanza sin reacomodar la mano, y en escritorio no
+        molesta. Pasar de página queda en los extremos, que es donde caen los
+        dos pulgares; el zoom, al medio, porque se toca mucho menos.
+      */}
+      <div className="no-imprimir sticky bottom-0 z-30 border-t border-papel-3 bg-papel/95 backdrop-blur-sm">
+        <div className="contenedor flex items-center justify-between gap-3 py-2.5">
           <button
             type="button"
             onClick={() => irA(pagina - 1)}
             disabled={pagina <= 1}
-            className="flex-1 rounded-[2px] border border-papel-3 py-3.5 text-tinta-suave transition-colors hover:border-salvia disabled:opacity-40 sm:flex-none sm:px-8"
+            aria-label="Página anterior"
+            className={`${claseBoton} px-5`}
           >
-            ‹ Anterior
+            <span aria-hidden="true" className="text-[1.3rem] leading-none">
+              ‹
+            </span>
+            <span className="ml-2 hidden sm:inline">Anterior</span>
           </button>
 
-          <span className="shrink-0 text-[1.05rem] text-tinta-tenue">
-            {pagina} / {paginas ?? "…"}
-          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => cambiarZoom(zoom - ZOOM_PASO)}
+              disabled={zoom <= ZOOM_MIN}
+              aria-label="Achicar"
+              className={claseBoton}
+            >
+              −
+            </button>
+            <button
+              type="button"
+              onClick={() => cambiarZoom(1)}
+              title="Volver al tamaño que entra en la pantalla"
+              aria-label={`Zoom ${Math.round(zoom * 100)} por ciento. Tocá para volver al tamaño de pantalla.`}
+              className={`${claseBoton} min-w-[4.25rem] px-2 tabular-nums`}
+            >
+              {Math.round(zoom * 100)}%
+            </button>
+            <button
+              type="button"
+              onClick={() => cambiarZoom(zoom + ZOOM_PASO)}
+              disabled={zoom >= ZOOM_MAX}
+              aria-label="Agrandar"
+              className={claseBoton}
+            >
+              +
+            </button>
+          </div>
 
           <button
             type="button"
             onClick={() => irA(pagina + 1)}
             disabled={paginas ? pagina >= paginas : true}
-            className="flex-1 rounded-[2px] border border-papel-3 py-3.5 text-tinta-suave transition-colors hover:border-salvia disabled:opacity-40 sm:flex-none sm:px-8"
+            aria-label="Página siguiente"
+            className={`${claseBoton} px-5`}
           >
-            Siguiente ›
+            <span className="mr-2 hidden sm:inline">Siguiente</span>
+            <span aria-hidden="true" className="text-[1.3rem] leading-none">
+              ›
+            </span>
           </button>
         </div>
+
+        {/* El número de página, discreto y siempre visible. */}
+        <p
+          className="pb-2 text-center text-[0.95rem] tabular-nums text-tinta-tenue"
+          role="status"
+          aria-live="polite"
+        >
+          Página {pagina} de {paginas ?? "…"}
+        </p>
       </div>
     </div>
   );
