@@ -15,6 +15,50 @@ const VisorPDF = dynamic(() => import("./VisorPDF"), {
   ),
 });
 
+/**
+ * La URL firmada se guarda para reusarla mientras siga viva.
+ *
+ * Cada llamada a createSignedUrl devuelve un token distinto, o sea una URL
+ * distinta. Sin esto, el caché del navegador no acierta nunca y cada vez que
+ * alguien abre su material vuelve a bajar el PDF entero — 13 MB en el caso del
+ * frasco. Eso son datos móviles de quien compró, y egress del plan gratuito de
+ * Supabase, que tiene techo.
+ *
+ * Va en sessionStorage y no en localStorage: muere al cerrar la pestaña, que
+ * es más o menos la vida útil de una firma de una hora.
+ */
+const MARGEN_MS = 5 * 60 * 1000; // No reusar una firma a punto de vencer.
+
+function claveCache(productoId) {
+  return `cisur:firma:${productoId}`;
+}
+
+function leerCache(productoId) {
+  try {
+    const crudo = window.sessionStorage.getItem(claveCache(productoId));
+    if (!crudo) return null;
+    const guardado = JSON.parse(crudo);
+    if (!guardado?.url || !guardado?.vence) return null;
+    if (guardado.vence - Date.now() < MARGEN_MS) return null;
+    return guardado;
+  } catch {
+    return null;
+  }
+}
+
+function guardarCache(productoId, datos) {
+  try {
+    const segundos = Number(datos?.expiraEn);
+    if (!Number.isFinite(segundos) || segundos <= 0) return;
+    window.sessionStorage.setItem(
+      claveCache(productoId),
+      JSON.stringify({ ...datos, vence: Date.now() + segundos * 1000 }),
+    );
+  } catch {
+    // Almacenamiento bloqueado: se pierde el caché, no la lectura.
+  }
+}
+
 export default function Lector({ productoId }) {
   const router = useRouter();
   const { autenticado, cargando: cargandoAuth } = useAuth();
@@ -53,6 +97,18 @@ export default function Lector({ productoId }) {
     let vivo = true;
 
     async function correr() {
+      // `intento > 0` es siempre una renovación: ahí el caché es justamente lo
+      // que hay que saltear.
+      if (intento === 0) {
+        const guardado = leerCache(productoId);
+        if (guardado) {
+          setError(null);
+          setDatos(guardado);
+          setCargando(false);
+          return;
+        }
+      }
+
       try {
         const respuesta = await fetchAutenticado(`/api/leer/${productoId}`);
         const cuerpo = await respuesta.json().catch(() => ({}));
@@ -71,6 +127,7 @@ export default function Lector({ productoId }) {
         setError(null);
         setDatos(cuerpo);
         setCargando(false);
+        guardarCache(productoId, cuerpo);
       } catch {
         if (!vivo) return;
         setError({
