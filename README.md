@@ -105,6 +105,22 @@ header válido devuelve 401. Nunca cree el body: consulta el pago a la API de MP
 con el `payment_id`. Y `confirmar_pago` es idempotente, porque MP reenvía la misma
 notificación varias veces.
 
+### Conciliar los pagos
+
+```bash
+npm run conciliar               # informe
+npm run conciliar -- --arreglar # además confirma lo que quedó descolgado
+```
+
+Le pregunta a Mercado Pago por cada `external_reference` y compara con la tabla.
+Existe porque **mirar la tabla de compras no alcanza**: una compra abandonada y
+una compra cobrada-pero-no-confirmada se ven idénticas — las dos son
+`pendiente` sin `referencia_pago`. La diferencia es que en la segunda alguien
+pagó y no recibió nada, y mucha gente no reclama: simplemente no vuelve.
+
+Correlo si se toca el webhook, si Vercel estuvo caído, o ante cualquier duda de
+si a alguien se le cobró de más.
+
 ### Verificar que todo eso funciona
 
 ```sql

@@ -10,7 +10,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verificar:mp": "node scripts/verificar-mp.mjs"
+    "verificar:mp": "node scripts/verificar-mp.mjs",
+    "conciliar": "node scripts/conciliar-pagos.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.0",
