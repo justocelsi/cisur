@@ -80,6 +80,22 @@ secretos.
 folder es el id del producto, y de ahí la policy de Storage deriva el permiso
 consultando `compras`. **No cambiar esa convención sin actualizar `0005_storage.sql`.**
 
+**Todo material nuevo pasa por `scripts/aligerar-pdf.py` antes de subirse.** El
+primer material pesaba 13,2 MB y tardaba 26 segundos en abrir; 9,2 MB eran la
+misma imagen guardada once veces, una por página, porque el exportador no la
+reusó. Quedó en 4,3 MB y 5 segundos, sin un píxel de diferencia. Eso es tiempo
+de espera de quien compró, datos de su celular, y egress del plan gratuito de
+Supabase — que con archivos de 13 MB aguanta unas 380 aperturas por mes.
+
+El script se niega a devolver un archivo cuya renderización no sea idéntica a la
+del original: se probó bajar a JPEG y `rewrite_images()` de PyMuPDF hizo
+desaparecer un emoji de todas las páginas mientras el archivo "mejoraba" de 4,1
+a 0,9 MB. Pesaba menos porque le faltaba contenido.
+
+Los originales quedan en `guias/respaldo/<producto_id>-original.pdf`. Ese prefijo
+no es el id de ningún producto, así que la policy sólo se los muestra a la
+editora.
+
 ---
 
 ## Seguridad — dónde vive
