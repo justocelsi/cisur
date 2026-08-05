@@ -21,7 +21,7 @@ export default function BotonComprar({
   mostrarPrecio = true,
 }) {
   const router = useRouter();
-  const { autenticado, cargando: cargandoAuth } = useAuth();
+  const { autenticado, cargando: cargandoAuth, esEditor } = useAuth();
   const [enCurso, setEnCurso] = useState(false);
   const [error, setError] = useState(null);
   const [yaComprado, setYaComprado] = useState(false);
@@ -82,6 +82,28 @@ export default function BotonComprar({
         >
           Ya lo tenés — ir a leerlo
         </a>
+      </div>
+    );
+  }
+
+  /**
+   * A la editora no se le ofrece comprar: ya puede leer todo por su rol, y
+   * además Mercado Pago no deja pagarse a uno mismo, así que el botón la
+   * mandaba a un callejón sin salida con un error críptico. Pasó de verdad.
+   */
+  if (esEditor) {
+    return (
+      <div className={className}>
+        <a
+          href={`/leer/${producto.id}`}
+          className="inline-flex w-full items-center justify-center rounded-[2px] border border-verde bg-papel px-8 py-4 text-verde transition-colors hover:bg-verde hover:text-papel sm:w-auto"
+        >
+          Ver este material
+        </a>
+        <p className="mt-3 text-[0.95rem] text-tinta-tenue">
+          Lo ves porque sos la autora, sin comprarlo. Así se ve el material que
+          recibe quien lo compra.
+        </p>
       </div>
     );
   }
