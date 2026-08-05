@@ -20,6 +20,14 @@
 --
 -- Este instalador, en cambio, son sentencias independientes entre sí: cada una
 -- es un CREATE que no necesita nada de las anteriores en tiempo de ejecución.
+--
+-- REGLA PARA AGREGAR PRUEBAS
+-- Ninguna afirmación puede depender de cuántas filas hay en la base. La suite
+-- se corre en PRODUCCIÓN, con clientes reales adentro. Toda cuenta se filtra
+-- por los actores de prueba (`%@test.cisur`) o por los slugs de prueba, salvo
+-- que lo que se mide pase por RLS y por lo tanto ya esté acotado al actor.
+-- Se aprendió con "editor ve las ventas", que pasó con la base vacía y empezó
+-- a fallar sola con la primera venta de verdad.
 -- ============================================================================
 
 -- ---------------------------------------------------------------------------
@@ -308,8 +316,14 @@ begin
     $q$select count(*)::text from productos
        where slug in ('test-activo', 'test-borrador')$q$, '2');
 
+  -- Se filtra por los actores de prueba a propósito. `ventas()` le muestra a la
+  -- editora TODAS las ventas —para eso existe—, así que contar sin filtro daba
+  -- el total real de la base: la prueba pasaba con la base vacía y empezó a
+  -- fallar sola con la primera venta de verdad. Una suite que falla por tener
+  -- clientes es una suite que se deja de mirar.
   r := r || public.cisur_probar('editor', 've las ventas', 'authenticated', u_editor,
-    $q$select count(*)::text from public.ventas()$q$, '1');
+    $q$select count(*)::text from public.ventas()
+       where email like '%@test.cisur'$q$, '1');
 
   r := r || public.cisur_probar_escritura('editor', 'SÍ puede administrar el catálogo', 'authenticated', u_editor,
     $q$update productos set precio = 12345 where slug = 'test-activo'$q$, 'permite');

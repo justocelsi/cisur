@@ -17,6 +17,11 @@ Los tres tienen que pasar. El build corre sin credenciales a propósito.
   `select * from public.cisur_smoke_tests();` en el SQL Editor: la última fila
   tiene que decir `TODO OK`. Si la función no existe todavía, instalarla con
   `supabase/tests/instalar_smoke_tests.sql`.
+- **Una prueba de la suite no puede depender de cuántas filas hay en la base.**
+  Se corre en producción, con clientes adentro. Toda cuenta se filtra por los
+  actores de prueba (`%@test.cisur`) o por los slugs de prueba, salvo que pase
+  por RLS y ya esté acotada al actor. "editor ve las ventas" contaba sin filtro:
+  pasaba con la base vacía y empezó a fallar sola con la primera venta real.
 - **Un script de mantenimiento para Supabase no puede depender de que una
   sentencia vea lo que creó la anterior**, ni de `BEGIN`/`ROLLBACK`, ni de
   tablas `ON COMMIT DROP`. Si necesita estado compartido, va adentro de una
