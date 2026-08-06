@@ -154,8 +154,12 @@ export default function VisorPDF({
   // guardar en localStorage ni para scrollear.
   const irA = useCallback(
     (destino) => {
-      const total = paginas ?? 1;
-      const siguiente = Math.min(Math.max(destino, 1), total);
+      // Mientras el PDF carga no se sabe cuántas páginas hay, y acotar contra
+      // 1 mandaba TODA navegación a la primera —y la persistía. El botón
+      // «Anterior» está habilitado durante la carga, así que un toque impaciente
+      // borraba para siempre la página en la que iba.
+      if (!paginas) return;
+      const siguiente = Math.min(Math.max(destino, 1), paginas);
       if (!Number.isFinite(siguiente) || siguiente === pagina) return;
 
       setPagina(siguiente);
@@ -185,6 +189,13 @@ export default function VisorPDF({
       const etiqueta = evento.target?.tagName;
       if (etiqueta === "INPUT" || etiqueta === "TEXTAREA") return;
       if (evento.metaKey || evento.ctrlKey || evento.altKey) return;
+      // La barra espaciadora ACTIVA el botón que tenga el foco, y en Chrome y
+      // Firefox un botón queda enfocado después de un click. Sin esto, tocar
+      // «Anterior» con el mouse y apretar espacio cancelaba esa activación y
+      // avanzaba de página: exactamente al revés de lo pedido.
+      if (evento.key === " " && evento.target?.closest?.("button, [role=button]")) {
+        return;
+      }
 
       switch (evento.key) {
         case "ArrowRight":
@@ -277,7 +288,15 @@ export default function VisorPDF({
               min={1}
               max={paginas ?? 1}
               value={pagina}
-              onChange={(e) => irA(Number(e.target.value))}
+              // Navegar en cada tecla, sobre un input controlado, hacía esto:
+              // borrás el campo para escribir otro número → Number("") es 0 →
+              // se acota a 1 → React rellena el campo con "1" → tipeás "15" y
+              // queda "115" → aterrizás en la última página, y ese número queda
+              // guardado. Un campo vacío es alguien escribiendo, no un destino.
+              onChange={(e) => {
+                if (e.target.value === "") return;
+                irA(Number(e.target.value));
+              }}
               className="w-16 rounded-[2px] border border-papel-3 bg-white px-2 py-1 text-center font-serif text-tinta"
             />
             <span>de {paginas ?? "…"}</span>
@@ -326,7 +345,7 @@ export default function VisorPDF({
               options={OPCIONES_DOC}
               loading={
                 <div className="mx-auto w-full max-w-sm py-24 text-center">
-                  <p className="text-tinta-tenue">
+                  <p className="text-tinta-suave">
                     {progreso > 0
                       ? `Cargando el material… ${progreso}%`
                       : progreso < 0
@@ -339,7 +358,7 @@ export default function VisorPDF({
                       style={{ width: `${progreso > 0 ? progreso : 8}%` }}
                     />
                   </div>
-                  <p className="mt-4 text-[0.95rem] text-tinta-tenue">
+                  <p className="mt-4 text-[0.95rem] text-tinta-suave">
                     Son varios megas. Por datos móviles puede tardar unos
                     segundos.
                   </p>
@@ -437,7 +456,7 @@ export default function VisorPDF({
 
         {/* El número de página, discreto y siempre visible. */}
         <p
-          className="pb-2 text-center text-[0.95rem] tabular-nums text-tinta-tenue"
+          className="pb-2 text-center text-[0.95rem] tabular-nums text-tinta-suave"
           role="status"
           aria-live="polite"
         >

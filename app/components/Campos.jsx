@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 /**
  * Campos de formulario del panel.
  *
@@ -100,6 +102,17 @@ export function CampoSiNo({ id, etiqueta, ayuda, valor, alCambiar }) {
   );
 }
 
+/**
+ * `maximoMB` no es decorativo: los buckets de Storage tienen un límite duro
+ * (0005_storage.sql) y pasarse devuelve un error cuyo texto no matchea ningún
+ * patrón de lib/errores.js, así que Tati leía «Algo no salió como esperábamos,
+ * probá de nuevo» — o sea, la invitación a repetir exactamente lo que va a
+ * volver a fallar. A veces ni eso: el servidor cortaba la conexión y el mensaje
+ * le echaba la culpa a su wifi.
+ *
+ * Se chequea acá, antes de tocar la red, porque es el único lugar donde se
+ * puede decir QUÉ hacer: la foto pesa de más, sacale peso o elegí otra.
+ */
 export function CampoArchivo({
   id,
   etiqueta,
@@ -107,7 +120,28 @@ export function CampoArchivo({
   acepta,
   alElegir,
   nombreActual,
+  maximoMB,
 }) {
+  const [error, setError] = useState(null);
+
+  function alCambiar(evento) {
+    const archivo = evento.target.files?.[0] ?? null;
+    setError(null);
+
+    if (archivo && maximoMB && archivo.size > maximoMB * 1024 * 1024) {
+      const pesa = (archivo.size / 1048576).toFixed(1);
+      setError(
+        `«${archivo.name}» pesa ${pesa} MB y el máximo son ${maximoMB} MB. ` +
+          "Probá con otro archivo, o achicá éste antes de subirlo.",
+      );
+      evento.target.value = "";
+      alElegir(null);
+      return;
+    }
+
+    alElegir(archivo);
+  }
+
   return (
     <div>
       <label htmlFor={id} className="versalitas block text-tinta-tenue">
@@ -117,9 +151,14 @@ export function CampoArchivo({
         id={id}
         type="file"
         accept={acepta}
-        onChange={(e) => alElegir(e.target.files?.[0] ?? null)}
+        onChange={alCambiar}
         className="mt-2 w-full cursor-pointer rounded-[2px] border border-dashed border-salvia bg-papel-2 px-4 py-3 text-[1.05rem] text-tinta-suave file:mr-4 file:cursor-pointer file:rounded-[2px] file:border-0 file:bg-verde file:px-4 file:py-2 file:font-serif file:text-papel"
       />
+      {error ? (
+        <p role="alert" className="mt-1.5 text-[0.95rem] leading-relaxed text-alerta">
+          {error}
+        </p>
+      ) : null}
       {nombreActual ? (
         <p className="mt-1.5 text-[0.95rem] text-verde">
           Ya hay un archivo cargado: {nombreActual}

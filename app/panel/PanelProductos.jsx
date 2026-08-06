@@ -11,7 +11,7 @@ import {
 } from "@/app/components/Campos";
 import { getSupabase } from "@/lib/supabaseClient";
 import { mensajeDeError } from "@/lib/errores";
-import { formatearPrecio, slugify } from "@/lib/utils";
+import { enteroDePesos, formatearPrecio, slugify } from "@/lib/utils";
 
 const VACIO = {
   titulo: "",
@@ -76,8 +76,11 @@ export default function PanelProductos() {
     setForm(VACIO);
     setPortada(null);
     setPdf(null);
+    // No se toca `ok` acá: `limpiar()` se llama justo DESPUÉS de guardar, y
+    // borraba el «Cambios guardados» en el mismo render. React batchea, gana el
+    // último, y el aviso no se dibujaba nunca: el formulario se vaciaba sin
+    // ninguna confirmación. `ok` ya se limpia al inicio de guardar() y editar().
     setError(null);
-    setOk(null);
     setProgreso(null);
   }
 
@@ -114,8 +117,34 @@ export default function PanelProductos() {
       setError("El título es obligatorio.");
       return;
     }
-    if (form.precio === "" || Number(form.precio) < 0) {
-      setError("Poné un precio válido (puede ser 0 si es gratis).");
+    // «25.000» es como escribe un precio cualquier persona en Argentina, y
+    // Number("25.000") es 25: el material salía a la venta a veinticinco pesos
+    // y Mercado Pago cobraba eso. El input type=number acepta el punto sin
+    // chistar porque para HTML es un separador decimal.
+    const precio = enteroDePesos(form.precio);
+    const precioLista = enteroDePesos(form.precio_lista);
+    const paginas = enteroDePesos(form.paginas);
+
+    if (precio === null) {
+      setError(
+        "Poné el precio con números solamente, sin puntos ni comas. " +
+          "Para veinticinco mil pesos: 25000",
+      );
+      return;
+    }
+    if (form.precio_lista !== "" && precioLista === null) {
+      setError("El precio tachado tiene que ser un número entero, sin puntos.");
+      return;
+    }
+    if (form.paginas !== "" && paginas === null) {
+      setError("La cantidad de páginas tiene que ser un número entero.");
+      return;
+    }
+    if (precioLista !== null && precioLista <= precio) {
+      setError(
+        "El precio tachado tiene que ser MAYOR que el precio actual, " +
+          "y sólo se usa si el material se vendió de verdad a ese valor.",
+      );
       return;
     }
 
@@ -130,10 +159,9 @@ export default function PanelProductos() {
       subtitulo: form.subtitulo.trim() || null,
       descripcion: form.descripcion.trim() || null,
       autor: form.autor.trim() || null,
-      precio: Number(form.precio),
-      precio_lista:
-        form.precio_lista === "" ? null : Number(form.precio_lista),
-      paginas: form.paginas === "" ? null : Number(form.paginas),
+      precio,
+      precio_lista: precioLista,
+      paginas,
       indice: form.indiceTexto
         .split("\n")
         .map((l) => l.trim())
@@ -171,6 +199,12 @@ export default function PanelProductos() {
           .single();
         if (err) throw err;
         id = data.id;
+        // La fila ya existe. Si la subida de la portada o del PDF falla más
+        // abajo, apretar «Guardar» otra vez tiene que EDITAR este material, no
+        // crear un segundo: el slug se desambigua solo y quedaban dos fichas en
+        // la portada, una de ellas comprable y sin PDF. Y el panel no tiene
+        // botón de borrar.
+        setEditandoId(id);
       }
 
       // --- Portada (bucket público) ---
@@ -295,7 +329,7 @@ export default function PanelProductos() {
               requerido
               valor={form.precio}
               alCambiar={(v) => setForm({ ...form, precio: v })}
-              ayuda="En pesos, sin puntos ni signos. Ej: 19900"
+              ayuda="Números solos, sin puntos ni comas. Veinticinco mil pesos se escribe 25000 (si ponés 25.000 el material se vendería a $25)."
             />
             <Campo
               id="precio_lista"
@@ -338,6 +372,7 @@ export default function PanelProductos() {
 
           <CampoArchivo
             id="portada"
+            maximoMB={10}
             etiqueta="Portada"
             acepta="image/png,image/jpeg,image/webp"
             alElegir={setPortada}
@@ -346,6 +381,7 @@ export default function PanelProductos() {
 
           <CampoArchivo
             id="pdf"
+            maximoMB={100}
             etiqueta="El PDF del material"
             acepta="application/pdf"
             alElegir={setPdf}

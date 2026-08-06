@@ -25,14 +25,27 @@ export function AuthProvider({ children }) {
   const cargarPerfil = useCallback(async (userId) => {
     const supabase = getSupabase();
 
-    const { data } =
-      supabase && userId
-        ? await supabase
-            .from("profiles")
-            .select("id, email, nombre, role")
-            .eq("id", userId)
-            .maybeSingle()
-        : { data: null };
+    if (!supabase || !userId) {
+      setProfile(null);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("id, email, nombre, role")
+      .eq("id", userId)
+      .maybeSingle();
+
+    // Un 5xx o un timeout NO son "esta persona no tiene perfil". PostgREST no
+    // tira excepción: devuelve {data: null, error}. Pisar el perfil con null
+    // ahí degradaba a Tati a usuaria común en medio de la sesión: el panel la
+    // expulsaba a la portada sin decirle nada, perdiendo lo que estuviera
+    // cargando, y nada volvía a intentarlo hasta el próximo evento de auth.
+    // Ante un error, se conserva lo último que sí se supo.
+    if (error) {
+      console.warn("[auth] no pudimos leer el perfil:", error.message);
+      return;
+    }
 
     setProfile(data ?? null);
   }, []);
@@ -100,7 +113,27 @@ export function AuthProvider({ children }) {
   const salir = useCallback(async () => {
     const supabase = getSupabase();
     if (!supabase) return;
-    await supabase.auth.signOut();
+
+    // Las URL firmadas de los PDF quedan en sessionStorage para no volver a
+    // bajar el archivo entero en cada apertura. Al salir hay que barrerlas: en
+    // una computadora compartida, la siguiente persona que abra el lector no
+    // debe encontrarse una firma todavía viva de quien usó la máquina antes.
+    try {
+      const claves = [];
+      for (let i = 0; i < window.sessionStorage.length; i += 1) {
+        const clave = window.sessionStorage.key(i);
+        if (clave?.startsWith("cisur:firma:")) claves.push(clave);
+      }
+      claves.forEach((c) => window.sessionStorage.removeItem(c));
+    } catch {
+      // Almacenamiento bloqueado: no hay nada que barrer.
+    }
+
+    // scope 'local': sin esto, auth-js revoca los refresh tokens de TODOS los
+    // dispositivos. Tati tocaba «Salir» en el celular y la pestaña del panel en
+    // la computadora la expulsaba dentro de la hora, tirando lo que estuviera
+    // editando. El botón dice «Salir», no «cerrar sesión en todos lados».
+    await supabase.auth.signOut({ scope: "local" });
     setSession(null);
     setProfile(null);
   }, []);

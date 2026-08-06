@@ -29,13 +29,24 @@ const VisorPDF = dynamic(() => import("./VisorPDF"), {
  */
 const MARGEN_MS = 5 * 60 * 1000; // No reusar una firma a punto de vencer.
 
-function claveCache(productoId) {
-  return `cisur:firma:${productoId}`;
+/**
+ * La clave lleva el id de quien la pidió.
+ *
+ * Sin eso, este camino —que es el flujo por defecto, no un caso rebuscado—
+ * regalaba material pago: Ana lee, toca «Salir» (el botón está en el encabezado
+ * de todas las páginas, incluida ésta), el efecto la manda a
+ * /ingresar?next=/leer/<id>, y quien se loguee en esa misma pantalla aterriza
+ * en el lector. Con el caché puesto, el Lector mostraba el PDF sin llamar a
+ * /api/leer: ni la verificación de compra ni la policy de Storage llegaban a
+ * correr. Hasta 55 minutos de material que esa persona no compró.
+ */
+function claveCache(usuarioId, productoId) {
+  return `cisur:firma:${usuarioId ?? "anon"}:${productoId}`;
 }
 
-function leerCache(productoId) {
+function leerCache(usuarioId, productoId) {
   try {
-    const crudo = window.sessionStorage.getItem(claveCache(productoId));
+    const crudo = window.sessionStorage.getItem(claveCache(usuarioId, productoId));
     if (!crudo) return null;
     const guardado = JSON.parse(crudo);
     if (!guardado?.url || !guardado?.vence) return null;
@@ -46,12 +57,12 @@ function leerCache(productoId) {
   }
 }
 
-function guardarCache(productoId, datos) {
+function guardarCache(usuarioId, productoId, datos) {
   try {
     const segundos = Number(datos?.expiraEn);
     if (!Number.isFinite(segundos) || segundos <= 0) return;
     window.sessionStorage.setItem(
-      claveCache(productoId),
+      claveCache(usuarioId, productoId),
       JSON.stringify({ ...datos, vence: Date.now() + segundos * 1000 }),
     );
   } catch {
@@ -61,7 +72,7 @@ function guardarCache(productoId, datos) {
 
 export default function Lector({ productoId }) {
   const router = useRouter();
-  const { autenticado, cargando: cargandoAuth } = useAuth();
+  const { autenticado, cargando: cargandoAuth, usuario } = useAuth();
 
   const [datos, setDatos] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -100,7 +111,7 @@ export default function Lector({ productoId }) {
       // `intento > 0` es siempre una renovación: ahí el caché es justamente lo
       // que hay que saltear.
       if (intento === 0) {
-        const guardado = leerCache(productoId);
+        const guardado = leerCache(usuario?.id, productoId);
         if (guardado) {
           setError(null);
           setDatos(guardado);
@@ -127,7 +138,7 @@ export default function Lector({ productoId }) {
         setError(null);
         setDatos(cuerpo);
         setCargando(false);
-        guardarCache(productoId, cuerpo);
+        guardarCache(usuario?.id, productoId, cuerpo);
       } catch {
         if (!vivo) return;
         setError({
@@ -142,7 +153,7 @@ export default function Lector({ productoId }) {
     return () => {
       vivo = false;
     };
-  }, [cargandoAuth, autenticado, productoId, router, intento]);
+  }, [cargandoAuth, autenticado, usuario?.id, productoId, router, intento]);
 
   if (cargandoAuth || cargando) {
     return (

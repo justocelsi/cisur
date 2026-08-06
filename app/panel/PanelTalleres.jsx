@@ -64,8 +64,11 @@ export default function PanelTalleres() {
     setEditandoId(null);
     setForm(VACIO);
     setImagen(null);
+    // No se toca `ok` acá: `limpiar()` se llama justo DESPUÉS de guardar, y
+    // borraba el «Cambios guardados» en el mismo render. React batchea, gana el
+    // último, y el aviso no se dibujaba nunca: el formulario se vaciaba sin
+    // ninguna confirmación. `ok` ya se limpia al inicio de guardar() y editar().
     setError(null);
-    setOk(null);
   }
 
   function editar(taller) {
@@ -223,6 +226,7 @@ export default function PanelTalleres() {
             id="t_imagen"
             etiqueta="Foto"
             acepta="image/png,image/jpeg,image/webp"
+            maximoMB={10}
             alElegir={setImagen}
             ayuda="Una foto del encuentro. Horizontal queda mejor. Máximo 10 MB."
           />

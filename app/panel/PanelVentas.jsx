@@ -122,11 +122,28 @@ export default function PanelVentas() {
         />
       </dl>
 
-      <p className="mt-6 text-[0.95rem] leading-relaxed text-tinta-tenue">
+      <p className="mt-6 text-[0.95rem] leading-relaxed text-tinta-suave">
         Los importes son los que se cobraron en el sitio, antes de la comisión de
         Mercado Pago. Lo que efectivamente entra a tu cuenta lo ves en Mercado
-        Pago. Las «pendientes» son personas que empezaron a pagar y no
-        terminaron: es normal que haya algunas y no hay que hacer nada con ellas.
+        Pago.
+      </p>
+      {/*
+        Decía «es normal y no hay que hacer nada». Es lo más peligroso que puede
+        decir esta pantalla: una compra abandonada y una cobrada-pero-no-
+        confirmada se ven exactamente igual acá. Si alguna vez el aviso de pago
+        deja de llegar, Tati lee que no hay que hacer nada y varias personas que
+        pagaron nunca reciben el material. Es la única instrucción operativa que
+        le queda cuando no haya nadie más mirando.
+      */}
+      <p className="mt-3 text-[0.95rem] leading-relaxed text-tinta-suave">
+        La mayoría de las «pendientes» son personas que empezaron a pagar y no
+        terminaron. Pero{" "}
+        <strong className="text-tinta">
+          si una pendiente tiene más de un día, o si alguien te escribe diciendo
+          que pagó y no le llegó nada, no la ignores
+        </strong>
+        : buscá ese importe y esa fecha en tu app de Mercado Pago. Si ahí figura
+        como aprobado, la plata está cobrada y hay que habilitarle el acceso.
       </p>
 
       {/* Listado */}

@@ -125,10 +125,23 @@ export default function PanelSitio() {
     setError(null);
     setOk(null);
 
+    // Sólo contar dígitos no alcanzaba: «0223 15-447-4674» son trece dígitos,
+    // pasaba la validación y producía wa.me/0223154474674, que WhatsApp rechaza
+    // con «el número compartido no es válido». Y no rompe un botón sino todos
+    // los del sitio a la vez —contacto, talleres, pie— incluido el de la página
+    // de arrepentimiento, que es obligatoria por la Res. 424/2020 y no tiene
+    // ningún otro canal.
+    //
+    // Se exige formato internacional pero se aceptan 12 y 13 dígitos: para los
+    // celulares argentinos wa.me documenta el 9 (549…), y sin él funciona igual
+    // en la práctica. Rechazar el que ya está publicado sería peor que aceptar
+    // los dos.
     const numero = soloDigitos(valor("contacto_whatsapp"));
-    if (numero.length < 10) {
+    if (!/^54[^0]\d{9,10}$/.test(numero)) {
       setError(
-        "El WhatsApp parece incompleto. Va con el código de país y el de área, por ejemplo 5492234474674.",
+        `Así quedaría wa.me/${numero || "(vacío)"}, y WhatsApp no lo va a reconocer. ` +
+          "Tiene que empezar con 54, seguir con el código de área SIN el 0 y el " +
+          "número SIN el 15. Mar del Plata 223 447-4674 se escribe 5492234474674.",
       );
       return;
     }
@@ -193,6 +206,7 @@ export default function PanelSitio() {
         <div className="mt-6 space-y-5">
           <CampoArchivo
             id="foto_sobre_mi"
+            maximoMB={10}
             etiqueta="Subir una foto nueva"
             acepta="image/png,image/jpeg,image/webp"
             alElegir={setFoto}

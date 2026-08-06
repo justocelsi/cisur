@@ -2,8 +2,8 @@
 /**
  * Concilia cada compra de la base contra lo que dice Mercado Pago.
  *
- *   npm run conciliar            informe
- *   npm run conciliar -- --arreglar   además confirma y cancela lo que corresponda
+ *   npm run conciliar                 informe
+ *   npm run conciliar -- --arreglar   además destraba lo que se pueda destrabar
  *
  * POR QUÉ EXISTE
  * El webhook puede perderse: Mercado Pago reintenta, pero si el deploy estaba
@@ -176,7 +176,7 @@ if (hallazgos.length === 0) {
 if (!ARREGLAR) {
   if (cobradasSinEntregar.length) {
     console.log(
-      `\n  ${c.ambar("Corré con --arreglar para confirmarlas vía /api/admin/reconfirm.")}`,
+      `\n  ${c.ambar("Corré con --arreglar para destrabarlas vía /api/admin/reconfirm.")}`,
     );
   }
   console.log();
@@ -188,17 +188,40 @@ if (!env.ADMIN_SECRET) {
   process.exit(1);
 }
 
-for (const h of cobradasSinEntregar) {
-  process.stdout.write(`  confirmando ${h.compra.order_id.slice(0, 8)}… `);
+// Se procesan también las DEVUELTA: con la migración 0007, confirmar_pago sabe
+// bajar de 'pagada' a 'reembolsada', así que reconfirm ahora sí puede cortarle
+// el acceso a alguien a quien se le devolvió la plata.
+const paraArreglar = hallazgos.filter((h) => h.aprobado || h.devuelto);
+let fallas = 0;
+
+for (const h of paraArreglar) {
+  process.stdout.write(`  ${h.compra.order_id.slice(0, 8)}… `);
   try {
     const r = await traerJson(`${SITIO}/api/admin/reconfirm`, {
       method: "POST",
       headers: { "x-admin-secret": env.ADMIN_SECRET, "Content-Type": "application/json" },
       body: JSON.stringify({ orderId: h.compra.order_id }),
     });
-    console.log(c.verde(`ok (${r.actualizadas} fila/s)`));
+    // 0 filas NO es éxito. reconfirm devuelve 200 igual, y decir "ok" en verde
+    // acá mandaba a dormir tranquilo a quien corrió el script justo en el caso
+    // que había que revisar a mano.
+    if (Number(r.actualizadas) > 0) {
+      console.log(c.verde(`ok (${r.actualizadas} fila/s)`));
+    } else {
+      fallas += 1;
+      console.log(c.rojo(`NO se pudo: la compra sigue en '${h.compra.estado}'`));
+      console.log(
+        c.gris("      Revisala a mano. Si la migración 0007 no está aplicada, aplicala."),
+      );
+    }
   } catch (e) {
+    fallas += 1;
     console.log(c.rojo(e.message));
   }
 }
+
 console.log();
+if (fallas) {
+  console.log(c.rojo(`  ${fallas} compra(s) siguen descolgadas.\n`));
+}
+process.exit(fallas ? 1 : 0);

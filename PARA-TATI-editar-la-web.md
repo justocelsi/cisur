@@ -178,10 +178,15 @@ personas distintas compraron.
 de Mercado Pago. Lo que realmente te entra a la cuenta lo ves en la app de
 Mercado Pago.
 
-**Sobre las "Pendientes":** son personas que empezaron a pagar y no terminaron
-(cerraron la página, se arrepintieron, o eligieron pagar en efectivo y todavía no
-fueron al Rapipago). **Es normal que haya algunas y no tenés que hacer nada.** Si
-después pagan, se convierten en "Pagada" solas.
+**Sobre las "Pendientes":** casi siempre son personas que empezaron a pagar y no
+terminaron (cerraron la página, se arrepintieron, o eligieron pagar en efectivo y
+todavía no fueron al Rapipago). Cuando pagan, pasan solas a "Pagada".
+
+**Pero hay un caso que no podés ignorar.** Si una pendiente tiene más de un día,
+o si alguien te escribe diciendo que pagó y no recibió nada, fijate ese importe y
+esa fecha en tu app de Mercado Pago. **Si ahí figura como aprobado, la plata está
+cobrada** y esa persona se quedó sin su material: avisá para que se lo habiliten.
+Desde esta pantalla no se distingue una cosa de la otra, y por eso conviene mirar.
 
 ---
 
