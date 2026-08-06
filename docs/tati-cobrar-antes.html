@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<title>CISUR — Cobrar antes y enterarte al toque</title>
+<style>
+/* ==========================================================================
+   Documento para imprimir / PDF. Misma paleta que la web de CISUR.
+   La tipografía es la de sistema: no depende de internet para verse bien.
+   ========================================================================== */
+
+:root {
+  --verde: #41664a;
+  --verde-oscuro: #33513a;
+  --verde-claro: #6f9179;
+  --tostado: #c9a77f;
+  --tostado-tenue: #ece0cd;
+  --papel: #faf7f1;
+  --papel-2: #f4efe3;
+  --linea: #e0d5c0;
+  --tinta: #1f2a1c;
+  --tinta-suave: #46523f;
+  --tinta-tenue: #737e6d;
+  --serif: "Times New Roman", Times, "Liberation Serif", serif;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@page {
+  size: A4;
+  margin: 16mm 15mm 18mm 15mm;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 11.5pt;
+  line-height: 1.55;
+  color: var(--tinta);
+  background: #fff;
+}
+
+/* --- Portada ----------------------------------------------------------- */
+/* Chrome no deja sangrar hasta el borde del papel al imprimir (recorta contra
+   el área de @page), así que el panel llena todo el alto útil y el margen
+   blanco queda como marco. A4 son 297mm menos 16 y 18 de márgenes: 263mm. */
+.portada {
+  background: var(--verde);
+  color: var(--papel);
+  padding: 26mm 18mm;
+  min-height: 262mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  page-break-after: always;
+}
+.portada .marca {
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: .22em;
+  font-size: 13pt;
+}
+.portada .bajada-marca {
+  font-family: var(--sans);
+  font-size: 7.5pt;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--tostado);
+  margin-top: 3mm;
+}
+.portada h1 {
+  font-size: 30pt;
+  line-height: 1.1;
+  font-weight: normal;
+  margin: 20mm 0 0;
+  letter-spacing: -.01em;
+}
+.portada .sub {
+  font-size: 13pt;
+  color: var(--tostado);
+  margin-top: 6mm;
+  max-width: 120mm;
+  line-height: 1.5;
+}
+.portada .meta {
+  margin-top: 22mm;
+  padding-top: 6mm;
+  border-top: 1px solid rgba(250,247,241,.25);
+  font-size: 10pt;
+  color: var(--tostado);
+}
+
+/* --- Estructura -------------------------------------------------------- */
+h2 {
+  font-size: 19pt;
+  font-weight: normal;
+  color: var(--verde);
+  margin: 9mm 0 3.5mm;
+  padding-bottom: 2.5mm;
+  border-bottom: 2px solid var(--tostado);
+  page-break-after: avoid;
+}
+h2 .num {
+  font-family: var(--sans);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--tostado);
+  display: block;
+  margin-bottom: 1.5mm;
+}
+h3 {
+  font-size: 12.5pt;
+  font-weight: normal;
+  color: var(--verde-oscuro);
+  margin: 5.5mm 0 2mm;
+  padding-left: 3.5mm;
+  border-left: 2.5px solid var(--tostado);
+  page-break-after: avoid;
+}
+p { margin: 0 0 3.5mm; }
+strong { font-weight: bold; }
+/* Se dejó de forzar un salto por parte: dejaba hojas casi vacías. Lo que sí
+   se protege es que un título no se separe de su contenido y que un recuadro
+   no se corte al medio (ver page-break-inside en .caja y .item). */
+h2 { page-break-before: auto; }
+
+/* --- Pasos numerados --------------------------------------------------- */
+ol.pasos { list-style: none; counter-reset: paso; padding: 0; margin: 4mm 0; }
+ol.pasos > li {
+  counter-increment: paso;
+  position: relative;
+  padding: 0 0 3.2mm 13mm;
+  page-break-inside: avoid;
+}
+ol.pasos > li::before {
+  content: counter(paso);
+  position: absolute;
+  left: 0; top: -0.5mm;
+  width: 8.5mm; height: 8.5mm;
+  background: var(--verde);
+  color: var(--papel);
+  border-radius: 50%;
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+ul.simple { margin: 3mm 0; padding-left: 6mm; }
+ul.simple li { margin-bottom: 2mm; }
+
+/* --- Recuadros --------------------------------------------------------- */
+.caja {
+  background: var(--papel-2);
+  border-left: 3px solid var(--verde-claro);
+  padding: 3.5mm 4.5mm;
+  margin: 4mm 0;
+  page-break-inside: avoid;
+}
+.caja.ojo { background: var(--tostado-tenue); border-left-color: var(--tostado); }
+.caja.calma { background: #eef3ef; border-left-color: var(--verde); }
+.caja .titulo {
+  font-family: var(--sans);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--verde);
+  margin-bottom: 2mm;
+}
+.caja.ojo .titulo { color: #8a5a2b; }
+.caja p:last-child { margin-bottom: 0; }
+
+/* --- Checklist --------------------------------------------------------- */
+.checklist { margin: 5mm 0; }
+.checklist .item {
+  display: flex;
+  gap: 4mm;
+  padding: 2.7mm 0;
+  border-bottom: 1px solid var(--linea);
+  page-break-inside: avoid;
+}
+.checklist .item:last-child { border-bottom: none; }
+.cuadro {
+  flex: 0 0 auto;
+  width: 5mm; height: 5mm;
+  border: 1.5px solid var(--verde);
+  margin-top: 1.2mm;
+}
+.checklist .que { font-weight: bold; }
+.checklist .como { color: var(--tinta-suave); font-size: 10.5pt; }
+
+/* --- Datos a copiar ---------------------------------------------------- */
+.dato {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  background: #fff;
+  border: 1px dashed var(--tostado);
+  padding: 2.5mm 3mm;
+  margin: 2mm 0;
+  word-break: break-all;
+}
+.etiqueta {
+  font-family: var(--sans);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tinta-tenue);
+}
+code {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  background: var(--papel-2);
+  padding: .5mm 1.5mm;
+  border-radius: 2px;
+}
+
+/* --- Camino de clics --------------------------------------------------- */
+.ruta {
+  font-family: var(--sans);
+  font-size: 9.5pt;
+  color: var(--verde-oscuro);
+  background: var(--papel-2);
+  border: 1px solid var(--linea);
+  padding: 2.5mm 3.5mm;
+  margin: 2.5mm 0;
+  display: inline-block;
+}
+
+/* --- Preguntas --------------------------------------------------------- */
+.faq { margin-top: 3mm; }
+.faq .p {
+  font-weight: bold;
+  color: var(--verde);
+  margin: 5mm 0 1mm;
+  page-break-after: avoid;
+}
+.faq .r { margin: 0 0 3mm; }
+
+.cierre {
+  margin-top: 10mm;
+  padding-top: 5mm;
+  border-top: 2px solid var(--tostado);
+  color: var(--tinta-suave);
+  font-size: 10.5pt;
+}
+</style>
+</head>
+<body>
+
+<!-- ====================== PORTADA ====================== -->
+<div class="portada">
+  <div class="marca">CISUR</div>
+  <div class="bajada-marca">Centro Integral Sur</div>
+
+  <h1>Cobrar antes,<br>y enterarte al toque</h1>
+  <p class="sub">
+    La web ya vende sola. Quedan dos cosas por cambiar, las dos en tu Mercado
+    Pago y las dos en la misma pantalla. Diez minutos.
+  </p>
+
+  <div class="meta">
+    Para Tatiana Galera &nbsp;·&nbsp; 10 minutos &nbsp;·&nbsp; Agosto de 2026
+  </div>
+</div>
+
+<!-- ====================== POR QUÉ ====================== -->
+<h2><span class="num">De qué se trata</span>Por qué tu plata todavía no está</h2>
+
+<p>
+  Tu primera venta salió perfecta: la web cobró, entregó el material sola y el
+  dinero entró a tu cuenta. Esto es lo que pasó con esa venta:
+</p>
+
+<div class="caja calma">
+  <div class="titulo">Tu venta del 5 de agosto</div>
+  <p style="font-family: var(--sans); font-size: 10.5pt; line-height: 1.9;">
+    Precio del material &nbsp;·&nbsp; <strong>$&nbsp;18.000,00</strong><br>
+    Comisión de Mercado Pago &nbsp;·&nbsp; <strong>$&nbsp;774,53</strong> (4,3&nbsp;%)<br>
+    Te quedan &nbsp;·&nbsp; <strong>$&nbsp;17.225,47</strong><br>
+    Disponible el &nbsp;·&nbsp; <strong>23 de agosto</strong>
+  </p>
+</div>
+
+<p>
+  Esa espera de 18 días <strong>la elegiste vos</strong> —o quedó puesta por
+  defecto— y se cambia en dos minutos. La regla es simple:
+  <strong>cuanto antes cobrás, más comisión te descuentan.</strong> Cobrar al
+  instante es lo más caro; esperar un mes, lo más barato.
+</p>
+
+<div class="caja">
+  <div class="titulo">No hay una opción correcta</div>
+  <p>
+    Si necesitás la plata ya, cobrá al instante y pagá más. Si podés esperar,
+    esperá y quedate con más. Lo cambiás las veces que quieras, y no afecta en
+    nada a la web: quien compra recibe el material al instante en todos los
+    casos.
+  </p>
+</div>
+
+<div class="caja ojo">
+  <div class="titulo">Ojo con esto</div>
+  <p>
+    El cambio vale <strong>para las ventas de acá en adelante</strong>. Lo que ya
+    vendiste se libera en la fecha que le tocaba: poner «al instante» hoy no
+    adelanta los $17.225 del 23 de agosto.
+  </p>
+</div>
+
+<!-- ====================== PARTE 1 ====================== -->
+<h2><span class="num">Parte 1 · 5 minutos</span>Elegir en cuántos días cobrás</h2>
+
+<p>Desde la app del celular:</p>
+
+<ol class="pasos">
+  <li>Abrí la app de Mercado Pago.</li>
+  <li>
+    Tocá <strong>Tu negocio</strong>.
+    <br>
+    <span style="color: var(--tinta-tenue);">
+      Ojo acá: es <em>Tu negocio</em>, no <em>Tu perfil</em>. Son dos menús
+      distintos y es donde más se traba la gente.
+    </span>
+  </li>
+  <li>Entrá a <strong>Costos y cuotas</strong>.</li>
+  <li>
+    Vas a ver los medios de cobro: <em>Código QR</em>, <em>Point</em>,
+    <em>Link de pago</em>, <em>Checkout</em>.
+    Elegí <strong>Checkout</strong>, que es el que usa la web de CISUR.
+    <br>
+    <span style="color: var(--tinta-tenue);">
+      Si no aparece «Checkout», elegí «Link de pago»: en algunas cuentas los
+      cobros por internet figuran ahí.
+    </span>
+  </li>
+  <li>Entrá a la pestaña <strong>Por cobro</strong>.</li>
+  <li>Tocá <strong>Configurar costos por cobro</strong>.</li>
+  <li>
+    Aparece la lista de plazos, cada uno con su comisión al lado. Elegí el que
+    quieras y tocá <strong>Guardar</strong>.
+  </li>
+</ol>
+
+<p>
+  Desde la computadora es igual: entrá a <strong>mercadopago.com.ar</strong>,
+  iniciá sesión y buscá <strong>Tu negocio → Costos y cuotas</strong>.
+</p>
+
+<div class="caja">
+  <div class="titulo">Los porcentajes miralos ahí, no acá</div>
+  <p>
+    Mercado Pago los cambia varias veces al año, así que cualquier número escrito
+    en este papel va a quedar viejo. <strong>Los vas a ver al lado de cada
+    opción, en el paso 7.</strong>
+  </p>
+  <p>
+    Para que tengas una idea del orden de magnitud: sobre una venta de $18.000,
+    cada punto de comisión son unos <strong>$180</strong>. Entre cobrar al
+    instante y cobrar a un mes hay alrededor de <strong>$700 por venta</strong>
+    de diferencia.
+  </p>
+</div>
+
+<div class="caja ojo">
+  <div class="titulo">Cuidado con «cuotas sin interés»</div>
+  <p>
+    En esa misma pantalla hay un interruptor para ofrecer cuotas sin interés.
+    <strong>«Sin interés» quiere decir sin interés para quien compra: el costo lo
+    pagás vos</strong>, y se descuenta de cada venta <em>además</em> de la
+    comisión.
+  </p>
+  <p>
+    No está mal usarlo, vende más. Pero es una decisión de precio, no un ajuste
+    técnico: si lo activás, conviene subir el precio del material para
+    compensarlo. <strong>Si no lo tocás</strong>, quien compra igual puede pagar
+    en cuotas, sólo que el interés lo paga su banco y vos cobrás lo mismo que si
+    pagara de una.
+  </p>
+</div>
+
+<!-- ====================== PARTE 2 ====================== -->
+<h2><span class="num">Parte 2 · 3 minutos</span>Que te avise cuando vendas</h2>
+
+<p>
+  Mercado Pago te manda una notificación al celular por cada cobro. Si no te
+  están llegando, es un permiso del teléfono, no de la web.
+</p>
+
+<h3>En el teléfono</h3>
+<ol class="pasos">
+  <li>
+    Entrá a los <strong>Ajustes</strong> del celular (no a la app de Mercado
+    Pago).
+  </li>
+  <li>Buscá <strong>Notificaciones</strong>.</li>
+  <li>Buscá <strong>Mercado Pago</strong> en la lista de aplicaciones.</li>
+  <li>
+    Que esté activado <strong>Permitir notificaciones</strong>. Si podés elegir
+    tipos, dejá prendidas las de <strong>dinero recibido</strong> o
+    <strong>cobros</strong>.
+  </li>
+</ol>
+
+<h3>Dentro de la app</h3>
+<p>
+  En <strong>Tu perfil → Notificaciones</strong> revisá que estén activadas las
+  de <strong>actividad de tu cuenta</strong>. Cada cobro además queda siempre
+  registrado en <strong>Actividad</strong>, con el importe, la comisión ya
+  descontada y la fecha en que se libera.
+</p>
+
+<div class="caja calma">
+  <div class="titulo">También lo ves en la web</div>
+  <p>
+    En <strong>Panel → Ventas</strong> tenés quién compró, qué material, cuándo y
+    por cuánto. Ahí los importes son <em>antes</em> de la comisión: lo que
+    realmente te entra lo ves en Mercado Pago.
+  </p>
+</div>
+
+<div class="caja ojo">
+  <div class="titulo">Por ahora la web no manda mails</div>
+  <p>
+    Ni a vos ni a quien compra. <strong>Tu aviso de venta es la app de Mercado
+    Pago</strong>, por eso conviene que las notificaciones estén prendidas. Es lo
+    primero que se le va a sumar a la web cuando se pueda.
+  </p>
+</div>
+
+<!-- ====================== CHECKLIST ====================== -->
+<h2><span class="num">Para no olvidarte</span>Las dos cosas</h2>
+
+<div class="checklist">
+  <div class="item">
+    <div class="cuadro"></div>
+    <div>
+      <div class="que">Elegí en cuántos días querés cobrar</div>
+      <div class="como">Tu negocio → Costos y cuotas → Checkout → Por cobro</div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="cuadro"></div>
+    <div>
+      <div class="que">Prendé las notificaciones de Mercado Pago</div>
+      <div class="como">Ajustes del celular → Notificaciones → Mercado Pago</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================== FAQ ====================== -->
+<h2><span class="num">Por las dudas</span>Preguntas que capaz tenés</h2>
+
+<div class="faq">
+  <p class="p">¿Esto puede romper algo de la web?</p>
+  <p class="r">
+    No. La web no se entera de nada de esto. Quien compra recibe el material al
+    instante en todos los casos. Lo único que cambia es cuándo te entra la plata
+    a vos y cuánto te descuentan.
+  </p>
+
+  <p class="p">Veo plata en «dinero a liberar». ¿Está frenada?</p>
+  <p class="r">
+    No, es normal: es una venta ya cobrada que se libera en la fecha que dice al
+    lado. Pasa justamente porque tenés la acreditación diferida. Si querés que
+    deje de pasar, cambiá el plazo como se explica en la Parte 1.
+  </p>
+
+  <p class="p">¿Me conviene cobrar al instante?</p>
+  <p class="r">
+    Depende de si necesitás la plata ahora. Con el volumen de ventas de hoy, la
+    diferencia son unos cientos de pesos por venta. Si te da tranquilidad verla
+    disponible enseguida, vale la pena; si no la vas a usar igual, esperar te
+    deja más.
+  </p>
+
+  <p class="p">No encuentro alguna de estas pantallas.</p>
+  <p class="r">
+    Mercado Pago les cambia el nombre cada tanto. Entrá a
+    <strong>mercadopago.com.ar/ayuda</strong> y buscá <strong>«costos por
+    cobro»</strong>: ahí siempre está la ruta actualizada. O mandá una captura de
+    lo que ves.
+  </p>
+
+  <p class="p">¿Y si alguien me pide que le devuelva la plata?</p>
+  <p class="r">
+    La devolución la hacés vos desde la app, en el detalle de ese cobro, con la
+    opción «Devolver dinero». Con eso alcanza: la web se entera sola y le da de
+    baja el acceso al material. No tenés que avisarle a nadie.
+  </p>
+</div>
+
+<p class="cierre">
+  Cualquier cosa que no te cierre, preguntá antes de tocar. Ninguna de estas dos
+  cosas puede romper nada, y las dos se pueden volver atrás.
+</p>
+
+</body>
+</html>

@@ -30,3 +30,23 @@ Dos cosas del diseño que conviene no romper:
   dejaba cuatro hojas con dos líneas. El texto fluye y lo único que se protege
   es que un título no se separe de lo que introduce (`page-break-after: avoid`)
   y que un recuadro no se corte al medio (`page-break-inside: avoid`).
+
+## `tati-cobrar-antes`
+
+Documento corto, aparte de los otros dos, para las dos configuraciones que
+quedaron pendientes en la cuenta de Mercado Pago de Tati: **el plazo de
+acreditación** (su plata tardaba 18 días) y **las notificaciones de venta** (no
+le llegaban los avisos al celular).
+
+Va aparte a propósito. Los otros dos documentos son de puesta en marcha y ya
+los leyó; éste es una tarea concreta de diez minutos, y mezclarla adentro de un
+PDF de ocho páginas que ya conoce es la mejor forma de que no se haga.
+
+Lleva los números reales de su primera venta —$18.000, comisión $774,53,
+disponible el 23 de agosto— porque un ejemplo con sus propios números explica el
+costo de esperar mejor que cualquier porcentaje.
+
+**Los porcentajes de comisión NO se fijan en el documento**, en ninguno de los
+tres. Mercado Pago los cambia varias veces al año y nadie va a estar para
+regenerar el PDF: se explica dónde verlos en pantalla y se da el orden de
+magnitud sobre su precio real.
